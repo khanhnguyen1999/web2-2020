@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+const ejs = require('ejs')
 var port = process.env.PORT || 3000;
 
 // --------Datatbase------------
@@ -17,9 +18,14 @@ app.set('view engine', 'ejs');
 
 // ----------APP GET------------
 app.get('/', function (req, res) {
+   res.render('pages/login');
+});
+app.get('/home', function (req, res) {
    res.render('pages/home');
 });
-
+app.get('/register',function(req,res){
+   res.render('pages/register')
+})
 // --------APP USE----------
 app.use(express.static('public'))
 
