@@ -4,9 +4,18 @@ const db = require('./db')
 
 const Model = Sequelize.Model;
 class Account extends Model {
-    // static async findUserById(id){
-    //     return await User.findByPk(id)
-    // }
+    static async findAccountrByUserId(id){
+        return await Account.findOne({where:{user_id:id}})
+    }
+    static async findAccountrByAccountNumber(accountNumber){
+      return await Account.findOne({where:{accountNumber:accountNumber}})
+    }
+    static async updateBalance(balance,accountNumber){
+      return await Account.update(
+        {balance:balance},
+        {where:{accountNumber:accountNumber}}
+        )
+    }
     // static async findUserByEmail(email){
     //     return User.findOne({
     //         where:{
@@ -30,10 +39,14 @@ Account.init({
 //     allowNull: false,
 //     unique: true
 //   },
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+  },
   accountNumber: {
     type: Sequelize.STRING,
-    allowNull: false
-    // allowNull defaults to true
+    allowNull: false,
+    primaryKey:true,
   },
   balance: {
     type: Sequelize.INTEGER,
@@ -54,14 +67,16 @@ Account.init({
   },
  
 }, {
+  underscored:true,
   sequelize: db,
   modelName: 'account'
 });
 
 const User = require('./user');
+User.hasMany(Account)
 Account.belongsTo(User);
 
-const Transaction  = require('./transaction')
-Account.hasMany(Transaction)
+
+// Account.belongsTo(Transaction,{as:'test'})
 
 module.exports = Account;
