@@ -47,7 +47,6 @@ beneficiary.init({
 const Bank = require('./bank')
 beneficiary.belongsTo(Bank, {foreignKey: 'bankName'})
 
-
 // Account.belongsTo(Transaction,{as:'test'})
 
 module.exports = beneficiary;

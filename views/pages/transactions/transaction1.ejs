@@ -1,0 +1,51 @@
+<%- include ("../../partials/header") -%>
+<section class="blog_part section_padding section_transaction col-4">
+    <div class="container container_transaction1">
+        <form method="POST" class="mt-4 ">
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">Người gửi : <span><%= user.displayName %> </span></label>
+            </div>
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">Số tài khoản : <span><%= account.accountNumber %></span></label>
+            </div>
+
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">Số tiền : <span><%= SoTien %></span></label>
+            </div>
+
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">TSK thụ hưởng :
+                    <span><%= BeneficiaryAccount.accountNumber %></span></label>
+            </div>
+
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">Người thụ hưởng :
+                    <span><%= BeneficiaryUser.displayName %></span></label>
+            </div>
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">Nội dung : <span><%= content %></span></label>
+            </div>
+
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">Phí : <span>5000 VND</span></label>
+            </div>
+
+            <div class="form-group">
+                <label for="formGroupExampleInput">Nhập mã số </label>
+                <input name="OTP" type="text" class="form-control" id="formGroupExampleInput"
+                    placeholder="VD : 0123">
+            </div>
+
+            <div class="form-group  text-right">
+                <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
+                <button type="submit" class="btn btn-primary">Xác Nhận</button>
+            </div><br>
+        </form>
+    </div>
+</section>
+<script>
+    function goBack() {
+      window.history.back()
+    }  
+  </script>
+<%- include ("../../partials/footer") -%>
