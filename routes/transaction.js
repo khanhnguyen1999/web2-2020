@@ -9,9 +9,9 @@ const Account = require('../services/account');
 const SavingAccount = require('../services/saving_account');
 const Transaction = require('../services/transaction');
 const Bank = require('../services/bank');
-const Email = require('../services/email')
-const { tableName } = require('../services/user');
-const crypto = require('crypto')
+const Email = require('../services/email');
+// const { tableName } = require('../services/user');
+const crypto = require('crypto');
 
 var account ;
 var BeneficiaryAccount ;
@@ -51,7 +51,7 @@ router.post('/',[
         .custom(async function(SoTien){
             
             if(SoTien<50){
-                throw Error('user exists');
+                throw Error('currentUser exists');
             }
             return true;
         }),
@@ -90,7 +90,7 @@ router.post('/',[
        {
             await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
             await Account.updateBalance(beneficiaryExtraMoney,BeneficiaryAccount.accountNumber);
-            await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.user.displayName+" tới "+
+            await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
             BeneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName +" : "+req.body.SoTien +"\nSố dư : "+extraMoney )
             res.render('./pages/transactions/transaction2')
        }
@@ -105,7 +105,7 @@ router.post('/',[
          account =await Account.findAccountrByAccountNumber(res.locals.account.accountNumber); 
          BeneficiaryAccount =await Account.findAccountrByAccountNumber(req.body.STKHuongThu);
          BeneficiaryUser = await User.findUserById(BeneficiaryAccount.userId)
-         content = req.body.NoiDung==''?account.accountNumber+" "+res.locals.user.displayName+" tới "+
+         content = req.body.NoiDung==''?account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
             BeneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName+" " : req.body.NoiDung;
         
         const transaction = await Transaction.create({
@@ -130,9 +130,9 @@ router.post('/',[
         {
             // await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
             // await Account.updateBalance(beneficiaryExtraMoney,req.body.STKHuongThu)
-            // await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.user.displayName+" tới "+
+            // await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
             // BeneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName +" : "+req.body.SoTien +"\nSố dư : "+extraMoney )
-            Email.send(res.locals.user.email,"Vietcombank",token)
+            Email.send(res.locals.currentUser.email,"Vietcombank",token)
             return res.render('./pages/transactions/transaction1',{
                 BeneficiaryAccount:BeneficiaryAccount,
                 BeneficiaryUser:BeneficiaryUser,
@@ -163,15 +163,15 @@ router.post('/',[
     //     openDate:'2016-08-09 04:05:02',
     //     limit:5000000
     // })
-    // const user = await User.create({
+    // const currentUser = await User.create({
     //     email: req.body.email,
     //     displayName: req.body.displayName,
     //     password: (await User.hashPassword(req.body.password)).toString(),
     //     token : crypto.randomBytes(3).toString('hex').toUpperCase(),
         
     // })
-    // req.session.userId = user.id
-    // await Email.send(user.email, 'kich hoat tai khoan' ,`${process.env.BASE_URL}/login/activate/${user.id}/${user.token}`);
+    // req.session.userId = currentUser.id
+    // await Email.send(currentUser.email, 'kich hoat tai khoan' ,`${process.env.BASE_URL}/login/activate/${currentUser.id}/${currentUser.token}`);
     // res.redirect('/')
 }));
 module.exports =router;

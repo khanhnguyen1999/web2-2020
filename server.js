@@ -32,7 +32,7 @@ app.get('/logout',require('./routes/logout'));
 
 // --------Transaction----------
 app.use(require('./middlewares/auth'));
-app.use('/transaction',require('./router/transaction'));
+app.use('/transaction',require('./routes/transaction'));
 
 // --------APP USE----------
 app.use(express.static('public'))
