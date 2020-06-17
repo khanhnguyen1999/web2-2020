@@ -2,8 +2,7 @@
 var express = require('express');
 const bodyParser = require('body-parser');
 var app = express();
-const ejs = require('ejs')
-const bodyParser = require('body-parser');
+const ejs = require('ejs');
 const cookieSession = require('cookie-session');
 var port = process.env.PORT || 3000;
 
@@ -17,7 +16,6 @@ const Bank = require('./services/bank');
 const beneficiaryAccount = require('./services/beneficiaryAccount');
 
 // ---------NPM INSTALL---------
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieSession({secret: 'todotopsecret'}))
 
@@ -27,9 +25,6 @@ app.set('view engine', 'ejs');
 
 
 // ----------APP GET------------
-app.get('/', function (req, res) {
-  res.render('pages/home');
-});
 app.get('/home', function (req, res) {
    res.render('pages/home');
 });

@@ -24,7 +24,7 @@ class User extends Model {
           }
       })
   }
-  static hassPassword(password){
+  static hashPassword(password){
       return bcrypt.hashSync(password,10);
   }
   static verifyPassword(passwordHash,password)
@@ -63,6 +63,16 @@ User.init({
   },
   idCardPhoto: {
     type: Sequelize.BLOB,
+  },
+  tokenUser: {
+    type: Sequelize.STRING,
+    allowNull: true
+    // allowNull defaults to true
+  },
+  role: {
+    type: Sequelize.STRING,
+    allowNull: false
+    // allowNull defaults to true
   },
 
 }, {

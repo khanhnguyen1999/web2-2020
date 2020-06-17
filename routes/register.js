@@ -44,7 +44,8 @@ router.post('/',[
         username:req.body.username,
         email:req.body.email,
         displayName:req.body.displayName,
-        password:User.hassPassword(req.body.password),
+        password:User.hashPassword(req.body.password),
+        role:'user'
     })
     // await Email.send(user.email,'Mã kích hoạt tài khoản',`link activate của bạn là : ${process.env.BASE_URL}/login/${user.id}/${user.token}`)
     res.redirect('/')
