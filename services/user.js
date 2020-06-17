@@ -4,22 +4,32 @@ const db = require('./db')
 
 const Model = Sequelize.Model;
 class User extends Model {
-  static async findUserById(id) {
-    return await User.findByPk(id)
+  static async findEmail(){
+    return User.findAll({})
   }
-  static async findUserByEmail(email) {
+  static async findUserById(id){
+      return User.findByPk(id)
+  }
+  static async findUserByEmail(email){
     return User.findOne({
-      where: {
-        email,
-      }
-    });
+          where:{
+              email,
+          }
+      })
   }
-
-  static async verifyPassword(password, passwordHash) {
-    return bcrypt.compareSync(password, passwordHash)
+  static findUserByUserName(username){
+    return User.findOne({
+          where:{
+              username,
+          }
+      })
   }
-  static async hashPassword(password) {
-    return bcrypt.hashSync(password, 10);
+  static hassPassword(password){
+      return bcrypt.hashSync(password,10);
+  }
+  static verifyPassword(passwordHash,password)
+  {
+      return bcrypt.compareSync(passwordHash,password)
   }
 }
 User.init({

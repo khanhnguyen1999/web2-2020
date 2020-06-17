@@ -2,9 +2,12 @@
 var express = require('express');
 const bodyParser = require('body-parser');
 var app = express();
+const ejs = require('ejs')
+const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 var port = process.env.PORT || 3000;
 
-// --------Datatbase------------
+// --------DATABASE------------
 const db = require('./services/db')
 const User = require('./services/user');
 const Account = require('./services/account');
@@ -12,8 +15,11 @@ const SavingAccount = require('./services/saving_account');
 const Transaction = require('./services/transaction');
 const Bank = require('./services/bank');
 const beneficiaryAccount = require('./services/beneficiaryAccount');
+
+// ---------NPM INSTALL---------
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieSession({secret: 'todotopsecret'}))
 
 // --------APP SET------------
 app.set('views', './views');
@@ -27,21 +33,18 @@ app.get('/', function (req, res) {
 app.get('/home', function (req, res) {
    res.render('pages/home');
 });
-
+app.get('/logout',require('./routes/logout'));
 
 // --------Transaction----------
-app.use(require('./middlewares/auth'))
+app.use(require('./middlewares/auth'));
 app.use('/transaction',require('./router/transaction'));
 
 // --------APP USE----------
 app.use(express.static('public'))
+app.use('/register',require('./routes/register'))
+app.use('/',require('./routes/login'))
 
-
-// var server = app.listen(port, function () {
-//   var host = server.address().address
-//   console.log("Ung dung Node.js dang hoat dong tai dia chi: http://%s:%s", host, port)
-// });
-
+// -------CONNECTION---------
 db.sync().then(function(){
   app.listen(port);
 
