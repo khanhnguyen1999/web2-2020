@@ -1,3 +1,4 @@
+const Account = require('../services/account');
 const User = require('../services/user.js')
 const asyncHandler = require('express-async-handler')
 module.exports = asyncHandler(async function auth(req,res,next){
@@ -10,7 +11,9 @@ module.exports = asyncHandler(async function auth(req,res,next){
     if(!user){
         return next();
     }
+    const account = await Account.findAccountrByUserId(res.locals.user.id);
     req.currentUser =user;
     res.locals.currentUser = user;
+    res.locals.account = account;
     next();
-})
+});

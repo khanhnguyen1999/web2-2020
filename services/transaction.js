@@ -33,4 +33,9 @@ Transaction.init({
   sequelize: db,
   modelName: 'transaction'
 });
+const Account  = require('./account')
+const Bank = require('./bank')
+Transaction.belongsTo(Account, {foreignKey: 'accountNumber'})
+Transaction.belongsTo(Account, {foreignKey: 'beneficiaryAccount'})
+Transaction.belongsTo(Bank, {foreignKey: 'beneficiaryBank'})
 module.exports = Transaction;
