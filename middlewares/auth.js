@@ -1,25 +1,29 @@
 const Account = require('../services/account');
-const User = require('../services/user.js')
-const asyncHandler = require('express-async-handler')
-module.exports = asyncHandler(async function auth(req,res,next){
+const User = require('../services/user.js');
+const asyncHandler = require('express-async-handler');
+
+module.exports = asyncHandler(async function auth(req, res, next) {
     const userId = req.session.userId;
     res.locals.currentUser = null;
-    if(!userId){
+
+    if (!userId) {
         return next();
     }
-    const user = await User.findUserById(userId)
-    if(!user){
-        return next();
-    }
+
+    const user = await User.findUserById(userId);
     
-    req.currentUser =user;
+    if (!user) {
+        return next();
+    }
+
+    req.currentUser = user;
     res.locals.currentUser = user;
-    if(user){
+
+    if (user) {
         const account = await Account.findAccountrByUserId(req.currentUser.id);
         res.locals.account = account;
         return next();
     }
-   
- 
+
     next();
 });

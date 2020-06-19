@@ -1,20 +1,23 @@
 <%- include ("../../partials/header") -%>
+
 <section class="blog_part section_padding section_transaction col-4">
     <div class="container container_transaction1">
         <form method="POST" class="mt-4 ">
             <div class="form-group mb-3 ">
-                <label for="formGroupExampleInput">Người gửi : <span><%= currentUser.displayName %> </span></label>
+                <label for="formGroupExampleInput">Người gửi : <span><%= currentUser.displayName %>
+                    </span></label>
             </div>
             <div class="form-group mb-3 ">
-                <label for="formGroupExampleInput">Số tài khoản : <span><%= account.accountNumber %></span></label>
-            </div>
-
-            <div class="form-group mb-3 ">
-                <label for="formGroupExampleInput">Số tiền : <span><%= SoTien %></span></label>
+                <label for="formGroupExampleInput">Số tài khoản :
+                    <span><%= account.accountNumber %></span></label>
             </div>
 
             <div class="form-group mb-3 ">
-                <label for="formGroupExampleInput">TSK thụ hưởng :
+                <label for="formGroupExampleInput">Số tiền : <span><%= amount %></span></label>
+            </div>
+
+            <div class="form-group mb-3 ">
+                <label for="formGroupExampleInput">STK thụ hưởng :
                     <span><%= BeneficiaryAccount.accountNumber %></span></label>
             </div>
 
@@ -33,11 +36,12 @@
             <div class="form-group">
                 <label for="formGroupExampleInput">Nhập mã số </label>
                 <input name="OTP" type="text" class="form-control" id="formGroupExampleInput"
-                    placeholder="VD : 0123">
+                       placeholder="VD : 0123">
             </div>
 
             <div class="form-group  text-right">
-                <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
+                <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay
+                    lại</button>
                 <button type="submit" class="btn btn-primary">Xác Nhận</button>
             </div><br>
         </form>
@@ -45,7 +49,8 @@
 </section>
 <script>
     function goBack() {
-      window.history.back()
+        window.history.back()
     }  
-  </script>
+</script>
+
 <%- include ("../../partials/footer") -%>
