@@ -37,6 +37,7 @@ app.use('/transaction', require('./routes/transaction'));
 app.use(express.static('public'));
 app.use('/register', require('./routes/register'));
 app.use('/', require('./routes/login'));
+app.use('/admin', require('./routes/admin'));
 
 // -------CONNECTION---------
 db.sync().then(function () {
