@@ -19,47 +19,60 @@ router.get('/users', asyncHandler(async (req, res) => {
     const users = [];
     res.render('./pages/admin/users', { users });
 }));
-// #########################################################
+
 router.post('/users', asyncHandler(async (req, res) => {
     const { search } = req.body;
 
-    console.log('#######');
-
-    const re = [];
     const result = await Account.findAll({
         where: {
-            accountNumber: {
-                [ Op.like ]: search,
-            },
             role: 'user',
         },
-        // where: {
-        // },
-    }).then(async (data) => {
-        if (data != null) {
-            const user = await User.findOne({
-                where: {
-                    id: data[ 0 ].userId,
-                }
-            });
+    }).then(asyncHandler(async (data) => {
+        const re = [];
 
-            Object.assign(user, data[ 0 ]);
-
-            // console.log(Object.assign(data[0], user));
-            console.log(user);
-
-            // re.push(d);
-            // console.log(re);
-            return re;
-        }
-    }).catch((err) => {
+        data.forEach(d => {
+            if (contains(d.accountNumber, search, 0, 0) === 1) {
+                re.push(d);
+            }
+        });
+        return re;
+    })).catch((err) => {
         console.log(err);
     });
 
-    console.log(`>>>> ${result}`);
-
     res.render('./pages/admin/users', { users: result });
 }));
-// #########################################################
+
+function exactMatch(text, pat, text_index, pat_index) {
+    if (text_index === text.length && pat_index !== pat.length) {
+        return 0;
+    }
+
+    if (pat_index === pat.length) {
+        return 1;
+    }
+
+    if (text[text_index] === pat[pat_index]) {
+        return exactMatch(text, pat, text_index + 1, pat_index + 1);
+    }
+
+    return 0;
+}
+
+function contains(text, pat, text_index, pat_index) {
+    if (text_index === text.length) {
+        return 0;
+    }
+
+    if (text[text_index] === pat[pat_index]) {
+        if (exactMatch(text, pat, text_index, pat_index)) {
+            return 1;
+        } else {
+            return contains(text, pat, text_index + 1, pat_index);
+        }
+    }
+
+    return contains(text, pat, text_index + 1, pat_index);
+}
 
 module.exports = router;
