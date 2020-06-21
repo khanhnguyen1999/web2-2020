@@ -22,19 +22,46 @@ router.get('/users', asyncHandler(async (req, res) => {
 
 router.post('/users', asyncHandler(async (req, res) => {
     const { search } = req.body;
+    var re = [];
 
     const result = await Account.findAll({
         where: {
             role: 'user',
         },
     }).then(asyncHandler(async (data) => {
-        const re = [];
-
-        data.forEach(d => {
-            if (contains(d.accountNumber, search, 0, 0) === 1) {
-                re.push(d);
+        // Find by accountNumber
+        data.forEach(user => {
+            if (contains(user.accountNumber, search, 0, 0) === 1) {
+                re.push(user);
             }
         });
+        // --
+
+        // Find by email
+        // if (re.length === 0) {
+        //     data.forEach(asyncHandler(async (user) => {
+        //         const u = await User.findOne({
+        //             where: {
+        //                 id: user.userId,
+        //             }
+        //         }).then((user) => {
+        //             if (contains(user.email, search, 0, 0) === 1) {
+        //                 // await console.log(user.email);
+        //                 return user;
+        //             }
+        //         }).catch((err) => {
+        //             console.log(err);
+        //         });
+
+        //         re.push(user);
+        //     }));
+
+            // console.log(users);
+        // }
+        // --
+
+        // console.log(re);
+
         return re;
     })).catch((err) => {
         console.log(err);
@@ -52,7 +79,7 @@ function exactMatch(text, pat, text_index, pat_index) {
         return 1;
     }
 
-    if (text[text_index] === pat[pat_index]) {
+    if (text[ text_index ] === pat[ pat_index ]) {
         return exactMatch(text, pat, text_index + 1, pat_index + 1);
     }
 
@@ -64,7 +91,7 @@ function contains(text, pat, text_index, pat_index) {
         return 0;
     }
 
-    if (text[text_index] === pat[pat_index]) {
+    if (text[ text_index ] === pat[ pat_index ]) {
         if (exactMatch(text, pat, text_index, pat_index)) {
             return 1;
         } else {
