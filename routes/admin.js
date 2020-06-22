@@ -9,7 +9,7 @@ router.get('/', asyncHandler(async (req, res) => {
     const account = await Account.findAccountrByUserId(req.currentUser.id);
 
     if (account) {
-        return res.render('./pages/admin/admin');
+        return res.render('./ducbui/pages/admin/admin');
     }
 
     res.redirect('/logout');
@@ -17,7 +17,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
 router.get('/users', asyncHandler(async (req, res) => {
     const users = [];
-    res.render('./pages/admin/users', { users });
+    res.render('./ducbui/pages/admin/users', { users });
 }));
 
 router.post('/users', asyncHandler(async (req, res) => {
@@ -56,7 +56,7 @@ router.post('/users', asyncHandler(async (req, res) => {
         //         re.push(user);
         //     }));
 
-            // console.log(users);
+        // console.log(users);
         // }
         // --
 
@@ -67,7 +67,54 @@ router.post('/users', asyncHandler(async (req, res) => {
         console.log(err);
     });
 
-    res.render('./pages/admin/users', { users: result });
+    res.render('./ducbui/pages/admin/users', { users: result });
+}));
+
+// ### Pending
+router.get('/users/management', asyncHandler(async (req, res) => {
+    const users = await Account.findAll({
+        where: {
+            role: 'user',
+        }
+    });
+
+    res.render('./ducbui/pages/admin/users', { users });
+}));
+
+router.get('/users/:id', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const user = await User.findUserById(id);
+
+    res.render(`./ducbui/pages/admin/details`, { user });
+}));
+
+router.get('/lock/:id', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const account = await Account.findAccountrByUserId(id);
+    if (account) {
+        await Account.update({
+            status: account.status ? false : true,
+        }, {
+            where: {
+                userId: id,
+            }
+        });
+    }
+
+    const user = await User.findUserById(id);
+    if (user) {
+        await User.update({
+            tokenUser: account.status ? 'LOCKED' : null,
+        }, {
+            where: {
+                id,
+            }
+        });
+    }
+
+    res.render(`./ducbui/pages/admin/details`, { user });
 }));
 
 function exactMatch(text, pat, text_index, pat_index) {

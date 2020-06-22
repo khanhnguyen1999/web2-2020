@@ -1,0 +1,46 @@
+<%- include ("../../partials/header", { title: 'Management' }) -%>
+<%- include ("../../partials/navbar") %>
+
+<div class="containter">
+    <div class="row justify-content-center my-5">
+        <div class="col-md-10">
+            <div class="row justify-content-center">
+                <div class="col-">
+                    <div class="card text-center shadow-lg">
+                        <div class="card-body">
+                            <form method="POST" class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" type="search"
+                                       placeholder="Search" aria-label="Search" name="search"
+                                       id="search">
+                                <button class="btn btn-outline-success my-2 my-sm-0"
+                                        type="submit">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users -->
+            <% if (users) { %>
+            <div class="row justify-content-center my-5">
+                <div class="col-6">
+                    <div class="list-group">
+                        <% users.forEach(user => { %>
+
+                        <a href="/admin/users/<%= user.userId %>"
+                           class="list-group-item list-group-item-action">
+                            <%= user.displayName %>
+                            <%= user.accountNumber %>
+                        </a>
+
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+            <!-- End Users -->
+        </div>
+    </div>
+</div>
+
+<%- include ("../../partials/footer") -%>

@@ -1,0 +1,51 @@
+<%- include ("../../partials/header", { title: currentUser.displayName }) -%>
+<%- include ("../../partials/navbar") %>
+
+<div class="containter">
+    <div class="row justify-content-center my-5">
+        <div class="col-md-10">
+            <!-- <div class="row justify-content-center">
+                <div class="col-">
+                    <div class="card text-center shadow-lg">
+                        <div class="card-body">
+                            <form method="POST" class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" type="search"
+                                       placeholder="Search" aria-label="Search" name="search"
+                                       id="search">
+                                <button class="btn btn-outline-success my-2 my-sm-0"
+                                        type="submit">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Users -->
+            <% if (user) { %>
+            <div class="row justify-content-center my-5">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= user.displayName %></h5>
+                            <h6 class="card-subtitle mb-2 text-muted"><%= user.username %></h6>
+                            <p class="card-text">Email: <%= user.email %></p>
+                            <p class="card-text">Status: <%= user.tokenUser ? 'Locked' : 'Active' %></p>
+                            <a href="/admin/lock/<%= user.id %>" class="card-link"><%= user.tokenUser ? 'Unlock' : 'Lock' %></a>
+                            <a href="#" class="card-link">Modify</a>
+                            <a href="#" class="card-link">Authorization</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+            <div class="row my-3 justify-content-end">
+                <div class="col-4">
+                    <a class="btn btn-light" href="/admin/users" role="button">Back</a>
+                </div>
+            </div>
+            <!-- End Users -->
+        </div>
+    </div>
+</div>
+
+<%- include ("../../partials/footer") -%>
