@@ -20,6 +20,7 @@ router.get('/users', asyncHandler(async (req, res) => {
     res.render('./ducbui/pages/admin/users', { users });
 }));
 
+/// Find user
 router.post('/users', asyncHandler(async (req, res) => {
     const { search } = req.body;
     var re = [];
@@ -70,7 +71,7 @@ router.post('/users', asyncHandler(async (req, res) => {
     res.render('./ducbui/pages/admin/users', { users: result });
 }));
 
-// ### Pending
+// # Pending - Find pending user
 router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
@@ -80,7 +81,9 @@ router.get('/users/management', asyncHandler(async (req, res) => {
 
     res.render('./ducbui/pages/admin/users', { users });
 }));
+/// End find user
 
+/// View user profile
 router.get('/users/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -89,6 +92,7 @@ router.get('/users/:id', asyncHandler(async (req, res) => {
     res.render(`./ducbui/pages/admin/details`, { user });
 }));
 
+// Lock/Unlock account
 router.get('/lock/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -116,6 +120,23 @@ router.get('/lock/:id', asyncHandler(async (req, res) => {
 
     res.render(`./ducbui/pages/admin/details`, { user });
 }));
+/// End view user profile
+
+/// Edit user profile
+router.get('/edit/:id', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    user = await User.findUserById(id);
+    if (user) {
+        return res.render(`./ducbui/pages/admin/editProfile`, { user });
+    }
+    res.json(404).redirect('back');
+}));
+// # Pending - get user id to update profile
+router.post('/edit/:id', asyncHandler(async (req, res) => {
+    // const { id } = 
+}));
+/// End edit user profile
 
 function exactMatch(text, pat, text_index, pat_index) {
     if (text_index === text.length && pat_index !== pat.length) {
