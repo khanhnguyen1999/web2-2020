@@ -3,6 +3,7 @@ const Account = require('../services/account');
 const asyncHandler = require('express-async-handler');
 const User = require('../services/user');
 const { Sequelize } = require('sequelize');
+const { body, validationResult } = require('express-validator');
 const Op = Sequelize.Op;
 
 router.get('/', asyncHandler(async (req, res) => {
@@ -76,6 +77,7 @@ router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
             role: 'user',
+            status: false,
         }
     });
 
@@ -132,9 +134,71 @@ router.get('/edit/:id', asyncHandler(async (req, res) => {
     }
     res.json(404).redirect('back');
 }));
-// # Pending - get user id to update profile
-router.post('/edit/:id', asyncHandler(async (req, res) => {
-    // const { id } = 
+// Pending ### Validator error
+router.post('/edit/:id', [
+    body('email')
+        .isEmail()
+        .optional()
+        .normalizeEmail()
+        .custom(async (email) => {
+            const found = await User.findUserByEmail(email);
+
+            if (found) {
+                return true;
+            }
+            throw Error("User exists");
+        }),
+    body('username')
+        .trim()
+        .optional()
+        .custom(async (username) => {
+            // const found = await User.findUserByUserName(username);
+
+            // if (found) {
+            //     throw Error("User exists");
+            // }
+            return true;
+        }),
+    body('displayName')
+        .trim()
+        .optional(),
+    body('cardId')
+        .trim()
+        .optional()
+    // .isLength({ min: 9, max: 9 }),
+], asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { email, username, displayName, cardId } = req.body;
+
+    console.log(req.body);
+    console.log(email);
+
+    const errors = validationResult(req);
+
+    console.log(errors);
+
+    if (!errors.isEmpty()) {
+        return res.status(442).render(`./ducbui/pages/admin/admin`, { errors: errors.array() });
+    }
+
+    user = await User.findUserById(id);
+
+    console.log(user);
+
+    if (user) {
+        await User.update({
+            email: email ? email : user.email,
+            username: username ? username : user.username,
+            displayName: displayName ? displayName : user.displayName,
+            cardId: cardId ? cardId : user.cardId,
+        }, {
+            where: {
+                id,
+            }
+        });
+    }
+
+    res.redirect(`/admin/users/${id}`);
 }));
 /// End edit user profile
 
