@@ -56,11 +56,15 @@ router.post('/users', asyncHandler(async (req, res) => {
         //         re.push(user);
         //     }));
 
-            // console.log(users);
-        // }
-        // --
-
-        // console.log(re);
+        // # Fixing here
+        if (re.length === 0) {
+            const users = data.forEach(async (user) => {
+                const u = await User.findUserById(user.userId);
+                re = await Promise.all(users);
+                re.push(u);
+            });
+        }
+        console.log(`>> >> ${re}`);
 
         return re;
     })).catch((err) => {
