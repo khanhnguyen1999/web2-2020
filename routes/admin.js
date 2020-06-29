@@ -7,6 +7,7 @@ const { body, validationResult } = require('express-validator');
 const Op = Sequelize.Op;
 
 router.get('/', asyncHandler(async (req, res) => {
+    req.currentUser = req.currentUser ? req.currentUser : [];
     const account = await Account.findAccountrByUserId(req.currentUser.id);
 
     if (account) {
@@ -128,10 +129,12 @@ router.get('/lock/:id', asyncHandler(async (req, res) => {
 router.get('/edit/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    user = await User.findUserById(id);
+    const user = await User.findUserById(id);
     if (user) {
+        req.session.currentCustomer = user;
         return res.render(`./ducbui/pages/admin/editProfile`, { user });
     }
+
     res.json(404).redirect('back');
 }));
 // Pending ### Validator error
@@ -140,23 +143,24 @@ router.post('/edit/:id', [
         .isEmail()
         .optional()
         .normalizeEmail()
-        .custom(async (email) => {
+        .custom(async (email, { req }) => {
             const found = await User.findUserByEmail(email);
 
-            if (found) {
-                return true;
+            if (found && email !== req.session.currentCustomer.email) {
+                throw Error("User exists");
             }
-            throw Error("User exists");
+
+            return true;
         }),
     body('username')
-        .trim()
         .optional()
-        .custom(async (username) => {
-            // const found = await User.findUserByUserName(username);
+        .custom(async (username, { req }) => {
+            const found = await User.findUserByUserName(username);
 
-            // if (found) {
-            //     throw Error("User exists");
-            // }
+            if (found && username !== req.session.currentCustomer.username) {
+                throw Error("User exists");
+            }
+
             return true;
         }),
     body('displayName')
@@ -170,15 +174,11 @@ router.post('/edit/:id', [
     const { id } = req.params;
     const { email, username, displayName, cardId } = req.body;
 
-    console.log(req.body);
-    console.log(email);
-
     const errors = validationResult(req);
 
-    console.log(errors);
-
+    // API here
     if (!errors.isEmpty()) {
-        return res.status(442).render(`./ducbui/pages/admin/admin`, { errors: errors.array() });
+        return res.status(442).json({ errors: errors.array() });
     }
 
     user = await User.findUserById(id);
@@ -202,6 +202,7 @@ router.post('/edit/:id', [
 }));
 /// End edit user profile
 
+/// Searching Algorithms
 function exactMatch(text, pat, text_index, pat_index) {
     if (text_index === text.length && pat_index !== pat.length) {
         return 0;
@@ -233,5 +234,6 @@ function contains(text, pat, text_index, pat_index) {
 
     return contains(text, pat, text_index + 1, pat_index);
 }
+/// End Searching Algorithms
 
 module.exports = router;

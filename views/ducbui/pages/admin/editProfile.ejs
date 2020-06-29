@@ -13,26 +13,26 @@
                         <form method="POST">
                             <div class="form-group">
                                 <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1"
+                                <input type="email" class="form-control" id="email" name="email"
                                        aria-describedby="emailHelp"
-                                       placeholder="<%= user.email ? user.email : null %>">
+                                       value="<%= user.email ? user.email : null %>">
                             </div>
                             <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" class="form-control" id="username"
                                        name="username"
-                                       placeholder="<%= user.username ? user.username : null %>">
+                                       value="<%= user.username ? user.username : null %>">
                             </div>
                             <div class="form-group">
                                 <label for="displayName">Display name</label>
                                 <input type="text" class="form-control" id="displayName"
                                        name="displayName"
-                                       placeholder="<%= user.displayName ? user.displayName : null %>">
+                                       value="<%= user.displayName ? user.displayName : null %>">
                             </div>
                             <div class="form-group">
                                 <label for="cardId">Card ID</label>
                                 <input type="number" class="form-control" id="cardId" name="cardId"
-                                       placeholder="<%= user.cardId ? user.cardId : null %>">
+                                       value="<%= user.cardId ? user.cardId : null %>">
                             </div>
                             <a class="btn btn-light" href="/admin/users" role="button">Cancel</a>
                             <button type="submit" class="btn btn-primary">Submit</button>
