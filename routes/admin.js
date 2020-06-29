@@ -137,7 +137,7 @@ router.get('/edit/:id', asyncHandler(async (req, res) => {
 
     res.json(404).redirect('back');
 }));
-// Pending ### Validator error
+
 router.post('/edit/:id', [
     body('email')
         .isEmail()
