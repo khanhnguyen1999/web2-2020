@@ -1,0 +1,51 @@
+<%- include ("../../partials/header", { title: 'Admin' }) -%>
+<%- include ("../../partials/navbar") %>
+<%- include ("../../partials/title", { maintitle: 'Management', subtitle: 'Staff: ' + currentUser.displayName }) %>
+
+<!-- <div class="main main-raised"> -->
+<!-- <div class="profile-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 ml-auto mr-auto">
+                    <div class="name">
+                        <div class="profile">
+                            <h3 class="title">User Management</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-6">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card text-center shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title">User Management</h5>
+                        <p class="card-text">Find user, lock account and more.</p>
+                        <a href="/admin/users" class="btn btn-light">Get in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card text-center shadow-lg">
+                    <div class="card-body">
+                        <h5 class="card-title">Account Management</h5>
+                        <p class="card-text">Authorization user information.</p>
+                        <a href="/admin/security" class="btn btn-light">Get in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- </div> -->
+
+
+<%- include ("../../partials/footer") -%>
