@@ -25,38 +25,37 @@ router.get('/users', asyncHandler(async (req, res) => {
 /// Find user
 router.post('/users', asyncHandler(async (req, res) => {
     const { search } = req.body;
+    let result = [];
 
-    const result = await Account.findAll({
+    result = await Account.findAll({
         where: {
             role: 'user',
         },
-        [ Op.or ]: [
+        include: [
             {
-                include: [
-                    {
-                        model: User,
-                        where: {
-                            [ Op.or ]: [
-                                {
-                                    email: {
-                                        [ Op.like ]: '%' + search + '%',
-                                    }
-                                },
-                                {
-                                    username: {
-                                        [ Op.like ]: '%' + search + '%',
-                                    }
-                                }
-                            ]
-                        },
+                model: User,
+                where: {
+                    [ Op.or ]: [ {
+                        email: { [ Op.like ]: '%' + search + '%', }
                     },
-                ]
-            }, 
-            {
-                accountNumber: {
-                    [Op.like]: '%' + search + '%'
-                }
+                    {
+                        username: { [ Op.like ]: '%' + search + '%', }
+                    } ]
+                },
+            },
+        ]
+    });
+
+    if (result) {
+        result = await Account.findAll({
+            where: {
+                role: 'user',
+                accountNumber: { [ Op.like ]: '%' + search + '%' },
             }
+        });
+    }
+
+    console.log(result);
 
     res.render('./ducbui/pages/admin/users', { users: result });
 }));
