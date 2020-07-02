@@ -25,50 +25,38 @@ router.get('/users', asyncHandler(async (req, res) => {
 /// Find user
 router.post('/users', asyncHandler(async (req, res) => {
     const { search } = req.body;
-    var re = [];
 
     const result = await Account.findAll({
         where: {
             role: 'user',
         },
-    }).then(asyncHandler(async (data) => {
-        // Find by accountNumber
-        data.forEach(user => {
-            if (contains(user.accountNumber, search, 0, 0) === 1) {
-                re.push(user);
+        [ Op.or ]: [
+            {
+                include: [
+                    {
+                        model: User,
+                        where: {
+                            [ Op.or ]: [
+                                {
+                                    email: {
+                                        [ Op.like ]: '%' + search + '%',
+                                    }
+                                },
+                                {
+                                    username: {
+                                        [ Op.like ]: '%' + search + '%',
+                                    }
+                                }
+                            ]
+                        },
+                    },
+                ]
+            }, 
+            {
+                accountNumber: {
+                    [Op.like]: '%' + search + '%'
+                }
             }
-        });
-        // --
-
-        // Find by email
-        // if (re.length === 0) {
-        //     data.forEach(asyncHandler(async (user) => {
-        //         const u = await User.findOne({
-        //             where: {
-        //                 id: user.userId,
-        //             }
-        //         }).then((user) => {
-        //             if (contains(user.email, search, 0, 0) === 1) {
-        //                 // await console.log(user.email);
-        //                 return user;
-        //             }
-        //         }).catch((err) => {
-        //             console.log(err);
-        //         });
-
-        //         re.push(user);
-        //     }));
-
-        // console.log(users);
-        // }
-        // --
-
-        // console.log(re);
-
-        return re;
-    })).catch((err) => {
-        console.log(err);
-    });
 
     res.render('./ducbui/pages/admin/users', { users: result });
 }));
