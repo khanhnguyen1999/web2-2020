@@ -46,7 +46,7 @@ router.post('/users', asyncHandler(async (req, res) => {
         ]
     });
 
-    if (result) {
+    if (result.length === 0) {
         result = await Account.findAll({
             where: {
                 role: 'user',
