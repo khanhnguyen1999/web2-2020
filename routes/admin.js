@@ -23,6 +23,7 @@ router.get('/users', asyncHandler(async (req, res) => {
 }));
 
 /// Find user
+// Find user by Username, Account Number, Email
 router.post('/users', asyncHandler(async (req, res) => {
     const { search } = req.body;
     let result = [];
@@ -65,7 +66,7 @@ router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
             role: 'user',
-            status: false,
+            status: false, // Should be 'LOCKED' || 'PENDING' || '...'
         }
     });
 
@@ -122,7 +123,7 @@ router.get('/edit/:id', asyncHandler(async (req, res) => {
         return res.render(`./ducbui/pages/admin/editProfile`, { user });
     }
 
-    res.json(404).redirect('back');
+    res.redirect('back');
 }));
 
 router.post('/edit/:id', [
@@ -156,7 +157,7 @@ router.post('/edit/:id', [
     body('cardId')
         .trim()
         .optional()
-    // .isLength({ min: 9, max: 9 }),
+        .isLength({ min: 9, max: 9 }),
 ], asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { email, username, displayName, cardId } = req.body;
@@ -188,39 +189,5 @@ router.post('/edit/:id', [
     res.redirect(`/admin/users/${id}`);
 }));
 /// End edit user profile
-
-/// Searching Algorithms
-function exactMatch(text, pat, text_index, pat_index) {
-    if (text_index === text.length && pat_index !== pat.length) {
-        return 0;
-    }
-
-    if (pat_index === pat.length) {
-        return 1;
-    }
-
-    if (text[ text_index ] === pat[ pat_index ]) {
-        return exactMatch(text, pat, text_index + 1, pat_index + 1);
-    }
-
-    return 0;
-}
-
-function contains(text, pat, text_index, pat_index) {
-    if (text_index === text.length) {
-        return 0;
-    }
-
-    if (text[ text_index ] === pat[ pat_index ]) {
-        if (exactMatch(text, pat, text_index, pat_index)) {
-            return 1;
-        } else {
-            return contains(text, pat, text_index + 1, pat_index);
-        }
-    }
-
-    return contains(text, pat, text_index + 1, pat_index);
-}
-/// End Searching Algorithms
 
 module.exports = router;
