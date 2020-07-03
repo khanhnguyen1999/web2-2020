@@ -16,7 +16,6 @@ Transaction.init({
   },
   amount: {
     type: Sequelize.INTEGER,
-
     // allowNull defaults to true
   },
   content: {

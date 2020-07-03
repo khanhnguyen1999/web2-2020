@@ -99,3 +99,11 @@
     transform: translateX(100%);
     margin-bottom: -50px;
 }
+
+/*--------------------------- saving account -------------------------*/
+.ghichu{
+    margin-left: 15px;
+    opacity: 0.7;
+    font-size: 14px;
+    font-weight: 100;
+}
