@@ -53,7 +53,7 @@ Account.init({
    
     // allowNull defaults to true
   },
-  savingAccount:{
+  balanceSaving:{
     type: Sequelize.INTEGER,
   },
   currencyUnit:{

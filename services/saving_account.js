@@ -8,32 +8,28 @@ class SavingAccount extends Model {
 }
 SavingAccount.init({
   // attributes
-  motherAccount: {
+  amountSaving:{
     type: Sequelize.INTEGER,
-    allowNull: false,
-    unique: true,
-    // primaryKey:true,
+  },
+  depositTerm:{
+    type: Sequelize.INTEGER,
   },
   interest: {
     type: Sequelize.FLOAT,
-    allowNull: false
+    allowNull: false,
     // allowNull defaults to true
   },
   openDate: {
-    type: Sequelize.DATE,
-   
+    type: Sequelize.DATE, 
     // allowNull defaults to true
   },
   closeDate:{
     type: Sequelize.DATE,
   },
-  depositTerm:{
-    type: Sequelize.INTEGER,
-  },
- 
+
 }, {
   sequelize: db,
-  modelName: 'saving_account'
+  modelName: 'saving_account',
 });
 
 const Account = require('./account')
