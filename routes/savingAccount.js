@@ -25,6 +25,7 @@ var token;
 var SoTien;
 var depositTerm;
 var formInterest;
+var subEmail;
 // var fee;
 
 // var totalMoney;
@@ -107,49 +108,46 @@ router.post('/',[
    
    if(!req.body.amountSaving)
    {
-       console.log("---------------------")
-    //    if(req.body.OTP.toUpperCase()==token)
-    //    {       
-    //         console.log("-------------------1" + NganHang) 
-    //         await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-    //         if(NganHang != bankRoot) // khac ngan hang
-    //         {
-    //             console.log(beneficiaryExtraMoney)
-    //             await BeneficiatyAccount.updateBalance(beneficiaryExtraMoney,BeneficiaryNumberAccount);
-    //         }
-    //         else
-    //         {
-    //             console.log("-------------------2"+beneficiaryExtraMoney,BeneficiaryNumberAccount)  
-    //             await Account.updateBalance(beneficiaryExtraMoney,BeneficiaryNumberAccount);
-    //         }  
-    //         console.log("-------------------2")        
-    //         await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
-    //         BeneficiaryNumberAccount+" "+BeneficiaryDisplayname +" : "+SoTien +"\nSố dư : "+extraMoney )
-    //         console.log("-------------------3")  
-    //         const transaction = await Transaction.create({
-    //             accountNumber:res.locals.account.accountNumber,
-    //             amount: SoTien,
-    //             content:content,
-    //             beneficiaryBank:NganHang,
-    //             beneficiaryAccount :  BeneficiaryNumberAccount
-    
-    //         })
-    //         res.render('./pages/transactions/transaction2')
-    //    }
-    //    else
-    //    {
-          
-             
-    //          return res.render('./pages/transactions/transaction1',{
-    //             errors:"Token không chính xác",
-    //             BeneficiaryDisplayname:BeneficiaryDisplayname,
-    //             BeneficiaryNumberAccount:BeneficiaryNumberAccount,
-    //             account:account,
-    //             SoTien:req.body.SoTien,
-    //             content:content,
-    //             fee:fee,
-    //         }); 
-    //    }
+        console.log("---------------------")
+        if(req.body.OTP.toUpperCase()==token)
+        {   
+            const extraMoney = account.balance - SoTien
+            await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
+                 
+            // await Email.send(req.session.currentUser.email,'Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
+            // BeneficiaryNumberAccount+" "+BeneficiaryDisplayname +" : "+SoTien +"\nSố dư : "+extraMoney )
+            // console.log("-------------------3")  
+
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = mm + '/' + dd + '/' + yyyy;
+            var dt = new Date(yyyy,mm,dd)
+            var closeDate = new Date(dt.setMonth(dt.getMonth()+depositTerm))
+            const svAccount = await SavingAccount.create({
+                amountSaving:SoTien,
+                depositTerm: depositTerm,
+                interest:interest,
+                openDate:today,
+                closeDate:closeDate,
+                accountAccountNumber:req.session.account.accountNumber,
+            })
+            res.render('./pages/savingAccount/savingAccount2')
+        }
+        else
+        {
+            return res.render('./pages/savingAccount/savingAccount1',{
+                errors:"Token không chính xác",
+                account:account,
+                SoTien:SoTien,
+                depositTerm:depositTerm,
+                interest:interest,
+                email:subEmail,
+                formInterest:formInterest,
+            }); 
+        }
   
    }
    else
@@ -159,33 +157,39 @@ router.post('/',[
         {
             case "1":
                 interest = 4.5;
+                depositTerm = 1;
                 break;
             case "3":
                 interest = 5;
+                depositTerm = 3;
                 break;
             case "6":
                 interest = 5.5;
+                depositTerm = 6;
                 break;
             case "9":
                 interest = 5.5;
+                depositTerm = 9;
                 break;
             case "12":
                 interest = 6.8;
+                depositTerm = 12;
                 break;
             case "24":
                 interest = 6.8;
+                depositTerm = 24;
                 break;
             default:
                 interest = 0;
+                depositTerm = 0;
                 break;
         }
 
         var userEmail = req.session.currentUser.email;
         formInterest = req.body.HinhThuc;
         SoTien= parseInt(req.body.amountSaving);
-        depositTerm = req.body.depositTerm;
         var lengthEmail = userEmail.length;
-        var subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
+        subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
         token = crypto.randomBytes(2).toString("hex").toUpperCase(); res.locals.token = token;
         Email.send(res.locals.currentUser.email,"Vietcombank","Mã xác thực TKTK : "+token)
         return res.render('./pages/savingAccount/savingAccount1',{

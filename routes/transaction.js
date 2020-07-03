@@ -138,7 +138,7 @@ router.post('/',[
                 await Account.updateBalance(beneficiaryExtraMoney,BeneficiaryNumberAccount);
             }  
             console.log("-------------------2")        
-            await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
+            await Email.send(req.session.currentUser.email,'Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
             BeneficiaryNumberAccount+" "+BeneficiaryDisplayname +" : "+SoTien +"\nSố dư : "+extraMoney )
             console.log("-------------------3")  
             const transaction = await Transaction.create({

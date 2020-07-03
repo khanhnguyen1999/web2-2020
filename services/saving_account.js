@@ -28,11 +28,13 @@ SavingAccount.init({
   },
 
 }, {
+  underscored:true,
   sequelize: db,
   modelName: 'saving_account',
 });
 
 const Account = require('./account')
+Account.hasMany(SavingAccount)
 SavingAccount.belongsTo(Account)
 
 module.exports = SavingAccount;
