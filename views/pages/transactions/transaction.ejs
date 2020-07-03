@@ -18,6 +18,15 @@
         rs = formatter.format(rs) %> <%= rs%> VND</span></p>
       </div>
     </div>
+    <% if(errors) {%>
+      <% errors.forEach(function(x) {  %>
+        
+      <div style="color: rgb(224, 87, 87);" class="alert alert-success mt-3" role="alert">
+        <i style="color: red;" class="fas fa-exclamation-triangle pr-2"></i>
+        <%= x.msg %> 
+      </div>
+      <% });%>
+    <%}%> 
     <form method="POST" class="mt-4">
       <div class="form-group mb-3 ">
         <label for="formGroupExampleInput">Ngân hàng</label>

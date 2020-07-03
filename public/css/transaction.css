@@ -74,3 +74,28 @@
     /* background: re; */
     /* background: red; */
 }
+.container_transaction1 table{
+    transform: translateX(15%);
+}
+.container_transaction1 table tr td{
+    padding: 7px;
+}
+.container_transaction1 td:nth-child(odd) {
+   color: rgb(95, 109, 91);
+    text-align:right;
+    text-transform: uppercase;
+    font-weight: 100;
+  }
+.container_transaction1 td:nth-child(even) {
+    color: rgb(156, 86, 36);
+    text-align:left;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+
+
+.section_transaction2{
+    transform: translateX(100%);
+    margin-bottom: -50px;
+}

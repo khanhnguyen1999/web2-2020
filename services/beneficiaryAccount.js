@@ -5,13 +5,13 @@ const db = require('./db')
 const Model = Sequelize.Model;
 class beneficiary extends Model {
     static async findAccountrByUserId(id){
-        return await Account.findOne({where:{user_id:id}})
+        return await beneficiary.findOne({where:{user_id:id}})
     }
     static async findAccountrByAccountNumber(accountNumber){
-      return await Account.findOne({where:{accountNumber:accountNumber}})
+      return await beneficiary.findOne({where:{accountNumber:accountNumber}})
     }
     static async updateBalance(balance,accountNumber){
-      return await Account.update(
+      return await beneficiary.update(
         {balance:balance},
         {where:{accountNumber:accountNumber}}
         )
@@ -21,6 +21,9 @@ beneficiary.init({
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
+  },
+  displayName:{
+    type: Sequelize.STRING,
   },
   accountNumber: {
     type: Sequelize.STRING,

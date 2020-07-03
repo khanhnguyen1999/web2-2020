@@ -28,6 +28,9 @@ Transaction.init({
   beneficiaryAccount: {
     type: Sequelize.STRING,
   },
+  fee:{
+    type: Sequelize.INTEGER,
+  }
 
 }, {
   sequelize: db,
@@ -35,7 +38,8 @@ Transaction.init({
 });
 const Account  = require('./account')
 const Bank = require('./bank')
+const BeneficiarAccount = require('./beneficiaryAccount')
 Transaction.belongsTo(Account, {foreignKey: 'accountNumber'})
-Transaction.belongsTo(Account, {foreignKey: 'beneficiaryAccount'})
+
 Transaction.belongsTo(Bank, {foreignKey: 'beneficiaryBank'})
 module.exports = Transaction;

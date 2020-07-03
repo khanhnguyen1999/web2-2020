@@ -9,19 +9,28 @@ const Account = require('../services/account');
 const SavingAccount = require('../services/saving_account');
 const Transaction = require('../services/transaction');
 const Bank = require('../services/bank');
+const BeneficiatyAccount= require('../services/beneficiaryAccount');
 const Email = require('../services/email');
 // const { tableName } = require('../services/user');
 const crypto = require('crypto');
+// const { INTEGER } = require('sequelize/types');
+const Sequelize = require('sequelize')
 
 var account ;
-var BeneficiaryAccount ;
+var BeneficiaryDisplayname;
+var BeneficiaryNumberAccount;
+var BeneficiaryBalance;
 var content ;
 var token;
 var SoTien;
+var NganHang;
+var fee;
 
 var totalMoney;
 var extraMoney;
-var beneficiaryExtraMoney
+var beneficiaryExtraMoney;
+var listBank;
+const bankRoot="Vietcombank"
 router.get('/',async (req,res)=>{
     // const listBank=[
     //     {bank:'Vietcombank',id:'36'},
@@ -43,102 +52,175 @@ router.get('/',async (req,res)=>{
     //         idBank: listBank[i].id,
     //     })
     // }
-    const listBank =await Bank.AllBank();
-    return res.render('./pages/transactions/transaction',{listBank:listBank});  
+    listBank =await Bank.AllBank();
+    account =await Account.findAccountrByAccountNumber(res.locals.account.accountNumber);
+    return res.render('./pages/transactions/transaction',{errors:null,listBank:listBank});  
 });
 router.post('/',[
     body('SoTien')
-        .custom(async function(SoTien){
-            
-            if(SoTien<50){
-                throw Error('currentUser exists');
+        .custom(async function(SoTienBody,{req}){
+           
+            if(req.body.STKHuongThu)
+            {
+                if(SoTienBody<50000){
+                    throw Error('Số tiền tối thiểu 50000 VND');
+                }
+                NganHang = req.body.NganHang;
+                if(NganHang != bankRoot) //khac ngan hang
+                {     
+                    fee = parseInt(SoTienBody * 0.0003);
+                    if(fee<10000)
+                    {
+                        fee=10000;
+                    }
+
+                }
+                else   // cung ngan hang
+                {       
+                    fee = 5000;
+                }
+                totalMoney = parseInt(SoTienBody) + fee;
+                extraMoney = parseInt(account.balance) - parseInt(totalMoney);
+                if(extraMoney<50000)
+                {
+                    throw Error('Số dư không đủ');
+                }
+                return true;
             }
-            return true;
         }),
 
     body('STKHuongThu')
         .custom(async function(STKHuongThu){
+            if(STKHuongThu=="")
+            {
+                throw Error('Số tài khoản không tồn tại');
+            }
             if(!STKHuongThu)
             {
                 return false;
             }
             else
             {
-                const account = Account.findAccountrByAccountNumber(STKHuongThu)
-                if(!account)
+                const account = await Account.findAccountrByAccountNumber(STKHuongThu)
+                const beneficiatAccount = await BeneficiatyAccount.findAccountrByAccountNumber(STKHuongThu)
+                if(!account && !beneficiatAccount)
                 {
-                    throw Error('AccountNumber exists');
+                    throw Error('Số tài khoản không tồn tại');
                 }
     
             }
            
             return true;
         }),
-
+ 
         
 ] ,asyncHandler(async function(req,res){
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log("loi")
-        return res.status(422).render('./pages/transactions/transaction',{errors :errors.array( )});
+        return res.status(422).render('./pages/transactions/transaction',{errors :errors.errors,listBank:listBank});
     }
    
    if(!req.body.STKHuongThu)
    {
-       console.log(token)
        if(req.body.OTP.toUpperCase()==token)
-       {
+       {       
+            console.log("-------------------1" + NganHang) 
             await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-            await Account.updateBalance(beneficiaryExtraMoney,BeneficiaryAccount.accountNumber);
+            if(NganHang != bankRoot) // khac ngan hang
+            {
+                console.log(beneficiaryExtraMoney)
+                await BeneficiatyAccount.updateBalance(beneficiaryExtraMoney,BeneficiaryNumberAccount);
+            }
+            else
+            {
+                console.log("-------------------2"+beneficiaryExtraMoney,BeneficiaryNumberAccount)  
+                await Account.updateBalance(beneficiaryExtraMoney,BeneficiaryNumberAccount);
+            }  
+            console.log("-------------------2")        
             await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
-            BeneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName +" : "+req.body.SoTien +"\nSố dư : "+extraMoney )
+            BeneficiaryNumberAccount+" "+BeneficiaryDisplayname +" : "+SoTien +"\nSố dư : "+extraMoney )
+            console.log("-------------------3")  
+            const transaction = await Transaction.create({
+                accountNumber:res.locals.account.accountNumber,
+                amount: SoTien,
+                content:content,
+                beneficiaryBank:NganHang,
+                beneficiaryAccount :  BeneficiaryNumberAccount
+    
+            })
             res.render('./pages/transactions/transaction2')
        }
        else
        {
-            throw Error('token khong chinh xac');
-       }
-       
-   }
-   else
-   {
-         account =await Account.findAccountrByAccountNumber(res.locals.account.accountNumber); 
-         BeneficiaryAccount =await Account.findAccountrByAccountNumber(req.body.STKHuongThu);
-         BeneficiaryUser = await User.findUserById(BeneficiaryAccount.userId)
-         content = req.body.NoiDung==''?account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
-            BeneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName+" " : req.body.NoiDung;
-        
-        const transaction = await Transaction.create({
-            accountNumber:res.locals.account.accountNumber,
-            amount: req.body.SoTien,
-            content:content,
-            beneficiaryBank:req.body.NganHang,
-            beneficiaryAccount : req.body.STKHuongThu
-
-        })
-        SoTien= req.body.SoTien;
-        totalMoney = parseInt(req.body.SoTien) + 5000;
-        extraMoney = parseInt(account.balance) - totalMoney;
-        beneficiaryExtraMoney = parseInt(BeneficiaryAccount.balance)+parseInt(req.body.SoTien)
-
-        token = crypto.randomBytes(2).toString("hex").toUpperCase(); res.locals.token = token;
-        if(extraMoney<50000)
-        {
-            throw Error('khong du tien');
-        }
-        else
-        {
-            // await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-            // await Account.updateBalance(beneficiaryExtraMoney,req.body.STKHuongThu)
-            // await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
-            // BeneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName +" : "+req.body.SoTien +"\nSố dư : "+extraMoney )
-            Email.send(res.locals.currentUser.email,"Vietcombank",token)
-            return res.render('./pages/transactions/transaction1',{
-                BeneficiaryAccount:BeneficiaryAccount,
-                BeneficiaryUser:BeneficiaryUser,
+          
+             
+             return res.render('./pages/transactions/transaction1',{
+                errors:"Token không chính xác",
+                BeneficiaryDisplayname:BeneficiaryDisplayname,
+                BeneficiaryNumberAccount:BeneficiaryNumberAccount,
                 account:account,
                 SoTien:req.body.SoTien,
                 content:content,
+                fee:fee,
+            }); 
+       }
+  
+   }
+   else
+   {
+        if(req.body.NganHang != bankRoot) //khac ngan hang
+        {
+            const BeneficiaryAccountFalse =await BeneficiatyAccount.findAccountrByAccountNumber(req.body.STKHuongThu);
+            BeneficiaryNumberAccount = BeneficiaryAccountFalse.accountNumber;
+            BeneficiaryDisplayname = BeneficiaryAccountFalse.displayName;
+            BeneficiaryBalance = BeneficiaryAccountFalse.balance;
+            
+            fee = parseInt(req.body.SoTien * 0.0003);
+            if(fee<10000)
+            {
+                fee=10000;
+            }
+
+        }
+        else   // cung ngan hang
+        {
+            fee =5000;
+            const BeneficiaryAccountTrue =await Account.findAccountrByAccountNumber(req.body.STKHuongThu);
+            const BeneficiaryUserTrue = await User.findUserById(BeneficiaryAccountTrue.userId)
+            BeneficiaryNumberAccount = BeneficiaryAccountTrue.accountNumber;
+            BeneficiaryDisplayname = BeneficiaryUserTrue.displayName;
+            BeneficiaryBalance = BeneficiaryAccountTrue.balance;
+        }
+        
+        
+        content = req.body.NoiDung==''?account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
+        BeneficiaryNumberAccount+" "+BeneficiaryDisplayname+" " : req.body.NoiDung;
+        
+       
+        SoTien= req.body.SoTien;
+        NganHang = req.body.NganHang;
+        // totalMoney = parseInt(req.body.SoTien) + fee;
+        // extraMoney = parseInt(account.balance) - totalMoney;
+        beneficiaryExtraMoney = parseInt(BeneficiaryBalance)+parseInt(req.body.SoTien)
+        
+        token = crypto.randomBytes(2).toString("hex").toUpperCase(); res.locals.token = token;
+        if(extraMoney<50000)
+        {
+            throw Error('Số dư không đủ');
+        }
+        else
+        {
+            console.log(extraMoney)
+            Email.send(res.locals.currentUser.email,"Vietcombank",token)
+            return res.render('./pages/transactions/transaction1',{
+                errors:undefined,
+                BeneficiaryDisplayname:BeneficiaryDisplayname,
+                BeneficiaryNumberAccount:BeneficiaryNumberAccount,
+                account:account,
+                SoTien:req.body.SoTien,
+                content:content,
+                fee:fee,
             });  
         }
    }
