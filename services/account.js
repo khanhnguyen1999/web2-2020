@@ -53,6 +53,9 @@ Account.init({
    
     // allowNull defaults to true
   },
+  savingAccount:{
+    type: Sequelize.INTEGER,
+  },
   currencyUnit:{
     type: Sequelize.STRING,
   },
