@@ -34,6 +34,9 @@ app.get('/logout',require('./routes/logout'));
 app.use(require('./middlewares/auth'));
 app.use('/transaction',require('./routes/transaction'));
 
+// --------Saving Account ----------
+app.use('/saving',require('./routes/savingAccount'));
+
 // --------APP USE----------
 app.use(express.static('public'))
 app.use('/register',require('./routes/register'))
