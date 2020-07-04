@@ -66,7 +66,6 @@
 
 .container_transaction1{
     position: relative  ;
-    left: 100%;
     transform: translateX(0%);
     padding: 10px 30px;
     border-radius: 8px;
@@ -74,8 +73,11 @@
     /* background: re; */
     /* background: red; */
 }
+.container_transaction1 .card{
+    padding: 15px;
+}
 .container_transaction1 table{
-    transform: translateX(15%);
+    transform: translateX(-10%);
 }
 .container_transaction1 table tr td{
     padding: 7px;
@@ -91,7 +93,7 @@
     text-align:left;
     font-size: 15px;
     font-weight: 500;
-  }
+}
 
 
 
@@ -107,3 +109,4 @@
     font-size: 14px;
     font-weight: 100;
 }
+

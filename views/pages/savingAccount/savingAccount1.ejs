@@ -1,6 +1,6 @@
 <%- include ("../../partials/header") -%>
-<section class="blog_part section_padding section_transaction col-4">
-    <div class="container container_transaction1">
+<section class="blog_part section_padding section_transaction row">
+    <div class="container container_transaction1 col-6">
         <div class="modal-header">
             <p class="heading lead">Tài khoản tiết kiệm </p>
         </div>
@@ -14,51 +14,73 @@
            
           <%}%> 
         <form method="POST" class="mt-4 ">
-            <table>
-                <tr>
-                    <td>Chủ tài khoản : </td>
-                    <td> &nbsp   <%= currentUser.displayName %></td>
-                </tr>
-                <tr>
-                    <td>Số tài khoản :</td>
-                    <td>&nbsp  <%= account.accountNumber %></td>
-                </tr>
-                <tr>
-                    <td>Số tiền : </td>
-                    <td>&nbsp  <%= SoTien %> VND</td>
-                </tr>
-                <tr>
-                    <td>Kỳ hạn :</td>
-                    <td>&nbsp  <%= depositTerm %></td>
-                </tr>
-               
-                <tr>
-                    <td>Lãi xuất :</td>
-                    <td>&nbsp  <%= interest %>%/Năm</td>
-                </tr>
-                <tr>
-                    <td>Hình thức trả lãi :</td>
-                    <td>&nbsp  <%= formInterest=="1" ?"Lãi nhập gốc":"Lãi trả vào TK tiền gửi thanh toán khi đến hạn trả lãi"  %>%/Năm</td>
-                </tr>
-                <tr>
-                    <td>Mã xác thực gửi qua email :</td>
-                    <td>&nbsp  <%= email %></td>
-                </tr>
-            </table>
+            <div class="card">
+                <table>
+                    <tr>
+                        <td>Chủ tài khoản : </td>
+                        <td> &nbsp   <%= currentUser.displayName %></td>
+                    </tr>
+                    <tr>
+                        <td>Số tài khoản :</td>
+                        <td>&nbsp  <%= account.accountNumber %></td>
+                    </tr>
+                    <tr>
+                        <td>Số tiền : </td>
+                        <td>&nbsp  <%= SoTien %> VND</td>
+                    </tr>
+                    <tr>
+                        <td>Số tiền bằng chữ : </td>
+                        <td>&nbsp  <%= digits %> </td>
+                    </tr>
+                    <tr>
+                        <td>Kỳ hạn :</td>
+                        <td>&nbsp  <%= depositTerm %> Tháng</td>
+                    </tr>
+                   
+                    <tr>
+                        <td>Lãi xuất :</td>
+                        <td>&nbsp  <%= interestRate %>% / Năm</td>
+                    </tr>
+                    <tr>
+                        <td>Hình thức trả lãi :</td>
+                        <td>&nbsp  <%= formInterest=="1" ?"Lãi nhập gốc":"Lãi trả vào TK tiền gửi thanh toán khi đến hạn trả lãi" %></td>
+                    </tr>
+                    
+                </table>
+            </div>
+            <p class="heading lead mt-4">Thông tin giao dịch </p>
+            <div class="card mt-2">
+                <table>
+                    <tr>
+                        <td>Mã giao dịch : </td>
+                        <td> &nbsp   <%= ran %></td>
+                    </tr>
+                    <tr>
+                        <td>Thời gian :</td>
+                        <td>&nbsp  <%= now %></td>
+                    </tr>
+                    <tr>
+                        <td>Mã xác thực gửi qua email :</td>
+                        <td>&nbsp  <%= email %></td>
+                    </tr>
+                </table>
+                <div class="form-group mt-3">
+                    <label for="formGroupExampleInput">Nhập mã số &nbsp (gửi qua Email)</label>
+                    <input name="OTP" type="text" class="form-control" id="formGroupExampleInput"
+                        placeholder="VD : 0123">
+                </div>
+    
+                <div class="form-group text-right">
+                    <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
+                    <button type="submit" class="btn btn-primary">Xác Nhận</button>
+                </div>
+            </div>
+            
             
 
           
 
-            <div class="form-group mt-3">
-                <label for="formGroupExampleInput">Nhập mã số &nbsp (gửi qua Email)</label>
-                <input name="OTP" type="text" class="form-control" id="formGroupExampleInput"
-                    placeholder="VD : 0123">
-            </div>
-
-            <div class="form-group text-right">
-                <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
-                <button type="submit" class="btn btn-primary">Xác Nhận</button>
-            </div><br>
+            <br>
         </form>
     </div>
 </section>

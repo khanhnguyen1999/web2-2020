@@ -4,20 +4,25 @@ const db = require('./db')
 
 const Model = Sequelize.Model;
 class SavingAccount extends Model {
-
+  static async findSavingAccountrByAccountNumber(accountNumber){
+    return await SavingAccount.findOne({where:{accountAccountNumber:accountNumber}})
+  }
 }
 SavingAccount.init({
   // attributes
-  amountSaving:{
-    type: Sequelize.INTEGER,
-  },
-  depositTerm:{
+  fund:{
     type: Sequelize.INTEGER,
   },
   interest: {
     type: Sequelize.FLOAT,
     allowNull: false,
     // allowNull defaults to true
+  },
+  depositTerm:{
+    type: Sequelize.INTEGER,
+  },
+  interestRate:{
+    type: Sequelize.FLOAT,
   },
   openDate: {
     type: Sequelize.DATE, 
