@@ -1,0 +1,68 @@
+body {
+  background: linear-gradient(90deg, #fcfcfd 20px, transparent 1%) center, linear-gradient(#fcfcfd 20px, transparent 1%) center, #cacaca;
+  background-size: 22px 22px;
+}
+.box{
+  margin: auto;
+  width: 552px;
+  perspective: 1000px;
+  position: relative;
+}
+.box:hover .card{
+  animation-name: vibrate;
+  animation-duration: .3s;
+}
+
+.card{
+  font-family: sans-serif;
+  color: white;
+  background: url('https://wallpaperplay.com/walls/full/4/8/1/166084.jpg');
+  background-size: cover;
+  width: 490px;
+  height: 280px; 
+  padding: 1.875rem;
+  border-radius: 20px;
+  border: solid 1px;
+  opacity: 1;
+}
+.bank{
+  font-size: 2.3rem;
+}
+.chip{
+  background: #BEBFB9;
+  height: 50px;
+  width: 60px;
+  border-radius: 5px;
+  margin: 40px;
+}
+.number{
+  font-size: 2.5rem;
+  line-height: 2rem;
+}
+.date-box{
+  margin: 15px 40%;
+  display: flex;
+  align-items: center;
+}
+.valid{
+  font-size: .5rem;
+  display: flex;
+  flex-direction: column;
+}
+.date{
+  margin-left: 5px;
+  font-size: 1.2rem;
+}
+.card__footer{
+  position: relative;
+}
+.name{
+  
+}
+.logo{
+  height: 60px;
+  width: 100px;
+  position: absolute;
+  right:0;
+  top:-35px;
+}

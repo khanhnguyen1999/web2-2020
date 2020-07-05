@@ -1,9 +1,6 @@
 const User = require('../services/user')
 const {Router} = require('express')
-const {body,validationResult} = require('express-validator')
-const crypto = require('crypto')
 const asyncHandler = require('express-async-handler')
-const Email = require('../services/email')
 const router = new Router();
 const path = require('path');
 const multer = require('multer');
@@ -39,10 +36,10 @@ function checkFileType(file, cb){
     cb('Error: Images Only!');
   }
 }
-router.get('/', (req, res) => res.render('pages/profile'));
+router.get('/', (req, res) => res.render('pages/profile'))
 
-router.post('/upload', (req, res) => {
-  upload(req, res, (err) => {
+router.post('/upload',asyncHandler(async function  (req, res) {
+ upload(req, res, async (err) => {
     if(err){
       res.render('pages/profile', {
         msg: err
@@ -53,12 +50,16 @@ router.post('/upload', (req, res) => {
           msg: 'Error: No File Selected!'
         });
       } else {
-        res.render('pages/profile', {
-          msg: 'File Uploaded!',
-          file: `uploads/${req.file.filename}`
-        });
-      }
+            const user = await User.update({ idCardType:req.file.filename,
+            },{ where: {id: req.session.userId}});
+            res.render('pages/profile', {
+            msg: 'File Uploaded!',
+            file: `uploads/${req.file.filename}`
+            })
+           ;
+        }
     }
   });
-});
+}
+));
 module.exports = router;

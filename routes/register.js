@@ -1,4 +1,5 @@
 const User = require('../services/user')
+const Account = require('../services/account')
 const {Router} = require('express')
 const {body,validationResult} = require('express-validator')
 const crypto = require('crypto')
@@ -45,6 +46,13 @@ router.post('/',[
         email:req.body.email,
         displayName:req.body.displayName,
         password:User.hassPassword(req.body.password),
+    })
+    const account = await Account.create({
+        accountNumber:970460 + Math.floor(Math.random() * 1000) + 1,
+        balance:500000,
+        currencyUnit:'VND',
+        status:false,
+        limit:0
     })
     // await Email.send(user.email,'Mã kích hoạt tài khoản',`link activate của bạn là : ${process.env.BASE_URL}/login/${user.id}/${user.token}`)
     res.redirect('/')

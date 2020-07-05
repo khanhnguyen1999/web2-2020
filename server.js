@@ -11,6 +11,7 @@ const User = require('./services/user');
 const Account = require('./services/account');
 const SavingAccount = require('./services/saving_account');
 const Transaction = require('./services/transaction');
+const { pipeline } = require('nodemailer/lib/xoauth2');
 
 // ---------NPM INSTALL---------
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,15 +24,13 @@ app.set('view engine', 'ejs');
 
 // ----------APP GET------------
 app.get('/logout',require('./routes/logout'))
-app.get('/home', function (req, res) {
-   res.render('pages/home');
-});
+
 // --------APP USE----------
 app.use(express.static('public'))
 app.use('/register',require('./routes/register'))
 app.use('/',require('./routes/login'))
 app.use('/multer',require('./routes/multer'))
-
+app.use('/home',require('./routes/home'))
 // -------CONNECTION---------
 db.sync().then(function(){
   app.listen(port);
