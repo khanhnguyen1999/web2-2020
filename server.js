@@ -30,7 +30,7 @@ app.get('/home', function (req, res) {
 app.use(express.static('public'))
 app.use('/register',require('./routes/register'))
 app.use('/',require('./routes/login'))
-
+app.use('/multer',require('./routes/multer'))
 
 // -------CONNECTION---------
 db.sync().then(function(){
