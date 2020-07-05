@@ -1,0 +1,49 @@
+<%- include ("../../partials/header", { title: currentUser.displayName }) -%>
+<%- include ("../../partials/navbar") %>
+<%- include ("../../partials/title", { maintitle: 'Management', subtitle: 'Staff: ' + currentUser.displayName }) %>
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-10">
+        <!-- Users -->
+        <% if (user) { %>
+        <div class="row justify-content-center my-5">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       aria-describedby="emailHelp"
+                                       value="<%= user.email ? user.email : null %>">
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username"
+                                       name="username"
+                                       value="<%= user.username ? user.username : null %>">
+                            </div>
+                            <div class="form-group">
+                                <label for="displayName">Display name</label>
+                                <input type="text" class="form-control" id="displayName"
+                                       name="displayName"
+                                       value="<%= user.displayName ? user.displayName : null %>">
+                            </div>
+                            <div class="form-group">
+                                <label for="cardId">Card ID</label>
+                                <input type="number" class="form-control" id="cardId" name="cardId"
+                                       value="<%= user.cardId ? user.cardId : null %>">
+                            </div>
+                            <a class="btn btn-light" href="/admin/users" role="button">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+        <!-- End Users -->
+    </div>
+</div>
+
+<%- include ("../../partials/footer") -%>

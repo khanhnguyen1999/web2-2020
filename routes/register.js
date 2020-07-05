@@ -1,21 +1,22 @@
-const User = require('../services/user')
-const Account = require('../services/account')
-const {Router} = require('express')
-const {body,validationResult} = require('express-validator')
-const crypto = require('crypto')
-const asyncHandler = require('express-async-handler')
-const Email = require('../services/email')
-const router = new Router();
-router.get('/',function isRegister(req,res){
-    res.render('pages/register')
+const User = require('../services/user');
+const Account = require('../services/account');
+const router = require('express').Router();
+const { body, validationResult } = require('express-validator');
+const crypto = require('crypto');
+const asyncHandler = require('express-async-handler');
+const Email = require('../services/email');
+
+router.get('/', (req, res) => {
+    res.render('pages/register');
 });
-router.post('/',[
+
+router.post('/', [
     body('email')
         .isEmail()
         .normalizeEmail()
-        .custom(async function(email){
+        .custom(async function (email) {
             const found = await User.findUserByEmail(email);
-            if(found){
+            if (found) {
                 throw Error('User exists')
             }
             return true;
@@ -27,34 +28,37 @@ router.post('/',[
         .trim()
         .notEmpty(),
     body('password')
-        .isLength({min:6})
+        .isLength({ min: 6 })
         .notEmpty(),
     body('conf_password')
-        .isLength({min:6})
+        .isLength({ min: 6 })
         .notEmpty(),
-],asyncHandler(async function Register(req,res){
+], asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     // console.log('errors ',errors)
-    console.log('password: ',req.body.password)
-    console.log('confirm password: ',req.body.conf_password)
-   
-    if(!errors.isEmpty()){
-        return res.status(422).render('pages/register',{errors:errors.array()});
+    console.log('password: ', req.body.password);
+    console.log('confirm password: ', req.body.conf_password);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).render('pages/register', { errors: errors.array() });
     }
-    const user = await User.create({
-        username:req.body.username,
-        email:req.body.email,
-        displayName:req.body.displayName,
-        password:User.hassPassword(req.body.password),
-    })
-    const account = await Account.create({
-        accountNumber:970460 + Math.floor(Math.random() * 1000) + 1,
-        balance:500000,
-        currencyUnit:'VND',
-        status:false,
-        limit:0
-    })
+  
+    await User.create({
+        username: req.body.username,
+        email: req.body.email,
+        displayName: req.body.displayName,
+        password: User.hashPassword(req.body.password),
+    });
+    await Account.create({
+        accountNumber: 970460 + Math.floor(Math.random() * 1000) + 1,
+        balance: 100000,
+        currencyUnit: 'VND',
+        status: false,
+        limit: 0,
+    });
+  
     // await Email.send(user.email,'Mã kích hoạt tài khoản',`link activate của bạn là : ${process.env.BASE_URL}/login/${user.id}/${user.token}`)
-    res.redirect('/')
+    res.redirect('/');
 }));
+
 module.exports = router;
