@@ -1,0 +1,61 @@
+<%- include ("../../partials/header") -%>
+
+<section class="blog_part section_padding section_transaction">
+  <div class="container container_transaction">
+    <div class=" p-4 transaction_profile">
+      <div class="task-profile">
+        <p><i class="fas fa-user"></i>Chủ tài khoản : <span><%= currentUser.displayName %> </span>
+        </p>
+      </div>
+      <div class="task-profile">
+        <p><i class="fas fa-address-card"></i>Số tài khoản :
+          <span><%= account.accountNumber %></span></p>
+      </div>
+      <div class="task-profile">
+        <p><i class="fas fa-dollar-sign"></i></i>Số dư : <span><% var rs=account.balance.toString();          
+        const formatter= new Intl.NumberFormat('de-DE', {
+          currency: 'VND',
+          minimumFractionDigits: 2
+        })
+        rs = formatter.format(rs) %> <%= rs%> VND</span></p>
+      </div>
+    </div>
+    <form method="POST" class="mt-4">
+      <div class="form-group mb-3 ">
+        <label for="formGroupExampleInput">Ngân hàng</label>
+        <select name="NganHang" class="custom-select" id="inputGroupSelect02">
+
+          <% for(var i = 0 ;i<listBank.length;i++) { 
+            if(listBank[i].nameBank=="Vietcombank") { %>
+          <option selected value="<%=listBank[i].nameBank%>"><%=listBank[i].nameBank%></option>
+          <% continue; } %>
+          <option value="<%=listBank[i].nameBank%>"><%=listBank[i].nameBank%></option>
+            <% } %>
+
+        </select>
+
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput">Số tài khoản hưởng thụ</label>
+        <input name="STKHuongThu" type="number" class="form-control" id="formGroupExampleInput"
+               placeholder="VD : 0123456789">
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Số tiền</label>
+        <input name="amount" type="number" class="form-control" id="formGroupExampleInput2"
+               placeholder="50.000 - 5.000.000">
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlTextarea1">Nội dung</label>
+        <textarea name="NoiDung" class="form-control" id="exampleFormControlTextarea1"
+                  rows="3"></textarea>
+      </div>
+      <div class="form-group  text-right">
+        <button type="button" class="btn btn-primary  mr-3">Hủy</button>
+        <button type="submit" class="btn btn-primary">Tiếp tục</button>
+      </div><br>
+    </form>
+  </div>
+</section>
+
+<%- include ("../../partials/footer") -%>

@@ -1,0 +1,1 @@
+res.render('pages/home');
