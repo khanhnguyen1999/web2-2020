@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../services/user');
 const { Sequelize } = require('sequelize');
 const { body, validationResult } = require('express-validator');
+const { findAccountrByUserId } = require('../services/account');
 const Op = Sequelize.Op;
 
 router.get('/', asyncHandler(async (req, res) => {
@@ -66,13 +67,51 @@ router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
             role: 'user',
-            status: 'PENDING', // Should be 'UNVERIFIED' || 'LOCKED' || 'ACTIVE' || 'PENDING' || null
+            status: 'PENDING', // Should be 'UNVERIFIED' || 'LOCKED' || 'ACTIVE' || 'PENDING' || 'DENIED' || null
         }
     });
 
     res.render('./ducbui/pages/admin/users', { users });
 }));
 // End Find pending users
+// Verify CardID
+// - Accept
+router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const account = await Account.findAccountrByUserId(id);
+    if (account) {
+        await Account.update({
+            status: 'ACTIVE',
+        }, {
+            where: {
+                userId: id, 
+            }
+        });
+    }
+
+    // const user = await User.findUserById(id);
+    res.redirect(`/admin/users/${id}`);
+}));
+
+// - Deny
+router.get('/users/:id/verify-deny', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const account = findAccountrByUserId(id);
+    if (account) {
+        await Account.update({
+            status: 'DENIED',
+        }, {
+            where: {
+                userId: id, 
+            }
+        });
+    }
+    res.redirect(`/admin/users/${id}`);
+}));
+
+// End Verify CardID
 
 /// End find user
 
@@ -87,7 +126,7 @@ router.get('/users/:id', asyncHandler(async (req, res) => {
 }));
 
 // Lock/Unlock account
-router.get('/lock/:id', asyncHandler(async (req, res) => {
+router.get('/users/:id/lock', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const account = await Account.findAccountrByUserId(id);
@@ -117,7 +156,7 @@ router.get('/lock/:id', asyncHandler(async (req, res) => {
 /// End view user profile
 
 /// Edit user profile
-router.get('/edit/:id', asyncHandler(async (req, res) => {
+router.get('/users/:id/modify', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const user = await User.findUserById(id);

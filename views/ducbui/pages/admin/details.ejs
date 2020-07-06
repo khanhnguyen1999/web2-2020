@@ -15,28 +15,22 @@
                         <p class="card-text">Email: <%= user.email %></p>
                         <p class="card-text">Status: <%= account.status %></p>
                         <% if (account.status === 'LOCKED') { %>
-                        <a href="/admin/lock/<%= user.id %>"
-                            class="card-link">Unlock</a>
+                        <a href="/admin/users/<%= user.id %>/lock" class="card-link">Unlock</a>
                         <% } else if (account.status === 'ACTIVE') { %>
-                            <a href="/admin/lock/<%= user.id %>"
-                                class="card-link">Lock</a>
+                        <a href="/admin/lock/<%= user.id %>" class="card-link">Lock</a>
                         <% } %>
-                        <a href="/admin/edit/<%= user.id %>" class="card-link">Modify</a>
+                        <a href="/admin/users/<%= user.id %>/modify" class="card-link">Modify</a>
                     </div>
                 </div>
             </div>
         </div>
-        <% if (account.status === 'PENDING') { %>
+        <% if (account.status === 'PENDING' || account.status === 'DENIED') { %>
         <div class="row justify-content-center my-5">
             <div class="card mb-3">
                 <img src="/uploads/<%= user.idCardPhoto %>" class="card-img-top" alt="<%= user.idCardPhoto %>">
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                        additional content. This content is a little bit longer.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    <a href="/admin/auth/<%= user.id %>"
-                        class="card-link">Accept</a>
+                    <a href="/admin/users/<%= user.id %>/verify-accept" class="btn btn-primary">Accept</a>
+                    <a href="/admin/users/<%= user.id %>/verify-deny" class="btn btn-danger">Deny</a>
                 </div>
             </div>
         </div>
