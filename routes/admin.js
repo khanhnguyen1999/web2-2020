@@ -66,7 +66,7 @@ router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
             role: 'user',
-            status: false, // Should be 'LOCKED' || 'PENDING' || '...'
+            status: 'UNVERIFIED', // Should be 'UNVERIFIED' || 'LOCKED' || 'PENDING' || null
         }
     });
 

@@ -51,11 +51,11 @@ router.post('/', [
         password: User.hashPassword(req.body.password),
     }).then(async (user) => {
         await Account.create({
-            accountNumber: 970460 + Math.floor(Math.random() * 1000) + 1, // Wrong algo
+            accountNumber: 970460 + Math.floor(Math.random() * 1000) + 1, // Wrong formular
             balance: 100000,
             currencyUnit: 'VND',
             role: 'user',
-            status: false,
+            status: 'UNVERIFIED', // 'UNVERIFIED' || 'LOCKED' || 'PENDING' || null
             limit: 0,
             userId: user.id,
         });
