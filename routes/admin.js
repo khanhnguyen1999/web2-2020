@@ -61,17 +61,19 @@ router.post('/users', asyncHandler(async (req, res) => {
     res.render('./ducbui/pages/admin/users', { users: result });
 }));
 
-// # Pending - Find pending user
+// Find pending users
 router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
             role: 'user',
-            status: 'UNVERIFIED', // Should be 'UNVERIFIED' || 'LOCKED' || 'PENDING' || null
+            status: 'PENDING', // Should be 'UNVERIFIED' || 'LOCKED' || 'ACTIVE' || 'PENDING' || null
         }
     });
 
     res.render('./ducbui/pages/admin/users', { users });
 }));
+// End Find pending users
+
 /// End find user
 
 /// View user profile
@@ -79,8 +81,9 @@ router.get('/users/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const user = await User.findUserById(id);
+    const account = await Account.findAccountrByUserId(id);
 
-    res.render(`./ducbui/pages/admin/details`, { user });
+    res.render(`./ducbui/pages/admin/details`, { user, account });
 }));
 
 // Lock/Unlock account
@@ -88,28 +91,28 @@ router.get('/lock/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const account = await Account.findAccountrByUserId(id);
+    let status = null;
+
+    if (account.status === 'ACTIVE') {
+        status = 'LOCKED';
+    } else if (account.status === 'LOCKED') {
+        status = 'ACTIVE';
+    }
+
     if (account) {
         await Account.update({
-            status: account.status ? false : true,
+            status,
         }, {
             where: {
                 userId: id,
             }
         });
     }
+    console.log(account);
 
     const user = await User.findUserById(id);
-    if (user) {
-        await User.update({
-            tokenUser: account.status ? 'LOCKED' : null,
-        }, {
-            where: {
-                id,
-            }
-        });
-    }
 
-    res.render(`./ducbui/pages/admin/details`, { user });
+    res.render(`./ducbui/pages/admin/details`, { user, account });
 }));
 /// End view user profile
 

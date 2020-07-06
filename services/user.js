@@ -63,7 +63,7 @@ User.init({
         type: Sequelize.DATE,
     },
     idCardPhoto: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING, // Should be BLOB
     },
     tokenUser: {
         type: Sequelize.STRING,

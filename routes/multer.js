@@ -1,9 +1,10 @@
-const User = require('../services/user')
-const { Router } = require('express')
-const asyncHandler = require('express-async-handler')
-const router = new Router();
+const User = require('../services/user');
+const Account = require('../services/account');
+const router = require('express').Router();
+const asyncHandler = require('express-async-handler');
 const path = require('path');
 const multer = require('multer');
+
 // Set The Storage Engine
 const storage = multer.diskStorage({
     destination: './public/uploads/',
@@ -50,9 +51,21 @@ router.post('/upload', asyncHandler(async function (req, res) {
                     msg: 'Error: No File Selected!',
                 });
             } else {
-                const user = await User.update({
+                await User.update({
                     idCardPhoto: req.file.filename,
-                }, { where: { id: req.session.userId } });
+                }, {
+                    where: {
+                        id: req.currentUser.id,
+                    }
+                }).then(async () => {
+                    await Account.update({
+                        status: 'PENDING',
+                    }, {
+                        where: {
+                            userId: req.currentUser.id,
+                        }
+                    });
+                });
                 res.render('pages/profile', {
                     msg: 'File Uploaded!',
                     file: `uploads/${req.file.filename}`,

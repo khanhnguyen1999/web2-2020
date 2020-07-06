@@ -7,21 +7,40 @@
         <!-- Users -->
         <% if (user) { %>
         <div class="row justify-content-center my-5">
-            <div class="col-6">
+            <div class="col-10">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title"><%= user.displayName %></h5>
                         <h6 class="card-subtitle mb-2 text-muted"><%= user.username %></h6>
                         <p class="card-text">Email: <%= user.email %></p>
-                        <p class="card-text">Status: <%= user.tokenUser ? 'Locked' : 'Active' %></p>
+                        <p class="card-text">Status: <%= account.status %></p>
+                        <% if (account.status === 'LOCKED') { %>
                         <a href="/admin/lock/<%= user.id %>"
-                           class="card-link"><%= user.tokenUser ? 'Unlock' : 'Lock' %></a>
+                            class="card-link">Unlock</a>
+                        <% } else if (account.status === 'ACTIVE') { %>
+                            <a href="/admin/lock/<%= user.id %>"
+                                class="card-link">Lock</a>
+                        <% } %>
                         <a href="/admin/edit/<%= user.id %>" class="card-link">Modify</a>
-                        <a href="#" class="card-link">Authorization</a>
                     </div>
                 </div>
             </div>
         </div>
+        <% if (account.status === 'PENDING') { %>
+        <div class="row justify-content-center my-5">
+            <div class="card mb-3">
+                <img src="/uploads/<%= user.idCardPhoto %>" class="card-img-top" alt="<%= user.idCardPhoto %>">
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <a href="/admin/auth/<%= user.id %>"
+                        class="card-link">Accept</a>
+                </div>
+            </div>
+        </div>
+        <% } %>
         <% } %>
         <div class="row my-3 justify-content-end">
             <div class="col-4">

@@ -54,6 +54,7 @@ router.post('/', [
             accountNumber: 970460 + Math.floor(Math.random() * 1000) + 1, // Wrong formular
             balance: 100000,
             currencyUnit: 'VND',
+            openDate: user.createdAt,
             role: 'user',
             status: 'UNVERIFIED', // 'UNVERIFIED' || 'LOCKED' || 'PENDING' || null
             limit: 0,
