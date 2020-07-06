@@ -52,6 +52,7 @@ Account.init({
     },
     status: {
         type: Sequelize.STRING,
+        allowNull: false,
     },
     openDate: {
         type: Sequelize.DATE,

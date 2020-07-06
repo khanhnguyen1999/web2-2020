@@ -67,13 +67,13 @@ router.get('/users/management', asyncHandler(async (req, res) => {
     const users = await Account.findAll({
         where: {
             role: 'user',
-            status: 'PENDING', // Should be 'UNVERIFIED' || 'LOCKED' || 'ACTIVE' || 'PENDING' || 'DENIED' || null
+            status: 'PENDING', // Should be 'UNVERIFIED' || 'LOCKED' || 'ACTIVE' || 'PENDING' || 'DENIED'
         }
     });
 
     res.render('./ducbui/pages/admin/users', { users });
 }));
-// End Find pending users
+
 // Verify CardID
 // - Accept
 router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {

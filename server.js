@@ -36,8 +36,8 @@ app.use('/transaction', require('./routes/transaction'));
 
 // --------APP USE----------
 app.use(express.static('public'));
-app.use('/register', require('./routes/register'));
 app.use('/', require('./routes/login'));
+app.use('/register', require('./routes/register'));
 app.use('/admin', require('./routes/admin'));
 app.use('/multer',require('./routes/multer'));
 
