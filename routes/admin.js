@@ -1,10 +1,9 @@
 const router = require('express').Router();
 const Account = require('../services/account');
-const asyncHandler = require('express-async-handler');
 const User = require('../services/user');
+const asyncHandler = require('express-async-handler');
 const { Sequelize } = require('sequelize');
 const { body, validationResult } = require('express-validator');
-const { findAccountrByUserId } = require('../services/account');
 const Op = Sequelize.Op;
 
 router.get('/', asyncHandler(async (req, res) => {
@@ -57,8 +56,6 @@ router.post('/users', asyncHandler(async (req, res) => {
         });
     }
 
-    console.log(result);
-
     res.render('./ducbui/pages/admin/users', { users: result });
 }));
 
@@ -83,6 +80,7 @@ router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {
     if (account) {
         await Account.update({
             status: 'ACTIVE',
+            limit: 20000000,
         }, {
             where: {
                 userId: id, 
@@ -98,7 +96,7 @@ router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {
 router.get('/users/:id/verify-deny', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const account = findAccountrByUserId(id);
+    const account = Account.findAccountrByUserId(id);
     if (account) {
         await Account.update({
             status: 'DENIED',
@@ -110,12 +108,10 @@ router.get('/users/:id/verify-deny', asyncHandler(async (req, res) => {
     }
     res.redirect(`/admin/users/${id}`);
 }));
-
 // End Verify CardID
-
 /// End find user
 
-/// View user profile
+/// Check user profile
 router.get('/users/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -147,13 +143,20 @@ router.get('/users/:id/lock', asyncHandler(async (req, res) => {
             }
         });
     }
-    console.log(account);
 
-    const user = await User.findUserById(id);
+    // const user = await User.findUserById(id);
 
-    res.render(`./ducbui/pages/admin/details`, { user, account });
+    // res.render(`./ducbui/pages/admin/details`, { user, account });
+    res.redirect('back');
 }));
-/// End view user profile
+/// End check user profile
+
+/// Check user's transactions
+router.get('/users/:id/transaction', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    //
+}));
+/// End Check user's transactions
 
 /// Edit user profile
 router.get('/users/:id/modify', asyncHandler(async (req, res) => {
@@ -212,8 +215,6 @@ router.post('/edit/:id', [
     }
 
     user = await User.findUserById(id);
-
-    console.log(user);
 
     if (user) {
         await User.update({

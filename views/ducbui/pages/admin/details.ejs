@@ -17,8 +17,9 @@
                         <% if (account.status === 'LOCKED') { %>
                         <a href="/admin/users/<%= user.id %>/lock" class="card-link">Unlock</a>
                         <% } else if (account.status === 'ACTIVE') { %>
-                        <a href="/admin/lock/<%= user.id %>" class="card-link">Lock</a>
+                        <a href="/admin/users/<%= user.id %>/lock" class="card-link">Lock</a>
                         <% } %>
+                        <a href="/admin/users/<%= user.id %>/transaction" class="card-link">Transaction</a>
                         <a href="/admin/users/<%= user.id %>/modify" class="card-link">Modify</a>
                     </div>
                 </div>
