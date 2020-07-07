@@ -51,25 +51,18 @@ router.post('/', [
         password: User.hashPassword(req.body.password),
     }).then(async (user) => {
         await Account.create({
-            accountNumber: 970460 + Math.floor(Math.random() * 1000) + 1, // Wrong formular
+            accountNumber: '970460' + (Math.floor(Math.random() * 1000) + 1), // Fixed
             balance: 100000,
             currencyUnit: 'VND',
             openDate: user.createdAt,
             role: 'user',
-            status: 'UNVERIFIED', // 'UNVERIFIED' || 'LOCKED' || 'PENDING' || null
+            status: 'UNVERIFIED', // 'UNVERIFIED' || 'LOCKED' || 'PENDING' || 'ACTIVE' || 'DENIED'
             limit: 0,
             userId: user.id,
         });
+    }).catch((err) => {
+        console.log(err);
     });
-
-    // await Account.create({
-    //     accountNumber: 970460 + Math.floor(Math.random() * 1000) + 1, // Wrong algo
-    //     balance: 100000,
-    //     currencyUnit: 'VND',
-    //     role: 'user',
-    //     status: false,
-    //     limit: 0,
-    // });
 
     // await Email.send(user.email,'Mã kích hoạt tài khoản',`link activate của bạn là : ${process.env.BASE_URL}/login/${user.id}/${user.token}`)
     res.redirect('/');
