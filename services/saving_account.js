@@ -5,8 +5,11 @@ const db = require('./db')
 const Model = Sequelize.Model;
 class SavingAccount extends Model {
   static async findSavingAccountrByAccountNumber(accountNumber){
-    return await SavingAccount.findOne({where:{accountAccountNumber:accountNumber}})
+    return await SavingAccount.findAll({where:{accountAccountNumber:accountNumber}})
   }
+  static async findSavingAccountrById(id){
+    return await SavingAccount.findOne({where:{id:id}})
+}
 }
 SavingAccount.init({
   // attributes

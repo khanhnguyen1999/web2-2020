@@ -1,0 +1,83 @@
+<%- include ("../../partials/header") -%>
+
+<%
+dateTimeToDate = function (today,species)
+    {
+        var sc = String(today.getSeconds()).padStart(2, '0');
+        var m  = String(today.getMinutes()).padStart(2, '0');
+        var h  = String(today.getHours()).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        
+        var date = mm + '/' + dd + '/' + yyyy;
+        var datetime = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+        if(species==0)
+        {
+            return date;
+        }
+        if(species==1)
+        {
+            return datetime;
+        }
+        return datetime;
+    }
+%>
+<section class="blog_part section_padding section_transaction row">
+  <div class="container container_transaction1 col-4">
+      <div class="modal-header">
+          <p class="heading lead">Tài khoản tiết kiệm </p>
+      </div>
+      <% if(errors) {%>
+          <div style="color: rgb(224, 87, 87);" class="alert alert-success mt-3" role="alert">
+            <i style="color: red;" class="fas fa-exclamation-triangle pr-2"></i>
+            <%= errors %> 
+          </div>
+         
+        <%}%> 
+      <form method="POST" class="mt-4 ">
+          <table>
+              <tr>
+                  <td>Người gửi : </td>
+                  <td> &nbsp   <%= currentUser.displayName %></td>
+              </tr>
+              <tr>
+                  <td>Số tài khoản :</td>
+                  <td>&nbsp  <%= account.accountNumber %></td>
+              </tr>
+              <tr>
+                  <td>Số tiền : </td>
+                  <td>&nbsp  <%= saving.fund %></td>
+              </tr>
+              <tr>
+                  <td>Kỳ hạn : </td>
+                  <td>&nbsp  <%= saving.depositTerm %></td>
+              </tr>
+              <tr>
+                  <td>Lãi xuất :</td>
+                  <td>&nbsp  <%= saving.interestRate %></td>
+              </tr>
+              <tr>
+                <td>Ngày mở :</td>
+                <td>&nbsp  <%= dateTimeToDate(saving.openDate,0) %></td>
+            </tr>
+              <tr>
+                  <td>Ngày đến hạn :</td>
+                  <td>&nbsp  <%= dateTimeToDate(saving.closeDate,0) %></td>
+              </tr>
+              
+          </table>
+          <div class="form-group text-right">
+              <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
+              <button type="submit" class="btn btn-primary">Tất toán</button>
+          </div><br>
+      </form>
+  </div>
+</section>
+<script>
+
+    function goBack() {
+      window.history.back()
+    }  
+  </script>
+<%- include ("../../partials/footer") -%></form>

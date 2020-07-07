@@ -16,7 +16,7 @@
         rs = formatter.format(rs) %> <%= rs%> VND</span></p>
       </div>
       <div class="task-profile">
-        <p><i class="fas fa-dollar-sign"></i></i>Số dư TKTK: <span><% var rs=account.balanceSaving.toString();          
+        <p><i class="fas fa-dollar-sign"></i></i>Số dư TKTK: <span><% var rs=fund.toString();          
         const formatter1= new Intl.NumberFormat('de-DE', {
           currency: 'VND',
           minimumFractionDigits: 2

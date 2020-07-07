@@ -18,6 +18,7 @@ const beneficiaryAccount = require('./services/beneficiaryAccount');
 // ---------NPM INSTALL---------
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieSession({secret: 'todotopsecret'}))
+app.use(express.json());
 
 // --------APP SET------------
 app.set('views', './views');
@@ -36,6 +37,7 @@ app.use('/transaction',require('./routes/transaction'));
 
 // --------Saving Account ----------
 app.use('/saving',require('./routes/savingAccount'));
+app.get('/saving/:id',require('./routes/savingAccount'));
 
 // --------APP USE----------
 app.use(express.static('public'))

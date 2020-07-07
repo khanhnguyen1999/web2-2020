@@ -19,6 +19,8 @@ var account ;
 var interest;
 var interestRate;
 var userSavingAccount;
+var opendatesaving=undefined;
+var closedatesaving=undefined;
 // var BeneficiaryDisplayname;
 // var BeneficiaryNumberAccount;
 // var BeneficiaryBalance;
@@ -57,19 +59,55 @@ function inWords (num) {
     str += (n[6] != 0) ? ((str != '') ? '' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Đồng' : '';
     return str;
 }
+function dateTimeToDate(today,species)
+{
+    var sc = String(todaygetSeconds()).padStart(2, '0');
+    var m  = String(today.getMinutes()).padStart(2, '0');
+    var h  = String(today.getHours()).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    var date = mm + '/' + dd + '/' + yyyy;
+    var datetime = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+    if(species==0)
+    {
+        return date;
+    }
+    if(species==1)
+    {
+        return datetime;
+    }
+    return datetime;
+}
+
 router.get('/',async (req,res)=>{
     console.log(req.session.account)
     userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(req.session.account.accountNumber)
-    fund = 
+    var dateNow = new Date();
+    fund = userSavingAccount?userSavingAccount.fund:0;
+    if(userSavingAccount)
+    {
+        
+        // opendatesaving = dateTimeToDate(userSavingAccount.openDate,0); 
+        // closedatesaving = dateTimeToDate(userSavingAccount.closeDate,0);
+        return res.render('./pages/savingAccount/listSaving',{fund:fund,saving:userSavingAccount,errors:null});
+    }
+    else
+    {
+        return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null}); 
+    }
     // account =await Account.findAccountrByAccountNumber(res.locals.account.accountNumber);
     return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});  
 });
-
+router.get("/saving/:id",asyncHandler(async function postLogin(req,res){
+        const {id}=req.params;
+        const itemSaving = await SavingAccount.findSavingAccountrById(id);
+        res.render('./pages/savingAccount/saving',{fund:fund,saving:itemSaving,errors:null});
+}))
 router.post('/',[
     body('amountSaving')
         .custom(async function(SoTienBody,{req}){
-            
-            console.log("----------------------cccc")
             account = await Account.findAccountrByUserId(req.session.currentUser.id);
             console.log(typeof SoTienBody)
             console.log(typeof account.balance)
@@ -82,84 +120,26 @@ router.post('/',[
                 throw Error('Số tiền không hợp lệ');
             }
             return true
-
-            
-
-            // if(req.body.STKHuongThu)
-            // {
-            //     if(SoTienBody<3000000){
-            //         throw Error('Số tiền tối thiểu 3.000.000 VND');
-            //     }
-            //     if(res.locals.account)
-            //     depositTerm = req.body.depositTerm;
-                
-            //     if(extraMoney<50000)
-            //     {
-            //         throw Error('Số dư không đủ');
-            //     }
-            //     return true;
-            // }
         }),
-
-    // body('STKHuongThu')
-    //     .custom(async function(STKHuongThu){
-    //         if(STKHuongThu=="")
-    //         {
-    //             throw Error('Số tài khoản không tồn tại');
-    //         }
-    //         if(!STKHuongThu)
-    //         {
-    //             return false;
-    //         }
-    //         else
-    //         {
-    //             const account = await Account.findAccountrByAccountNumber(STKHuongThu)
-    //             const beneficiatAccount = await BeneficiatyAccount.findAccountrByAccountNumber(STKHuongThu)
-    //             if(!account && !beneficiatAccount)
-    //             {
-    //                 throw Error('Số tài khoản không tồn tại');
-    //             }
-    
-    //         }
-           
-    //         return true;
-    //     }),
- 
         
 ] ,asyncHandler(async function(req,res){
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).render('./pages/savingAccount/savingAccount',{errors :errors.errors});
+        return res.status(422).render('./pages/savingAccount/savingAccount',{fund:fund,errors :errors.errors});
     }
     digits = inWords(parseInt(req.body.amountSaving))
-    var today = new Date();
-    var sc = String(today.getSeconds()).padStart(2, '0');
-    var m  = String(today.getMinutes()).padStart(2, '0');
-    var h  = String(today.getHours()).padStart(2, '0');
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-
-    today = mm + '/' + dd + '/' + yyyy;
-    now = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+    var today = dateTimeToDate(new Date(),0)
+    now = dateTimeToDate(new Date(),1)
     const d = new Date();
     ran = crypto.randomBytes(3).toString('hex').toUpperCase() +  ('0' + d.getMinutes()).slice(-2) +  ('0' + d.getSeconds()).slice(-2) +  ('0' + d.getMonth() + 1).slice(-2)
    if(!req.body.amountSaving)
    {
-       
-       
         console.log("---------------------")
         if(req.body.OTP.toUpperCase()==token)
         {   
-            const extraMoney = account.balance - SoTien
+            const extraMoney = account.balance - SoTien;
             await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-                 
-            // await Email.send(req.session.currentUser.email,'Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
-            // BeneficiaryNumberAccount+" "+BeneficiaryDisplayname +" : "+SoTien +"\nSố dư : "+extraMoney )
-            // console.log("-------------------3")  
-
-            
             var dt = new Date(yyyy,mm,dd,h,m,sc,"00")
             var closeDate = new Date(dt.setMonth(dt.getMonth()+depositTerm-1))
             const svAccount = await SavingAccount.create({

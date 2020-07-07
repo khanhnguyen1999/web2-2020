@@ -1,0 +1,92 @@
+<%- include ("../../partials/header") -%>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+      
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    async function send1(id)
+    {
+        try{
+            const asss = await fetch(`http://localhost:3000/saving/test/1`,
+            {
+                method:"POST",
+                headers : {"Content-Type":"application/json"},  
+                body:JSON.stringify({khai:"id"}),
+            })
+            // location.reload();
+        } catch (error) {
+            
+            console.error(error.message)
+        }
+    }
+    function send2(id)
+    {
+        window.location='http://localhost:3000/saving/'+id;
+    }
+    
+    // $(document).ready(function(){
+    //     $("#savingItem").click(function(){
+    //         alert("cc")
+    //         window.location = "http://localhost:3000/";
+    //      });
+    // });
+</script>
+<%
+dateTimeToDate = function (today,species)
+    {
+        var sc = String(today.getSeconds()).padStart(2, '0');
+        var m  = String(today.getMinutes()).padStart(2, '0');
+        var h  = String(today.getHours()).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        
+        var date = mm + '/' + dd + '/' + yyyy;
+        var datetime = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+        if(species==0)
+        {
+            return date;
+        }
+        if(species==1)
+        {
+            return datetime;
+        }
+        return datetime;
+    }
+%>
+<section class="blog_part section_padding section_transaction list-saving row">
+    <div class="container container_transaction1 col-4">
+        <div class="modal-header">
+            <p class="heading lead">Tài khoản tiết kiệm </p>
+        </div>
+
+        <% if(saving) {%>
+            <% saving.forEach(function(x) {  %>
+                <div id=<%=x.id  %> onclick="send2(this.id)" class="card-header bg-transparent savingItem">
+                    <span><i class="fas fa-id-badge mr-3 text-success "></i><span class="mr-2">So tien :</span> <a href="#" class="alert-link"><%= x.fund%></a> </span>
+                    <span class="float-right" ><%= dateTimeToDate(x.closeDate,0) %></span>
+                </div>
+            <% });%>
+        <%}%> 
+        <!-- <div onclick="send2()"  class="alert border-light mb-3" role="alert"> 
+            <div id="savingItem" class="card-header bg-transparent savingItem">
+                <span><i class="fas fa-id-badge mr-3 text-success "></i><span class="mr-2">So tien :</span> <a href="#" class="alert-link">1.000.000</a> </span>
+                <span class="float-right" >10/10/20200</span>
+            </div>
+      
+            <div class="card-header bg-transparent">
+                <i class="fas fa-id-badge mr-3 text-success "></i><span class="mr-2">So tien :</span> <a href="#" class="alert-link">1.000.000</a> <span class="float-right" >10/10/2020</span>
+            </div>
+            
+        </div> -->
+        <form method="POST" class="mt-4 ">
+            <div class="form-group text-right"> 
+                <button type="submit" class="btn btn-primary">Them TKTK</button>
+            </div><br>
+        </form>
+    </div>
+</section>
+
+<%- include ("../../partials/footer") -%></form>
