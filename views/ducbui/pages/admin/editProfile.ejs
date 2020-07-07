@@ -34,7 +34,7 @@
                                 <input type="number" class="form-control" id="cardId" name="cardId"
                                        value="<%= user.cardId ? user.cardId : null %>">
                             </div>
-                            <a class="btn btn-light" href="/admin/users" role="button">Cancel</a>
+                            <a class="btn btn-light" href="/admin/users/<%= user.id %>" role="button">Cancel</a>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>

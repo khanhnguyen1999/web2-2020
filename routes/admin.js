@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Account = require('../services/account');
 const User = require('../services/user');
+const Transaction = require('../services/transaction');
 const asyncHandler = require('express-async-handler');
 const { Sequelize } = require('sequelize');
 const { body, validationResult } = require('express-validator');
@@ -118,6 +119,8 @@ router.get('/users/:id', asyncHandler(async (req, res) => {
     const user = await User.findUserById(id);
     const account = await Account.findAccountrByUserId(id);
 
+    res.locals.transactions = []; // Marked
+
     res.render(`./ducbui/pages/admin/details`, { user, account });
 }));
 
@@ -154,7 +157,29 @@ router.get('/users/:id/lock', asyncHandler(async (req, res) => {
 /// Check user's transactions
 router.get('/users/:id/transaction', asyncHandler(async (req, res) => {
     const { id } = req.params;
-    //
+    
+    const account = await Account.findAccountrByUserId(id);
+    if (account) {
+        const transactions = await Transaction.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        accountNumber: account.accountNumber,
+                    },
+                    {
+                        beneficiaryAccount: account.accountNumber,
+                    }
+                ]
+            }
+        });
+
+        res.locals.transactions = transactions; // Marked
+        transactions.forEach(trans => {
+            console.log(`>>> ${trans.accountNumber}`);
+        });
+    }
+
+    res.redirect('back');
 }));
 /// End Check user's transactions
 
@@ -171,7 +196,7 @@ router.get('/users/:id/modify', asyncHandler(async (req, res) => {
     res.redirect('back');
 }));
 
-router.post('/edit/:id', [
+router.post('/users/:id/modify', [
     body('email')
         .isEmail()
         .optional()
@@ -202,7 +227,7 @@ router.post('/edit/:id', [
     body('cardId')
         .trim()
         .optional()
-        .isLength({ min: 9, max: 9 }),
+        // .isLength({ min: 9, max: 9 }),
 ], asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { email, username, displayName, cardId } = req.body;

@@ -15,27 +15,51 @@
                         <p class="card-text">Email: <%= user.email %></p>
                         <p class="card-text">Status: <%= account.status %></p>
                         <% if (account.status === 'LOCKED') { %>
-                        <a href="/admin/users/<%= user.id %>/lock" class="card-link">Unlock</a>
+                        <a href="/admin/users/<%= user.id %>/lock"
+                           class="card-link btn btn-danger">Unlock</a>
                         <% } else if (account.status === 'ACTIVE') { %>
-                        <a href="/admin/users/<%= user.id %>/lock" class="card-link">Lock</a>
+                        <a href="/admin/users/<%= user.id %>/lock"
+                           class="card-link btn btn-danger">Lock</a>
                         <% } %>
-                        <a href="/admin/users/<%= user.id %>/transaction" class="card-link">Transaction</a>
-                        <a href="/admin/users/<%= user.id %>/modify" class="card-link">Modify</a>
+                        <a href="/admin/users/<%= user.id %>/transaction"
+                           class="card-link btn btn-info">Transaction</a>
+                        <a href="/admin/users/<%= user.id %>/modify"
+                           class="card-link btn btn-warning">Modify</a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- If user is needing verification -->
         <% if (account.status === 'PENDING' || account.status === 'DENIED') { %>
         <div class="row justify-content-center my-5">
             <div class="card mb-3">
-                <img src="/uploads/<%= user.idCardPhoto %>" class="card-img-top" alt="<%= user.idCardPhoto %>">
+                <img src="/uploads/<%= user.idCardPhoto %>" class="card-img-top"
+                     alt="<%= user.idCardPhoto %>">
                 <div class="card-body">
-                    <a href="/admin/users/<%= user.id %>/verify-accept" class="btn btn-primary">Accept</a>
-                    <a href="/admin/users/<%= user.id %>/verify-deny" class="btn btn-danger">Deny</a>
+                    <a href="/admin/users/<%= user.id %>/verify-accept"
+                       class="btn btn-primary">Accept</a>
+                    <a href="/admin/users/<%= user.id %>/verify-deny"
+                       class="btn btn-danger">Deny</a>
                 </div>
             </div>
         </div>
         <% } %>
+
+        <!-- If checking transaction --> <!-- Marked -->
+        <% if (transactions) { %>
+        <ul class="list-group">
+            <% transactions.forEach(trans => { %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                trans.accountNumber
+                <span class="badge badge-primary badge-pill">2</span>
+            </li>
+            <% }) %>
+        </ul>
+        <% } else { %>
+        <i>No transaction yet</i>
+        <% } %>
+
         <% } %>
         <div class="row my-3 justify-content-end">
             <div class="col-4">
