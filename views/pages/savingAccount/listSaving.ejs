@@ -23,15 +23,9 @@
     }
     function send2(id)
     {
-        window.location='http://localhost:3000/saving/'+id;
+        window.location='http://localhost:3000/saving/listSaving/'+id;
     }
     
-    // $(document).ready(function(){
-    //     $("#savingItem").click(function(){
-    //         alert("cc")
-    //         window.location = "http://localhost:3000/";
-    //      });
-    // });
 </script>
 <%
 dateTimeToDate = function (today,species)
@@ -81,9 +75,9 @@ dateTimeToDate = function (today,species)
             </div>
             
         </div> -->
-        <form method="POST" class="mt-4 ">
+        <form method="GET" class="mt-4 ">
             <div class="form-group text-right"> 
-                <button type="submit" class="btn btn-primary">Them TKTK</button>
+                <a href="saving/addSaving" type="submit" class="btn btn-primary">Them TKTK</a>
             </div><br>
         </form>
     </div>

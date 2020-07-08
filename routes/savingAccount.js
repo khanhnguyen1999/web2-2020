@@ -12,8 +12,9 @@ const BeneficiatyAccount= require('../services/beneficiaryAccount');
 const Email = require('../services/email');
 // const { tableName } = require('../services/user');
 const crypto = require('crypto');
-// const { INTEGER } = require('sequelize/types');
 const Sequelize = require('sequelize')
+
+const bank17ez= "Vietcombank";
 
 var account ;
 var interest;
@@ -24,23 +25,18 @@ var closedatesaving=undefined;
 // var BeneficiaryDisplayname;
 // var BeneficiaryNumberAccount;
 // var BeneficiaryBalance;
-// var content ;
+// var content;
 var ran;
 var token;
+var tokenTatToan;
 var SoTien;
-var fund;
+var fund=0;
 var digits;
 var depositTerm;
 var formInterest;
-var subEmail;
-var now;
-// var fee;
 
-// var totalMoney;
-// var extraMoney;
-// var beneficiaryExtraMoney;
-// var listBank;
-// const bankRoot="Vietcombank"
+var now;
+var subEmail
 
 
 function inWords (num) {
@@ -61,7 +57,7 @@ function inWords (num) {
 }
 function dateTimeToDate(today,species)
 {
-    var sc = String(todaygetSeconds()).padStart(2, '0');
+    var sc = String(today.getSeconds()).padStart(2, '0');
     var m  = String(today.getMinutes()).padStart(2, '0');
     var h  = String(today.getHours()).padStart(2, '0');
     var dd = String(today.getDate()).padStart(2, '0');
@@ -80,32 +76,80 @@ function dateTimeToDate(today,species)
     }
     return datetime;
 }
+//--------- hien thi thong tin saving -------------
+router.get("/saving/listSaving/:id",asyncHandler(async function postLogin(req,res){
+    const {id}=req.params;
+    const itemSaving = await SavingAccount.findSavingAccountrById(id);
+    req.session.idSavingIndex = itemSaving.id;
+    res.render('./pages/savingAccount/saving',{fund:fund,saving:itemSaving,errors:null});
+}))
 
+//-------add saving account----------
+router.get("/saving/addSaving",asyncHandler(async function postLogin(req,res){
+    userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(req.session.account.accountNumber)
+    userSavingAccount.forEach((x)=>{
+        fund=fund + parseInt(x.fund);
+    })
+    
+    res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});
+}))
+
+
+//---------- tat toan --------------
+router.get("/saving/listSaving/tattoan/:id",asyncHandler(async function postLogin(req,res){
+    const {id}=req.params;
+    const itemSaving = await SavingAccount.findSavingAccountrById(id);
+    tokenTatToan = crypto.randomBytes(2).toString("hex").toUpperCase();
+    Email.send(res.locals.currentUser.email,bank17ez,"Mã xác thực tất toán  : "+tokenTatToan)
+    res.render('./pages/savingAccount/tattoan',{email:subEmail,fund:fund,saving:itemSaving,errors:null});
+}))
+
+router.post("/saving/listSaving/tattoan/:id",asyncHandler(async function postLogin(req,res){
+    if(req.body.OTP.toUpperCase()==tokenTatToan)
+    {   
+        const {id}=req.params;
+        const itemSaving = await SavingAccount.findSavingAccountrById(id);
+        let accountUser = await Account.findAccountrByUserId(req.currentUser.id)
+        const extraMoney = accountUser.balance + itemSaving.fund;
+        await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
+        await SavingAccount.deleteSavingAccountrById(id);
+        Email.send(res.locals.currentUser.email,bank17ez,"Tất toán thành công số tiền  : "+itemSaving.fund)
+        res.render('./pages/savingAccount/savingAccount2')
+    }
+    else
+    {
+        res.render('./pages/savingAccount/tattoan',{
+            errors:"Token không chính xác",
+            email:subEmail,
+            fund:fund,
+            saving:itemSaving,
+            errors:null});
+    }
+}))
+
+
+
+//--------------hien thi danh sach saving----------------
 router.get('/',async (req,res)=>{
+    var userEmail = req.session.currentUser.email;
+    var lengthEmail = userEmail.length;
+    subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
     console.log(req.session.account)
     userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(req.session.account.accountNumber)
     var dateNow = new Date();
     fund = userSavingAccount?userSavingAccount.fund:0;
     if(userSavingAccount)
     {
-        
-        // opendatesaving = dateTimeToDate(userSavingAccount.openDate,0); 
-        // closedatesaving = dateTimeToDate(userSavingAccount.closeDate,0);
         return res.render('./pages/savingAccount/listSaving',{fund:fund,saving:userSavingAccount,errors:null});
     }
     else
     {
         return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null}); 
     }
-    // account =await Account.findAccountrByAccountNumber(res.locals.account.accountNumber);
     return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});  
 });
-router.get("/saving/:id",asyncHandler(async function postLogin(req,res){
-        const {id}=req.params;
-        const itemSaving = await SavingAccount.findSavingAccountrById(id);
-        res.render('./pages/savingAccount/saving',{fund:fund,saving:itemSaving,errors:null});
-}))
-router.post('/',[
+
+router.post('/addSaving',[
     body('amountSaving')
         .custom(async function(SoTienBody,{req}){
             account = await Account.findAccountrByUserId(req.session.currentUser.id);
@@ -140,8 +184,8 @@ router.post('/',[
         {   
             const extraMoney = account.balance - SoTien;
             await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-            var dt = new Date(yyyy,mm,dd,h,m,sc,"00")
-            var closeDate = new Date(dt.setMonth(dt.getMonth()+depositTerm-1))
+            var dt = new Date()
+            var closeDate = new Date(dt.setMonth(dt.getMonth() + depositTerm))
             const svAccount = await SavingAccount.create({
                 fund:SoTien,
                 interest: 0,
@@ -205,13 +249,13 @@ router.post('/',[
                 break;
         }
 
-        var userEmail = req.session.currentUser.email;
+        
         formInterest = req.body.HinhThuc;
         SoTien= parseInt(req.body.amountSaving);
-        var lengthEmail = userEmail.length;
-        subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
+        
+        
         token = crypto.randomBytes(2).toString("hex").toUpperCase(); res.locals.token = token;
-        Email.send(res.locals.currentUser.email,"Vietcombank","Mã xác thực TKTK : "+token)
+        Email.send(res.locals.currentUser.email,bank17ez,"Mã xác thực TKTK : "+token)
         return res.render('./pages/savingAccount/savingAccount1',{
             errors:undefined,
             account:account,
@@ -224,7 +268,6 @@ router.post('/',[
             email:subEmail,
             formInterest:formInterest,
         });  
-        
     }
 }));
 module.exports = router;

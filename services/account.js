@@ -49,12 +49,12 @@ Account.init({
     primaryKey:true,
   },
   balance: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.DOUBLE,
    
     // allowNull defaults to true
   },
   balanceSaving:{
-    type: Sequelize.INTEGER,
+    type: Sequelize.DOUBLE,
   },
   currencyUnit:{
     type: Sequelize.STRING,

@@ -9,7 +9,14 @@ class SavingAccount extends Model {
   }
   static async findSavingAccountrById(id){
     return await SavingAccount.findOne({where:{id:id}})
-}
+  }
+  static async deleteSavingAccountrById(id){
+    return await SavingAccount.destroy({
+      where: {
+        id: id
+      }
+    });
+  }
 }
 SavingAccount.init({
   // attributes

@@ -35,7 +35,7 @@ dateTimeToDate = function (today,species)
           </div>
          
         <%}%> 
-      <form method="POST" class="mt-4 ">
+      <form method="GET" action="tattoan/<%=saving.id%>" class="mt-4 ">
           <table>
               <tr>
                   <td>Người gửi : </td>
@@ -66,11 +66,13 @@ dateTimeToDate = function (today,species)
                   <td>&nbsp  <%= dateTimeToDate(saving.closeDate,0) %></td>
               </tr>
               
-          </table>
-          <div class="form-group text-right">
-              <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
-              <button type="submit" class="btn btn-primary">Tất toán</button>
-          </div><br>
+        </table>
+        
+        <div class="form-group text-right">
+            <button type="button" onclick="goBack()" class="btn btn-primary  mr-3">Quay lại</button>
+            <button type="submit" class="btn btn-primary">Tất toán</button>
+        </div><br>
+       
       </form>
   </div>
 </section>
