@@ -1,0 +1,130 @@
+<%- include ("../../partials/header", { title: currentUser.displayName }) -%>
+<%- include ("../../partials/navbar") %>
+<%- include ("../../partials/title", { maintitle: 'Management', subtitle: 'Staff: ' + currentUser.displayName }) %>
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-12">
+        <!--Tabs with icons on Card-->
+        <div class="card card-nav-tabs">
+            <div class="card-header card-header-primary">
+                <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <ul class="nav nav-tabs" data-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#all" data-toggle="tab">
+                                    <!-- <i class="material-icons">face</i> -->
+                                    All
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#outcome" data-toggle="tab">
+                                    <!-- <i class="material-icons">chat</i> -->
+                                    Outcome
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#income" data-toggle="tab">
+                                    <!-- <i class="material-icons">build</i> -->
+                                    Income
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="tab-content text-center">
+                    <div class="tab-pane active" id="all">
+                        <% if (transactions) { %>
+                        <ul class="list-group">
+                            <% transactions.forEach(trans => { %>
+                            <li
+                                class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= trans.amount %> VND _ <%= trans.content %> _
+                                <%= trans.createdAt.toDateString() %>
+                                <span class="badge badge-primary badge-pill">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                         class="bi bi-check2-circle" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                        <path fill-rule="evenodd"
+                                              d="M8 2.5A5.5 5.5 0 1 0 13.5 8a.5.5 0 0 1 1 0 6.5 6.5 0 1 1-3.25-5.63.5.5 0 1 1-.5.865A5.472 5.472 0 0 0 8 2.5z" />
+                                    </svg>
+                                </span>
+                            </li>
+                            <% }) %>
+                        </ul>
+                        <% } else { %>
+                        <i>No transaction yet</i>
+                        <% } %>
+                    </div>
+                    <div class="tab-pane" id="outcome">
+                        <% if (transactions) { %>
+                        <ul class="list-group">
+                            <% transactions.forEach(trans => { %>
+                            <% if (trans.accountNumber === account.accountNumber) { %>
+                            <li
+                                class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= trans.amount %> VND _ <%= trans.content %> _
+                                <%= trans.createdAt.toDateString() %>
+                                <span class="badge badge-primary badge-pill">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                         class="bi bi-check2-circle" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                        <path fill-rule="evenodd"
+                                              d="M8 2.5A5.5 5.5 0 1 0 13.5 8a.5.5 0 0 1 1 0 6.5 6.5 0 1 1-3.25-5.63.5.5 0 1 1-.5.865A5.472 5.472 0 0 0 8 2.5z" />
+                                    </svg>
+                                </span>
+                            </li>
+                            <% } %>
+                            <% }) %>
+                        </ul>
+                        <% } else { %>
+                        <i>No transaction yet</i>
+                        <% } %>
+                    </div>
+                    <div class="tab-pane" id="income">
+                        <% if (transactions) { %>
+                        <ul class="list-group">
+                            <% transactions.forEach(trans => { %>
+                            <% if (trans.beneficiaryAccount === account.accountNumber) { %>
+                            <li
+                                class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= trans.amount %> VND _ <%= trans.content %> _
+                                <%= trans.createdAt.toDateString() %>
+                                <span class="badge badge-primary badge-pill">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                         class="bi bi-check2-circle" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                        <path fill-rule="evenodd"
+                                              d="M8 2.5A5.5 5.5 0 1 0 13.5 8a.5.5 0 0 1 1 0 6.5 6.5 0 1 1-3.25-5.63.5.5 0 1 1-.5.865A5.472 5.472 0 0 0 8 2.5z" />
+                                    </svg>
+                                </span>
+                            </li>
+                            <% } %>
+                            <% }) %>
+                        </ul>
+                        <% } else { %>
+                        <i>No transaction yet</i>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Tabs with icons on Card-->
+        <div class="row my-3 justify-content-end">
+            <div class="col-4">
+                <a class="btn btn-light" href="/admin/users/<%= account.userId %>"
+                   role="button">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ("../../partials/footer") -%>

@@ -84,7 +84,7 @@ router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {
             limit: 20000000,
         }, {
             where: {
-                userId: id, 
+                userId: id,
             }
         });
     }
@@ -103,7 +103,7 @@ router.get('/users/:id/verify-deny', asyncHandler(async (req, res) => {
             status: 'DENIED',
         }, {
             where: {
-                userId: id, 
+                userId: id,
             }
         });
     }
@@ -157,12 +157,12 @@ router.get('/users/:id/lock', asyncHandler(async (req, res) => {
 /// Check user's transactions
 router.get('/users/:id/transaction', asyncHandler(async (req, res) => {
     const { id } = req.params;
-    
+
     const account = await Account.findAccountrByUserId(id);
     if (account) {
         const transactions = await Transaction.findAll({
             where: {
-                [Op.or]: [
+                [ Op.or ]: [
                     {
                         accountNumber: account.accountNumber,
                     },
@@ -174,12 +174,10 @@ router.get('/users/:id/transaction', asyncHandler(async (req, res) => {
         });
 
         res.locals.transactions = transactions; // Marked
-        transactions.forEach(trans => {
-            console.log(`>>> ${trans.accountNumber}`);
-        });
     }
 
-    res.redirect('back');
+    // res.redirect(`/admin/users/${id}`);
+    res.render(`./ducbui/pages/admin/transactions`, { transactions: res.locals.transactions, account });
 }));
 /// End Check user's transactions
 
@@ -227,7 +225,7 @@ router.post('/users/:id/modify', [
     body('cardId')
         .trim()
         .optional()
-        // .isLength({ min: 9, max: 9 }),
+    // .isLength({ min: 9, max: 9 }),
 ], asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { email, username, displayName, cardId } = req.body;
