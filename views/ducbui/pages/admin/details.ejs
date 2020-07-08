@@ -20,6 +20,8 @@
                         <% } else if (account.status === 'ACTIVE') { %>
                         <a href="/admin/users/<%= user.id %>/lock"
                            class="card-link btn btn-danger">Lock</a>
+                        <a href="/admin/users/<%= user.id %>/transfer"
+                           class="card-link btn btn-primary">Transfer</a>
                         <% } %>
                         <a href="/admin/users/<%= user.id %>/transaction"
                            class="card-link btn btn-info">Transaction</a>

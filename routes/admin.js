@@ -181,6 +181,48 @@ router.get('/users/:id/transaction', asyncHandler(async (req, res) => {
 }));
 /// End Check user's transactions
 
+/// Transfer
+router.get('/users/:id/transfer', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const user = await User.findUserById(id);
+    if (user) {
+        return res.render('./ducbui/pages/admin/transfer', { user });
+    }
+
+    res.redirect('back');
+}));
+
+router.post('/users/:id/transfer',[
+    body('amount')
+        .isNumeric()
+        .notEmpty()
+] ,asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { amount } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(442).json({ errors: errors.array() });
+    }
+
+    const account = await Account.findAccountrByUserId(id);
+    if (account) {
+        const balance = Number(account.balance) + Number(amount);
+        console.log(balance);
+        await Account.update({
+            balance,
+        }, {
+            where: {
+                userId: id,
+            }
+        });
+    }
+
+    res.redirect(`/admin/users/${id}`);
+}));
+/// End Transfer
+
 /// Edit user profile
 router.get('/users/:id/modify', asyncHandler(async (req, res) => {
     const { id } = req.params;
