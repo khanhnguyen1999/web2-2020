@@ -3,8 +3,12 @@ const db = require('./db');
 const Model = Sequelize.Model;
 
 class Bank extends Model {
-    static async AllBank(id) {
-        return await Bank.findAll();
+    static async findByBin(bin) {
+        return await Bank.findOne({
+            where: {
+                bin,
+            }
+        });
     }
 }
 
@@ -13,13 +17,22 @@ Bank.init({
         type: Sequelize.INTEGER,
         autoIncrement: true,
     },
-    bankName: {
+    nameBank: {
         type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true,
     },
-    bankId: {
+    internalFee: {
+        type: Sequelize.DOUBLE,
+        allowNull: false,
+    },
+    externalFee: {
+        type: Sequelize.DOUBLE,
+        allowNull: false,
+    },
+    bin: {
         type: Sequelize.STRING,
+        allowNull: false,
     },
 }, {
     underscored: true,

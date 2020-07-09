@@ -2,55 +2,45 @@ const Sequelize = require('sequelize');
 const db = require('./db');
 const Model = Sequelize.Model;
 
-class Beneficiary extends Model {
-    static async findAccountrByUserId(id) {
-        return await Account.findOne({ where: { user_id: id } })
-    }
-
-    static async findAccountrByAccountNumber(accountNumber) {
-        return await Account.findOne(
-            {
-                where: {
-                    accountNumber: accountNumber,
-                }
-            });
+class BeneficiaryAccount extends Model {
+    static async findByAccountNumber(accountNumber) {
+        return await beneficiary.findOne({
+            where: {
+                accountNumber
+            }
+        });
     }
 
     static async updateBalance(balance, accountNumber) {
-        return await Account.update(
+        return await beneficiary.update(
             {
-                balance: balance,
+                balance
             }, {
             where: {
-                accountNumber: accountNumber,
+                accountNumber
             }
         });
     }
 }
 
-Beneficiary.init({
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-    },
-    accountNumber: {
+BeneficiaryAccount.init({
+    displaName: {
         type: Sequelize.STRING,
+    },
+    beneficiaryBank: {
+        type: Sequelize.STRING,
+    },
+    pendingAmount: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true,
-    },
-    bankName: {
-        type: Sequelize.STRING,
-    },
-    balance: {
-        type: Sequelize.INTEGER,
-    },
+    }
 }, {
     underscored: true,
     sequelize: db,
-    modelName: 'beneficiary'
+    modelName: 'beneficiaryAccount',
 });
 
 const Bank = require('./bank');
-Beneficiary.belongsTo(Bank, { foreignKey: 'bankName' });
+BeneficiaryAccount.belongsTo(Bank, { foreignKey: 'bankName' });
 
-module.exports = Beneficiary;
+module.exports = BeneficiaryAccount;

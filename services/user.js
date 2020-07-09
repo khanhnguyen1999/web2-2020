@@ -4,15 +4,11 @@ const db = require('./db');
 const Model = Sequelize.Model;
 
 class User extends Model {
-    static async findEmail() {
-        return User.findAll();
+    static async findById(id) {
+        return User.findByPk(id)
     }
 
-    static async findUserById(id) {
-        return User.findByPk(id);
-    }
-
-    static async findUserByEmail(email) {
+    static async findByEmail(email) {
         return User.findOne({
             where: {
                 email,
@@ -20,7 +16,7 @@ class User extends Model {
         });
     }
 
-    static findUserByUserName(username) {
+    static findByUsername(username) {
         return User.findOne({
             where: {
                 username,
@@ -31,9 +27,9 @@ class User extends Model {
     static hashPassword(password) {
         return bcrypt.hashSync(password, 10);
     }
-
+    
     static verifyPassword(passwordHash, password) {
-        return bcrypt.compareSync(passwordHash, password);
+        return bcrypt.compareSync(passwordHash, password)
     }
 }
 User.init({
@@ -41,11 +37,11 @@ User.init({
     email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
     },
     username: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
     },
     password: {
         type: Sequelize.STRING,
@@ -63,15 +59,16 @@ User.init({
         type: Sequelize.DATE,
     },
     idCardPhoto: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING,
     },
     tokenUser: {
         type: Sequelize.STRING,
-        allowNull: true,
-    }
+        allowNull: true
+        // allowNull defaults to true
+    },
 }, {
     sequelize: db,
-    modelName: 'user',
+    modelName: 'user'
 });
 
 module.exports = User;
