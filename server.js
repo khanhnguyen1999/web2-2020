@@ -29,6 +29,12 @@ app.set('view engine', 'ejs');
 app.get('/home', function (req, res) {
    res.render('pages/home');
 });
+
+app.get('/blog', function (req, res) {
+   res.render('pages/blog');
+});
+
+
 app.get('/logout',require('./routes/logout'));
 
 // --------Transaction----------
