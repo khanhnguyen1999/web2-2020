@@ -1,55 +1,46 @@
-const bcrypt = require('bcrypt');
-const Sequelize = require('sequelize')
-const db = require('./db')
+const Sequelize = require('sequelize');
+const db = require('./db');
 
 const Model = Sequelize.Model;
-class beneficiary extends Model {
-    static async findAccountrByUserId(id){
-        return await beneficiary.findOne({where:{user_id:id}})
+class BeneficiaryAccount extends Model {
+    static async findByAccountNumber(accountNumber) {
+        return await beneficiary.findOne({
+            where: {
+                accountNumber
+            }
+        });
     }
-    static async findAccountrByAccountNumber(accountNumber){
-      return await beneficiary.findOne({where:{accountNumber:accountNumber}})
-    }
-    static async updateBalance(balance,accountNumber){
-      return await beneficiary.update(
-        {balance:balance},
-        {where:{accountNumber:accountNumber}}
-        )
+
+    static async updateBalance(balance, accountNumber) {
+        return await beneficiary.update(
+            {
+                balance
+            }, {
+            where: {
+                accountNumber
+            }
+        });
     }
 }
-beneficiary.init({
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-  },
-  displayName:{
-    type: Sequelize.STRING,
-  },
-  accountNumber: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    primaryKey:true,
-  },
 
-  bankName:{
-    type: Sequelize.STRING,
-  },
-  balance: {
-    type: Sequelize.INTEGER,
-  },
-
+BeneficiaryAccount.init({
+    displaName: {
+        type: Sequelize.STRING,
+    },
+    beneficiaryBank: {
+        type: Sequelize.STRING,
+    },
+    pendingAmount: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+    }
 }, {
-  underscored:true,
-  sequelize: db,
-  modelName: 'beneficiary'
+    underscored: true,
+    sequelize: db,
+    modelName: 'beneficiaryAccount',
 });
 
-// const User = require('./user');
-// User.hasMany(Account)
-// Account.belongsTo(User);
-const Bank = require('./bank')
-beneficiary.belongsTo(Bank, {foreignKey: 'bankName'})
+const Bank = require('./bank');
+BeneficiaryAccount.belongsTo(Bank, { foreignKey: 'bankName' });
 
-// Account.belongsTo(Transaction,{as:'test'})
-
-module.exports = beneficiary;
+module.exports = BeneficiaryAccount;

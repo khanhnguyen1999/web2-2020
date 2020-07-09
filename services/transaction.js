@@ -1,44 +1,45 @@
 const bcrypt = require('bcrypt');
-const Sequelize = require('sequelize')
-const db = require('./db')
+const Sequelize = require('sequelize');
+const db = require('./db');
 
 const Model = Sequelize.Model;
 class Transaction extends Model {
 
 }
+
 Transaction.init({
-  // attributes
-
-  accountNumber: {
-    type: Sequelize.STRING,
-    allowNull: false
-    // allowNull defaults to true
-  },
-  amount: {
-    type: Sequelize.INTEGER,
-    // allowNull defaults to true
-  },
-  content: {
-    type: Sequelize.STRING,
-  },
-  beneficiaryBank: {
-    type: Sequelize.STRING,
-  },
-  beneficiaryAccount: {
-    type: Sequelize.STRING,
-  },
-  fee:{
-    type: Sequelize.INTEGER,
-  }
-
+    transactionID: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    accountNumber: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    },
+    amount: {
+        type: Sequelize.INTEGER,
+    },
+    content: {
+        type: Sequelize.STRING,
+    },
+    beneficiaryAccount: {
+        type: Sequelize.STRING,
+    },
+    fee: {
+        type: Sequelize.INTEGER,
+    },
+    status: {
+        type: Sequelize.STRING,
+    },
+    details: {
+        type: Sequelize.STRING,
+    }
 }, {
-  sequelize: db,
-  modelName: 'transaction'
+    sequelize: db,
+    modelName: 'transaction'
 });
-const Account  = require('./account')
-const Bank = require('./bank')
-const BeneficiarAccount = require('./beneficiaryAccount')
-Transaction.belongsTo(Account, {foreignKey: 'accountNumber'})
 
-Transaction.belongsTo(Bank, {foreignKey: 'beneficiaryBank'})
+const Account = require('./account');
+Transaction.belongsTo(Account, { foreignKey: 'accountNumber' });
+
 module.exports = Transaction;

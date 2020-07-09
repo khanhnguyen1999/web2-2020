@@ -13,7 +13,7 @@ router.post('/',[
         .isEmail()
         .normalizeEmail()
         .custom(async function(email){
-            const found = await User.findUserByEmail(email);
+            const found = await User.findByEmail(email);
             if(found){
                 throw Error('User exists')
             }

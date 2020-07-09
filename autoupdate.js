@@ -11,7 +11,7 @@ var CronJob = require('cron').CronJob;
 
 
 var job = new CronJob('00 44 21 * * *',asyncHandler(async function() {
-    const listSavingAccount = await SavingAccount.allSavingAccount();
+    const listSavingAccount = await SavingAccount.findAll();
     console.log(listSavingAccount)
     let now = new Date();
     listSavingAccount.forEach(async (x)=>{

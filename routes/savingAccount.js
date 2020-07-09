@@ -99,7 +99,7 @@ function dateTimeToDate(today,species)
 //--------- hien thi thong tin saving -------------
 router.get("/saving/listSaving/:id",asyncHandler(async function postLogin(req,res){
     const {id}=req.params;
-    const itemSaving = await SavingAccount.findSavingAccountrById(id);
+    const itemSaving = await SavingAccount.findById(id);
     req.session.idSavingIndex = itemSaving.id;
     res.render('./pages/savingAccount/saving',{fund:fund,saving:itemSaving,errors:null});
 }))
@@ -118,7 +118,7 @@ router.get("/saving/addSaving",asyncHandler(async function postLogin(req,res){
 //---------- tat toan --------------
 router.get("/saving/listSaving/tattoan/:id",asyncHandler(async function postLogin(req,res){
     const {id}=req.params;
-    const itemSaving = await SavingAccount.findSavingAccountrById(id);
+    const itemSaving = await SavingAccount.findById(id);
     tokenTatToan = crypto.randomBytes(2).toString("hex").toUpperCase();
     Email.send(res.locals.currentUser.email,bank17ez,"Mã xác thực tất toán  : "+tokenTatToan)
     res.render('./pages/savingAccount/tattoan',{email:subEmail,fund:fund,saving:itemSaving,errors:null});
@@ -128,11 +128,11 @@ router.post("/saving/listSaving/tattoan/:id",asyncHandler(async function postLog
     if(req.body.OTP.toUpperCase()==tokenTatToan)
     {   
         const {id}=req.params;
-        const itemSaving = await SavingAccount.findSavingAccountrById(id);
-        let accountUser = await Account.findAccountrByUserId(req.currentUser.id)
+        const itemSaving = await SavingAccount.findById(id);
+        let accountUser = await Account.findByUserID(req.currentUser.id)
         const extraMoney = accountUser.balance + itemSaving.fund;
         await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-        await SavingAccount.deleteSavingAccountrById(id);
+        await SavingAccount.deleteById(id);
         Email.send(res.locals.currentUser.email,bank17ez,"Tất toán thành công số tiền  : "+itemSaving.fund)
         res.render('./pages/savingAccount/savingAccount2')
     }
@@ -173,7 +173,7 @@ router.get('/',async (req,res)=>{
 router.post('/addSaving',[
     body('amountSaving')
         .custom(async function(SoTienBody,{req}){
-            account = await Account.findAccountrByUserId(req.session.currentUser.id);
+            account = await Account.findByUserID(req.session.currentUser.id);
             console.log(typeof SoTienBody)
             console.log(typeof account.balance)
             if((parseInt(SoTienBody)+50000)>account.balance)
