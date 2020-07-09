@@ -1,18 +1,30 @@
 const User = require('../services/user');
 const Account = require('../services/account');
+const bodyParser = require('body-parser');
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const path = require('path');
 const multer = require('multer');
-
+var fileupload = require('express-fileupload')
+router.use(fileupload({
+    useTempFiles:true
+}))
+const cloudinary = require("cloudinary").v2;
 // Set The Storage Engine
 const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function(req, file, cb) {
+    console.log(file)
+    cb(null, file.originalname)
+  }
 });
 
+cloudinary.config({
+    cloud_name: 'hvcg-company',
+    api_key: '794948648774347',
+    api_secret: 'rL1mGGSMO81nmMBzJq7j7TaeLLs'
+});
 // Init Upload
 const upload = multer({
     storage: storage,
@@ -23,57 +35,30 @@ const upload = multer({
 }).single('myImage');
 
 // Check File Type
-function checkFileType(file, cb) {
-    // Allowed ext
-    const filetypes = /jpeg|jpg|png|gif/;
-    // Check ext
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
 
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: Images Only!');
-    }
-}
 router.get('/', (req, res) => res.render('pages/profile'));
 
-router.post('/upload', asyncHandler(async function (req, res) {
-    upload(req, res, async (err) => {
-        if (err) {
-            res.render('pages/profile', {
-                msg: err
-            });
-        } else {
-            if (req.file == undefined) {
-                res.render('pages/profile', {
-                    msg: 'Error: No File Selected!',
-                });
-            } else {
-                await User.update({
-                    idCardPhoto: req.file.filename,
-                }, {
-                    where: {
-                        id: req.currentUser.id,
-                    }
-                }).then(async () => {
-                    await Account.update({
-                        status: 'PENDING',
-                    }, {
-                        where: {
-                            userId: req.currentUser.id,
-                        }
-                    });
-                });
-                res.render('pages/profile', {
-                    msg: 'File Uploaded!',
-                    file: `uploads/${req.file.filename}`,
-                });
-            }
-        }
+router.post('/upload', (req, res) => {
+    // collected image from a user
+      const file = req.files.image;
+      console.log(req.files)
+    console.log(file.tempFilePath)
+
+    // upload image here
+    cloudinary.uploader.upload(file.tempFilePath)
+    .then((result) => {
+      User.update({
+        idCardPhoto: result.secure_url,
+        }, { 
+            where: { 
+                id: req.session.userId } });
+        res.redirect('/multer')
+    }).catch((error) => {
+      res.status(500).send({
+        message: "failure",
+        error,
+      });
     });
-}
-));
+});
 
 module.exports = router;
