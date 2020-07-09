@@ -1,19 +1,13 @@
-const { Router } = require('express');
+const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
-const asyncHandler = require('express-async-handler')
-const router = new Router();
-const db = require('../services/db')
+const asyncHandler = require('express-async-handler');
 const User = require('../services/user');
 const Account = require('../services/account');
-const SavingAccount = require('../services/saving_account');
 const Transaction = require('../services/transaction');
 const Bank = require('../services/bank');
-const BeneficiatyAccount = require('../services/beneficiaryAccount');
-const Email = require('../services/email');
-// const { tableName } = require('../services/user');
+const SavingAccount = require('../services/saving_account');
+const BeneficiaryAccount = require('../services/beneficiaryAccount');
 const crypto = require('crypto');
-// const { INTEGER } = require('sequelize/types');
-const Sequelize = require('sequelize')
 
 var token;
 var fee;
@@ -25,7 +19,6 @@ var binRoot = process.env.BIN || 9704;
 router.route('/')
     .get(asyncHandler(async (req, res) => {
         listBank = await Bank.findAll();
-        console.log(listBank);
         return res.render('./pages/transactions/transaction', { errors: null, listBank: listBank });
     }))
     .post([
@@ -76,6 +69,7 @@ router.route('/')
             }),
     ], asyncHandler(async (req, res) => {
         const errors = validationResult(req);
+
         if (!errors.isEmpty()) {
             return res.status(422).render('./pages/transactions/transaction', { errors: errors.errors, listBank });
         }
@@ -84,30 +78,65 @@ router.route('/')
 
         const bank = await Bank.findByBin(bin);
 
+        const totalFee = parseInt(amount) * fee;
+        
+        const today = new Date();
+        const hour = ('0' + today.getHours()).slice(-2);
+        const min = ('0' + today.getMinutes()).slice(-2);
+        const sec = ('0' + today.getSeconds()).slice(-2);
+        const date = ('0' + today.getDate()).slice(-2);
+        const mon = ('0' + (today.getMonth() + 1)).slice(-2);
+        const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString('hex').toUpperCase();
+
         if (Number(bin) === binRoot) {
-            const beneficiaryAccount = await Transaction.create({
-                transactionID: 'test',
+            const beneficiaryInfo = await Transaction.create({
+                transactionID,
                 accountNumber: res.locals.account.accountNumber,
                 amount,
                 content,
                 beneficiaryAccount: beneficiaryAccountNumber,
-                fee,
+                fee: totalFee,
             }).then(async (trans) => {
                 const account = await Account.findOne(
                     {
                         where: {
-                            beneficiaryAccount: trans.beneficiaryAccount,
+                            accountNumber: trans.beneficiaryAccount,
                         }
                     }).then(async (account) => {
-                        const user = await User.findById(account.userId);
+                        const user = await User.findOne({
+                            where: {
+                                id: account.userId,
+                            }
+                        }).then(async (user) => {
+                            await BeneficiaryAccount.create({
+                                displayName: user.displayName,
+                                beneficiaryBank: bank.bankName,
+                                pendingAmount: amount,
+                            });
+
+                            return user;
+                        }).catch((err) => {
+                            console.log(err);
+                        });
+
                         return user;
                     });
-                return account;
+
+                return { account, trans };
             }).catch((err) => {
                 console.log(err);
-                console.log(`>> Error: ${err.beneficiaryAccount}`); 
             });
-            console.log(beneficiaryAccount);
+
+            const confirmInfo = {
+                beneficiaryAccountNumber,
+                amount,
+                content,
+                totalFee,
+                displayName: beneficiaryInfo.account.displayName,
+                transactionID: beneficiaryInfo.trans.transactionID,
+            }
+
+            return res.render('./pages/transactions/verify', { errors: null, confirmInfo });
         }
     }));
 

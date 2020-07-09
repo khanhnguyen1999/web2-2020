@@ -4,10 +4,12 @@
     <div class="container container_transaction">
         <div class=" p-4 transaction_profile">
             <div class="task-profile">
-                <p><i class="fas fa-user"></i>Chủ tài khoản : <span><%= currentUser.displayName %> </span></p>
+                <p><i class="fas fa-user"></i>Chủ tài khoản : <span><%= currentUser.displayName %>
+                    </span></p>
             </div>
             <div class="task-profile">
-                <p><i class="fas fa-address-card"></i>Số tài khoản : <span><%= account.accountNumber %></span></p>
+                <p><i class="fas fa-address-card"></i>Số tài khoản :
+                    <span><%= account.accountNumber %></span></p>
             </div>
             <div class="task-profile">
                 <p><i class="fas fa-dollar-sign"></i></i>Số dư : <span><% var rs=account.balance.toString();          
@@ -31,40 +33,27 @@
       <div class="form-group mb-3 ">
         <label for="formGroupExampleInput">Ngân hàng</label>
         <select name="bin" class="custom-select" id="inputGroupSelect02">
-          
-          <% for(var i = 0 ;i<listBank.length;i++){ 
-            if(listBank[i].nameBank=="Vietcombank")
-            { %>
-        <option selected value="<%=listBank[i].bin%>"><%=listBank[i].nameBank%></option>
-        <% continue;} %>
-        <option value="<%=listBank[i].nameBank%>"><%=listBank[i].nameBank%></option>
-        <% } %>
-
-        //
-        <!-- <option value="1">Agribank</option>
-          // <option value="2">Techcombank</option>
-          // <option value="3">Đông Á</option>
-          // <option value="4">BIDV</option>
-          // <option value="5">MBBank</option>
-          // <option value="6">TPBank</option>
-          // <option value="7">VPBank</option>
-          // <option value="8">Eximbank</option>
-          // <option value="9">VIB</option> -->
+            <% listBank.forEach(bank => { %>
+            <option value="<%= bank.bin %>"><%= bank.bankName %></option>
+            <% }) %>
         </select>
+
 
     </div>
     <div class="form-group">
         <label for="formGroupExampleInput">Số tài khoản hưởng thụ</label>
-        <input name="beneficiaryAccountNumber" type="number" class="form-control" id="formGroupExampleInput"
-            placeholder="VD : 0123456789">
+        <input name="beneficiaryAccountNumber" type="number" class="form-control"
+               id="formGroupExampleInput" placeholder="VD : 0123456789">
     </div>
     <div class="form-group">
         <label for="amount">Số tiền</label>
-        <input name="amount" type="number" class="form-control" id="amount" placeholder="50.000 - 5.000.000">
+        <input name="amount" type="number" class="form-control" id="amount"
+               placeholder="50.000 - 5.000.000">
     </div>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Nội dung</label>
-        <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <textarea name="content" class="form-control" id="exampleFormControlTextarea1"
+                  rows="3"></textarea>
     </div>
     <div class="form-group  text-right">
         <button type="button" class="btn btn-primary  mr-3">Hủy</button>

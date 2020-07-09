@@ -17,7 +17,7 @@ Bank.init({
         type: Sequelize.INTEGER,
         autoIncrement: true,
     },
-    nameBank: {
+    bankName: {
         type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true,

@@ -18,7 +18,7 @@ const beneficiaryAccount = require('./services/beneficiaryAccount');
 
 // ---------NPM INSTALL---------
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieSession({secret: 'todotopsecret'}))
+app.use(cookieSession({ secret: 'todotopsecret' }))
 app.use(express.json());
 
 // --------APP SET------------
@@ -28,32 +28,31 @@ app.set('view engine', 'ejs');
 
 // ----------APP GET------------
 app.get('/home', function (req, res) {
-   res.render('pages/home');
+    res.render('pages/home');
 });
-app.get('/logout',require('./routes/logout'));
+app.get('/logout', require('./routes/logout'));
 
 // --------Transaction----------
 app.use(require('./middlewares/auth'));
-app.use('/transaction',require('./routes/transaction'));
+app.use('/transaction', require('./routes/transaction'));
 
 // --------Saving Account ----------
-app.use('/saving',require('./routes/savingAccount'));
-app.get('/saving/listSaving/:id',require('./routes/savingAccount'));
-app.get('/saving/listSaving/tattoan/:id',require('./routes/savingAccount'));
-app.post('/saving/listSaving/tattoan/:id',require('./routes/savingAccount'));
-app.get('/saving/addSaving',require('./routes/savingAccount'));
+app.use('/saving', require('./routes/savingAccount'));
+app.get('/saving/listSaving/:id', require('./routes/savingAccount'));
+app.get('/saving/listSaving/tattoan/:id', require('./routes/savingAccount'));
+app.post('/saving/listSaving/tattoan/:id', require('./routes/savingAccount'));
+app.get('/saving/addSaving', require('./routes/savingAccount'));
 // var a = RSavingAccount;
 
 
 // --------APP USE----------
 app.use(express.static('public'))
-app.use('/register',require('./routes/register'))
-app.use('/',require('./routes/login'))
+app.use('/register', require('./routes/register'))
+app.use('/', require('./routes/login'))
 
 // -------CONNECTION---------
-db.sync().then(function(){
-  app.listen(port);
-
-}).catch(function(err){
-console.error(err)
+db.sync().then(function () {
+    app.listen(port);
+}).catch(function (err) {
+    console.error(err)
 })
