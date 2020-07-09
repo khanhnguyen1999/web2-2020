@@ -30,12 +30,12 @@
     <form method="POST" class="mt-4">
       <div class="form-group mb-3 ">
         <label for="formGroupExampleInput">Ngân hàng</label>
-        <select name="NganHang" class="custom-select" id="inputGroupSelect02">
+        <select name="bin" class="custom-select" id="inputGroupSelect02">
           
           <% for(var i = 0 ;i<listBank.length;i++){ 
             if(listBank[i].nameBank=="Vietcombank")
             { %> 
-              <option selected value="<%=listBank[i].nameBank%>"><%=listBank[i].nameBank%></option>
+              <option selected value="<%=listBank[i].bin%>"><%=listBank[i].nameBank%></option>
             <% continue;} %> 
             <option value="<%=listBank[i].nameBank%>"><%=listBank[i].nameBank%></option>
           <% } %> 
@@ -54,15 +54,15 @@
       </div>
       <div class="form-group">
         <label for="formGroupExampleInput">Số tài khoản hưởng thụ</label>
-        <input name="STKHuongThu" type="number" class="form-control" id="formGroupExampleInput" placeholder="VD : 0123456789">
+        <input name="beneficiaryAccountNumber" type="number" class="form-control" id="formGroupExampleInput" placeholder="VD : 0123456789">
       </div>
       <div class="form-group">
-        <label for="formGroupExampleInput2">Số tiền</label>
-        <input name="SoTien" type="number" class="form-control" id="formGroupExampleInput2" placeholder="50.000 - 5.000.000">
+        <label for="amount">Số tiền</label>
+        <input name="amount" type="number" class="form-control" id="amount" placeholder="50.000 - 5.000.000">
       </div>
       <div class="form-group">
         <label for="exampleFormControlTextarea1">Nội dung</label>
-        <textarea name="NoiDung" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <textarea name="content" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
       </div>
       <div class="form-group  text-right">
         <button type="button"  class="btn btn-primary  mr-3">Hủy</button>
