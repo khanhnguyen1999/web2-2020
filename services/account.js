@@ -3,7 +3,7 @@ const db = require('./db');
 
 const Model = Sequelize.Model;
 class Account extends Model {
-    static async findByUserID(id) {
+    static async findByUserId(id) {
         return await Account.findOne({
             where: {
                 userId: id,

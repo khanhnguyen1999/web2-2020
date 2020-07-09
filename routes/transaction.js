@@ -16,13 +16,16 @@ const crypto = require('crypto');
 const Sequelize = require('sequelize')
 
 var token;
+var fee;
+var listBank;
 var totalMoney;
 var extraMoney;
 var binRoot = process.env.BIN || 9704;
 
 router.route('/')
     .get(asyncHandler(async (req, res) => {
-        const listBank = await Bank.findAll();
+        listBank = await Bank.findAll();
+        console.log(listBank);
         return res.render('./pages/transactions/transaction', { errors: null, listBank: listBank });
     }))
     .post([
@@ -35,7 +38,7 @@ router.route('/')
                     const { bin, beneficiaryAccountNumber } = req.body;
                     const beneficiaryBin = beneficiaryAccountNumber.substr(0, 4);
                     const bank = await Bank.findByBin(bin);
-                    const account = await Account.findByAccountNumber(res.locals.accountNumber);
+                    const account = await Account.findByAccountNumber(req.session.account.accountNumber);
 
                     // Cung ngan hang
                     if (bin === beneficiaryBin) {
@@ -74,20 +77,35 @@ router.route('/')
     ], asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).render('./pages/transactions/transaction', { errors: errors.errors, listBank: listBank });
+            return res.status(422).render('./pages/transactions/transaction', { errors: errors.errors, listBank });
         }
 
         const { bin, beneficiaryAccountNumber, amount, content } = req.body;
 
         const bank = await Bank.findByBin(bin);
-        if (bin === binRoot) {
-            const beneficiaryAccount = await Account.findOne({
-                where: {
-                    beneficiaryAccount: beneficiaryAccountNumber,
-                }
-            }).then((account) => {
-                const user = User.findById(account.userId);
-                return user;
+
+        if (Number(bin) === binRoot) {
+            const beneficiaryAccount = await Transaction.create({
+                transactionID: 'test',
+                accountNumber: res.locals.account.accountNumber,
+                amount,
+                content,
+                beneficiaryAccount: beneficiaryAccountNumber,
+                fee,
+            }).then(async (trans) => {
+                const account = await Account.findOne(
+                    {
+                        where: {
+                            beneficiaryAccount: trans.beneficiaryAccount,
+                        }
+                    }).then(async (account) => {
+                        const user = await User.findById(account.userId);
+                        return user;
+                    });
+                return account;
+            }).catch((err) => {
+                console.log(err);
+                console.log(`>> Error: ${err.beneficiaryAccount}`);
             });
             console.log(beneficiaryAccount);
         }

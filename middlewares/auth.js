@@ -8,7 +8,7 @@ module.exports = asyncHandler(async function auth(req,res,next){
     if(!userId){
         return next();
     }
-    const user = await User.findUserById(userId)
+    const user = await User.findById(userId)
     if(!user){
         return next();
     }
@@ -18,7 +18,7 @@ module.exports = asyncHandler(async function auth(req,res,next){
    
     
     if(user){
-        const account = await Account.findAccountrByUserId(req.currentUser.id);
+        const account = await Account.findByUserId(req.currentUser.id);
         res.locals.account = account;
         req.session.account = account;
         req.session.currentUser = user;
