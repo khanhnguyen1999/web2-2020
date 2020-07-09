@@ -4,11 +4,30 @@ const db = require('./db')
 
 const Model = Sequelize.Model;
 class SavingAccount extends Model {
+  static async allSavingAccount(){
+    return await  SavingAccount.findAll({})
+  }
   static async findSavingAccountrByAccountNumber(accountNumber){
     return await SavingAccount.findAll({where:{accountAccountNumber:accountNumber}})
   }
   static async findSavingAccountrById(id){
     return await SavingAccount.findOne({where:{id:id}})
+  }
+  static async updateFund(fund,idSavingAccount){
+    return await SavingAccount.update(
+      {fund:fund},
+      {where:{id:idSavingAccount}}
+      )
+  }
+  static async updateDateSaving(openDate,closeDate,interest,idSavingAccount){
+    return await SavingAccount.update(
+      {
+        openDate:openDate,
+        closeDate:closeDate,
+        interest:interest,
+      },
+      {where:{id:idSavingAccount}}
+      )
   }
   static async deleteSavingAccountrById(id){
     return await SavingAccount.destroy({
@@ -24,7 +43,7 @@ SavingAccount.init({
     type: Sequelize.INTEGER,
   },
   interest: {
-    type: Sequelize.FLOAT,
+    type: Sequelize.INTEGER,
     allowNull: false,
     // allowNull defaults to true
   },
@@ -33,6 +52,9 @@ SavingAccount.init({
   },
   interestRate:{
     type: Sequelize.FLOAT,
+  },
+  type:{
+    type: Sequelize.INTEGER,
   },
   openDate: {
     type: Sequelize.DATE, 

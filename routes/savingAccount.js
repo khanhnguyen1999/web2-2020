@@ -12,12 +12,13 @@ const BeneficiatyAccount= require('../services/beneficiaryAccount');
 const Email = require('../services/email');
 // const { tableName } = require('../services/user');
 const crypto = require('crypto');
-const Sequelize = require('sequelize')
+const Sequelize = require('sequelize');
+const { DATE } = require('sequelize');
+const { updateFund } = require('../services/saving_account');
 
 const bank17ez= "Vietcombank";
 
 var account ;
-var interest;
 var interestRate;
 var userSavingAccount;
 var opendatesaving=undefined;
@@ -38,7 +39,26 @@ var formInterest;
 var now;
 var subEmail
 
+// module.exports = function auto() {
+//     var start = new Date;
+//     start.setHours(1, 0, 0); // 11pm
+  
+//     function pad(num) {
+//       return ("0" + parseInt(num)).substr(-2);
+//     }
+  
+//     function tick() {
+//       var now = new Date;
+//       if (now > start) { // too late, go to tomorrow
+//         updateSaving();
+//         start.setDate(start.getDate() + 1);
+//       }
+//       setTimeout(tick, 20000);
+//     }
+// }
+// function updateSaving(){
 
+// }
 function inWords (num) {
     var a = ['','Một ','Hai ','Ba ','Bốn ', 'Năm ','Sáu ','Bảy ','Tám ','Chín ','Mười ','Mười Một ','Mười Hai ','Mười Ba ','Mười Bốn ','Mười Lăm ','Mười sáu ','Mười Bảy ','Mười Tám ','Mười Chín '];
     var b = ['', '', 'Hai Mươi','Ba Mươi','Bốn Mươi','Năm Mươi', 'Sáu Mươi','Bảy Mươi','Tám Mươi','Chín Mươi'];
@@ -149,6 +169,7 @@ router.get('/',async (req,res)=>{
     return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});  
 });
 
+
 router.post('/addSaving',[
     body('amountSaving')
         .custom(async function(SoTienBody,{req}){
@@ -186,9 +207,10 @@ router.post('/addSaving',[
             await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
             var dt = new Date()
             var closeDate = new Date(dt.setMonth(dt.getMonth() + depositTerm))
+            let interest = parseInt(SoTien*interestRate/100)
             const svAccount = await SavingAccount.create({
                 fund:SoTien,
-                interest: 0,
+                interest: interest,
                 depositTerm: depositTerm,
                 interestRate:interestRate,
                 openDate:today,
@@ -212,7 +234,6 @@ router.post('/addSaving',[
                 formInterest:formInterest,
             }); 
         }
-  
    }
    else
    {

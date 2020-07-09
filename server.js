@@ -11,6 +11,7 @@ const db = require('./services/db')
 const User = require('./services/user');
 const Account = require('./services/account');
 const SavingAccount = require('./services/saving_account');
+const RSavingAccount = require('./autoupdate');
 const Transaction = require('./services/transaction');
 const Bank = require('./services/bank');
 const beneficiaryAccount = require('./services/beneficiaryAccount');
@@ -41,6 +42,7 @@ app.get('/saving/listSaving/:id',require('./routes/savingAccount'));
 app.get('/saving/listSaving/tattoan/:id',require('./routes/savingAccount'));
 app.post('/saving/listSaving/tattoan/:id',require('./routes/savingAccount'));
 app.get('/saving/addSaving',require('./routes/savingAccount'));
+// var a = RSavingAccount;
 
 
 // --------APP USE----------
