@@ -105,7 +105,7 @@ router.route('/')
                 return account;
             }).catch((err) => {
                 console.log(err);
-                console.log(`>> Error: ${err.beneficiaryAccount}`);
+                console.log(`>> Error: ${err.beneficiaryAccount}`); 
             });
             console.log(beneficiaryAccount);
         }
