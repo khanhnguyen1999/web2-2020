@@ -70,9 +70,8 @@ router.route('/')
             }),
     ], asyncHandler(async (req, res) => {
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
-            return res.status(422).render('./pages/transactions/verify', { errors: "Wrong OTP", confirmInfo });
+            return res.status(422).render('./pages/transactions/transaction', { errors: "Wrong OTP", confirmInfo });
         }
 
         const today = new Date();
@@ -85,11 +84,9 @@ router.route('/')
 
         if (!req.body.beneficiaryAccountNumber) {
             const { OTP } = req.body;
-            console.log(confirmInfo);
-            console.log(res.locals.confirmInfo);
             const bank = await Bank.findByBin(confirmInfo.bin);
 
-            if (OTP === token) {
+            if (OTP.toUpperCase() === token) {
                 const beneficiaryInfo = await Transaction.create({
                     transactionID,
                     accountNumber: res.locals.account.accountNumber,
@@ -107,21 +104,23 @@ router.route('/')
                         const newBalance = account.balance - totalMoney;
 
                         await Account.updateBalance(newBalance, account.accountNumber);
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                    // Beneficiary account: New Balance
-                    await Account.findOne({
-                        where: {
-                            accountNumber: trans.beneficiaryAccount,
-                        }
-                    }).then(async (account) => {
-                        const newBalance = account.balance + confirmInfo.amount;
 
-                        await Account.updateBalance(newBalance, account.accountNumber);
+                        // Beneficiary account: New Balance
+                        await Account.findOne({
+                            where: {
+                                accountNumber: trans.beneficiaryAccount,
+                            }
+                        }).then(async (account) => {
+                            const newBalance = account.balance + parseInt(confirmInfo.amount);
+
+                            await Account.updateBalance(newBalance, account.accountNumber);
+                        }).catch((err) => {
+                            console.log(err);
+                        });
                     }).catch((err) => {
                         console.log(err);
                     });
+
 
                     const account = await Account.findOne(
                         {
@@ -195,8 +194,8 @@ router.route('/')
                 res.locals.confirmInfo = confirmInfo;
 
                 token = crypto.randomBytes(2).toString("hex").toUpperCase();
-                await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
-
+                // await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
+                console.log(token)
                 return res.render('./pages/transactions/verify', { errors: null, confirmInfo });
             } else {
                 return res.render('./pages/transactions/transaction', { errors: "Not supported", listBank: listBank });

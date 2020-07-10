@@ -20,7 +20,7 @@
         rs = formatter.format(rs) %> <%= rs%> VND</span></p>
             </div>
         </div>
-        <% if(errors) {%>
+        <% if(errors!=null) {%>
         <% errors.forEach(function(x) {  %>
 
         <div style="color: rgb(224, 87, 87);" class="alert alert-success mt-3" role="alert">
