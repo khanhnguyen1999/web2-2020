@@ -8,18 +8,20 @@ const Bank = require('../services/bank');
 const SavingAccount = require('../services/saving_account');
 const BeneficiaryAccount = require('../services/beneficiaryAccount');
 const crypto = require('crypto');
+const Email = require('../services/email');
 
 var token;
 var fee;
 var listBank;
 var totalMoney;
 var extraMoney;
+var confirmInfo;
 var binRoot = process.env.BIN || 9704;
 
 router.route('/')
     .get(asyncHandler(async (req, res) => {
         listBank = await Bank.findAll();
-        return res.render('./pages/transactions/transaction', { errors: null, listBank: listBank });
+        return res.render('./pages/transactions/transaction', { errors: null, listBank });
     }))
     .post([
         body('amount')
@@ -52,7 +54,6 @@ router.route('/')
                 }
             }),
         body('beneficiaryAccountNumber')
-            .notEmpty()
             .custom(async function (beneficiaryAccountNumber) {
                 if (!beneficiaryAccountNumber) {
                     return false;
@@ -71,15 +72,9 @@ router.route('/')
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            return res.status(422).render('./pages/transactions/transaction', { errors: errors.errors, listBank });
+            return res.status(422).render('./pages/transactions/verify', { errors: "Wrong OTP", confirmInfo });
         }
 
-        const { bin, beneficiaryAccountNumber, amount, content } = req.body;
-
-        const bank = await Bank.findByBin(bin);
-
-        const totalFee = parseInt(amount) * fee;
-        
         const today = new Date();
         const hour = ('0' + today.getHours()).slice(-2);
         const min = ('0' + today.getMinutes()).slice(-2);
@@ -88,55 +83,124 @@ router.route('/')
         const mon = ('0' + (today.getMonth() + 1)).slice(-2);
         const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString('hex').toUpperCase();
 
-        if (Number(bin) === binRoot) {
-            const beneficiaryInfo = await Transaction.create({
-                transactionID,
-                accountNumber: res.locals.account.accountNumber,
-                amount,
-                content,
-                beneficiaryAccount: beneficiaryAccountNumber,
-                fee: totalFee,
-            }).then(async (trans) => {
-                const account = await Account.findOne(
-                    {
+        if (!req.body.beneficiaryAccountNumber) {
+            const { OTP } = req.body;
+            console.log(confirmInfo);
+            console.log(res.locals.confirmInfo);
+            const bank = await Bank.findByBin(confirmInfo.bin);
+
+            if (OTP === token) {
+                const beneficiaryInfo = await Transaction.create({
+                    transactionID,
+                    accountNumber: res.locals.account.accountNumber,
+                    amount: confirmInfo.amount,
+                    content: confirmInfo.content,
+                    beneficiaryAccount: confirmInfo.beneficiaryAccountNumber,
+                    fee: confirmInfo.totalFee,
+                }).then(async (trans) => {
+                    // Current account: New Balance
+                    await Account.findOne({
+                        where: {
+                            accountNumber: res.locals.account.accountNumber,
+                        }
+                    }).then(async (account) => {
+                        const newBalance = account.balance - totalMoney;
+
+                        await Account.updateBalance(newBalance, account.accountNumber);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                    // Beneficiary account: New Balance
+                    await Account.findOne({
                         where: {
                             accountNumber: trans.beneficiaryAccount,
                         }
                     }).then(async (account) => {
-                        const user = await User.findOne({
+                        const newBalance = account.balance + confirmInfo.amount;
+
+                        await Account.updateBalance(newBalance, account.accountNumber);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+
+                    const account = await Account.findOne(
+                        {
                             where: {
-                                id: account.userId,
+                                accountNumber: trans.beneficiaryAccount,
                             }
-                        }).then(async (user) => {
-                            await BeneficiaryAccount.create({
-                                displayName: user.displayName,
-                                beneficiaryBank: bank.bankName,
-                                pendingAmount: amount,
+                        }).then(async (account) => {
+                            const user = await User.findOne({
+                                where: {
+                                    id: account.userId,
+                                }
+                            }).then(async (user) => {
+                                await BeneficiaryAccount.create({
+                                    displayName: user.displayName,
+                                    beneficiaryBank: bank.bankName,
+                                    pendingAmount: confirmInfo.amount,
+                                });
+
+                                return user;
+                            }).catch((err) => {
+                                console.log(err);
                             });
 
                             return user;
-                        }).catch((err) => {
-                            console.log(err);
                         });
 
-                        return user;
-                    });
+                    return { account, trans };
+                }).catch((err) => {
+                    console.log(err);
+                });
 
-                return { account, trans };
-            }).catch((err) => {
-                console.log(err);
-            });
+                // confirmInfo = {
+                //     beneficiaryAccountNumber,
+                //     amount,
+                //     content,
+                //     totalFee,
+                //     displayName: beneficiaryInfo.account.displayName,
+                //     transactionID: beneficiaryInfo.trans.transactionID,
+                // }
 
-            const confirmInfo = {
-                beneficiaryAccountNumber,
-                amount,
-                content,
-                totalFee,
-                displayName: beneficiaryInfo.account.displayName,
-                transactionID: beneficiaryInfo.trans.transactionID,
+                return res.render('./pages/transactions/result'
+                    // , { errors: null, confirmInfo }
+                );
+            } else {
+                return res.render('./pages/transactions/verify', { errors: "OTP wrong", confirmInfo });
             }
+        } else {
+            const { bin, beneficiaryAccountNumber, amount, content } = req.body;
+            const totalFee = parseInt(amount) * fee;
 
-            return res.render('./pages/transactions/verify', { errors: null, confirmInfo });
+            if (Number(bin) === binRoot) {
+                const account = await Account.findOne({
+                    where: {
+                        accountNumber: beneficiaryAccountNumber,
+                    }
+                }).then(async (account) => {
+                    return await User.findById(account.userId);
+                }).catch((err) => {
+                    console.log(err);
+                });
+
+                confirmInfo = {
+                    beneficiaryAccountNumber,
+                    amount,
+                    content,
+                    totalFee,
+                    displayName: account.displayName,
+                    bin,
+                }
+
+                res.locals.confirmInfo = confirmInfo;
+
+                token = crypto.randomBytes(2).toString("hex").toUpperCase();
+                await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
+
+                return res.render('./pages/transactions/verify', { errors: null, confirmInfo });
+            } else {
+                return res.render('./pages/transactions/transaction', { errors: "Not supported", listBank: listBank });
+            }
         }
     }));
 
