@@ -31,8 +31,14 @@ app.get('/home', function (req, res) {
 });
 
 app.get('/blog', function (req, res) {
-   res.render('pages/blog');
+   res.render('pages/blog')
 });
+
+app.get('/cm/1', function (req, res) {
+   res.render('pages/cm/1');
+});
+
+
 
 
 app.get('/logout',require('./routes/logout'));
