@@ -1,29 +1,40 @@
 const router = require("express").Router();
 const asyncHandler = require("express-async-handler");
-const User = require("../services/user");
+const cryptojs = require("crypto-js");
+const rs = require("randomstring");
+const User = require("../models/user");
 
 router
     .route("/")
-    .get((req, res, next) => {
-        // res.render("page/login");
-        res.send("Login");
-    })
-    .post((req, res, next) => {
-        asyncHandler(async function postLogin(req, res) {
-            const user = await User.findByUsername(req.body.username);
+    // .get((req, res, next) => {
+    //     // res.render("page/login");
+    //     res.send("Login");
+    // })
+    .post(
+        asyncHandler(async (req, res, next) => {
+            const { username, password } = req.body;
+            const user = await User.findByUsername(username);
 
-            if (
-                !user ||
-                !User.verifyPassword(req.body.password, user.password)
-            ) {
-                return res.redirect("/");
+            if (!user || !User.verifyPassword(password, user.password)) {
+                // return res.redirect("/");
+                return res.json({ message: "Fail" });
             }
 
-            req.session.userId = user.id;
+            // req.session.userId = user.id;
             // res.redirect("/home");
-            res.send({ message: "" });
-        });
-    });
+
+            // Generate random string
+            const secretKey = rs.generate(12);
+            // Encrypt
+            const accessId = cryptojs.AES.encrypt(JSON.stringify(user.username), secretKey).toString();
+
+            //Decrypt
+            // const bytes = cryptojs.AES.decrypt(token, key);
+            // var decryptedData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+
+            res.json({ message: "Success", accessId });
+        })
+    );
 
 // router.get("/", function getLogin(req, res) {
 //     res.render("pages/login");

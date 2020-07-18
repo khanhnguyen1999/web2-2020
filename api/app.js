@@ -3,9 +3,12 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var session = require("express-session");
+var cors = require("cors");
 
 // Routing Variables
 //
+var login = require("./routes/login");
 
 var app = express();
 
@@ -13,6 +16,15 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
+app.use(
+    session({
+        secret: "0000",
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: true },
+    })
+);
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -21,6 +33,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routing
 //
+app.use("/login", login);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
