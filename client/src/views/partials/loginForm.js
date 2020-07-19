@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import Axios from "axios";
 
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+// import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
+// import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 class LoginForm extends Component {
     constructor(props) {
         super(props);
-
         // State
         this.state = {
             username: "",
             password: "",
+            redirectSignal: false,
         };
 
         // Bind functions
@@ -36,20 +38,35 @@ class LoginForm extends Component {
         await Axios.post(url, user)
             .then((res) => {
                 console.log(res);
+                this.setState({
+                    redirectSignal: res.data.redirectSignal,
+                });
             })
             .catch((err) => {
                 console.error(err);
             });
     };
 
+    redirectTo(signal) {
+        if (signal) {
+            return <Redirect to="/" />
+        } else {
+            return <Redirect to="/login" />
+        }
+    }
+
     render() {
         return (
-            <Container>
-                <Row>
-                    {/* <div className="col-lg-4 col-md-6 ml-auto mr-auto"> */}
-                    <Col lg={4} md={6} className="ml-auto mr-auto">
+            <div className="container">
+                {/* <Container> */}
+                <div className="row">
+                    {/* <Row> */}
+                    <div className="col-lg-4 col-md-6 ml-auto mr-auto">
+                        {/* <Col lg={4} md={6} className="ml-auto mr-auto"> */}
                         <div className="card card-login">
+                            {/* <Card className="card-login"> */}
                             <form className="form" onSubmit={this.handleSubmit}>
+                                {/* <Form onSubmit={this.handleSubmit}> */}
                                 <div className="card-header card-header-primary text-center">
                                     <h4 className="card-title">Login</h4>
                                     <div className="social-line">
@@ -84,9 +101,6 @@ class LoginForm extends Component {
                                     </div>
                                 </div>
                                 <div className="footer text-center">
-                                    {/* <a href="#pablo" className="btn btn-primary btn-link btn-wd btn-lg">
-                                        Login
-                                    </a> */}
                                     <button className="btn btn-primary btn-link btn-wd bnt-lg" type="submit" value="login">
                                         Login
                                     </button>
@@ -96,11 +110,15 @@ class LoginForm extends Component {
                                     </p>
                                 </div>
                             </form>
+                            {/* </Form>
+                        </Card> */}
                         </div>
-                    </Col>
-                    {/* </div> */}
-                </Row>
-            </Container>
+                        {/* </Col> */}
+                    </div>
+                    {/* </Row> */}
+                </div>
+                {/* </Container> */}
+            </div>
         );
     }
 }

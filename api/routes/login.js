@@ -17,7 +17,7 @@ router
 
             if (!user || !User.verifyPassword(password, user.password)) {
                 // return res.redirect("/");
-                return res.json({ message: "Fail" });
+                return res.json({ message: "Fail", redirectSignal: false });
             }
 
             // req.session.userId = user.id;
@@ -32,7 +32,7 @@ router
             // const bytes = cryptojs.AES.decrypt(token, key);
             // var decryptedData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
 
-            res.json({ message: "Success", accessId });
+            res.json({ message: "Success", redirectSignal: true, accessId });
         })
     );
 
