@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Axios from "axios";
 
-// import { Container, Card, Form, Button, Row, Col } from "react-bootstrap";
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 
@@ -17,9 +16,11 @@ class LoginForm extends Component {
 
         // Bind functions
         //
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange = (e) => {
+    handleChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value,
         });
@@ -89,7 +90,7 @@ class LoginForm extends Component {
                                                 <i className="material-icons">account_circle</i>
                                             </span>
                                         </div>
-                                        <input onChange={this.handleInputChange} name="username" type="text" className="form-control" placeholder="Username..." />
+                                        <input onChange={this.handleChange} name="username" type="text" className="form-control" placeholder="Username..." />
                                     </div>
                                     <div className="input-group">
                                         <div className="input-group-prepend">
@@ -97,7 +98,7 @@ class LoginForm extends Component {
                                                 <i className="material-icons">lock_outline</i>
                                             </span>
                                         </div>
-                                        <input onChange={this.handleInputChange} name="password" type="password" className="form-control" placeholder="Password..." />
+                                        <input onChange={this.handleChange} name="password" type="password" className="form-control" placeholder="Password..." />
                                     </div>
                                 </div>
                                 <div className="footer text-center">

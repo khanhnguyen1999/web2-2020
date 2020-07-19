@@ -69,7 +69,7 @@ class Navbar extends Component {
                                         Profile
                                     </Link>
                                 </li>
-                                <li>
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/login">
                                         Login
                                     </Link>
