@@ -32,28 +32,15 @@ router
             // const bytes = cryptojs.AES.decrypt(token, key);
             // var decryptedData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
 
-            res.json({ message: "Success", redirectSignal: true, accessId });
+            const currentUser = {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                displayName: user.displayName,
+            };
+
+            res.json({ message: "Success", redirectSignal: true, accessId, currentUser });
         })
     );
-
-// router.get("/", function getLogin(req, res) {
-//     res.render("pages/login");
-// });
-
-// router.post(
-//     "/",
-//     asyncHandler(async function postLogin(req, res) {
-//         const user = await User.findByUsername(req.body.acc_username);
-//         if (
-//             !user ||
-//             !User.verifyPassword(req.body.acc_password, user.password)
-//         ) {
-//             return res.redirect("/");
-//         }
-//         req.session.userId = user.id;
-//         // currentUser = user.id;
-//         res.redirect("/home");
-//     })
-// );
 
 module.exports = router;

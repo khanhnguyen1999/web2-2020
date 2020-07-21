@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 
+import MainSection from "./mainSection";
+
 class Transaction extends Component {
     render() {
         return (
-            <div>
-                <h1>Transaction</h1>
-            </div>
+            <>
+                <MainSection />
+            </>
         );
     }
 }

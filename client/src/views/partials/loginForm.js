@@ -11,6 +11,7 @@ class LoginForm extends Component {
         this.state = {
             username: "",
             password: "",
+            currentUser: null,
             redirectSignal: false,
         };
 
@@ -39,12 +40,17 @@ class LoginForm extends Component {
         await Axios.post(url, user)
             .then((res) => {
                 this.setState({
+                    username: '',
+                    password: '',
+                    currentUser: res.data.currentUser,
                     redirectSignal: res.data.redirectSignal,
                 });
+                localStorage.setItem("currentUser", this.state.currentUser);
             })
             .catch((err) => {
                 console.error(err);
             });
+            
     };
 
     render() {

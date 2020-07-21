@@ -51,19 +51,18 @@ class Navbar extends Component {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                {/* <a className="nav-link" href="#" target="_blank">
-                                    Transaction
-                                </a> */}
                                 <Link className="nav-link" to="/transaction">
                                     Transaction
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                {/* <a className="nav-link" href="#" target="_blank">
-                                    Profile
-                                </a> */}
                                 <Link className="nav-link" to="/profile">
                                     Profile
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/admin">
+                                    Admin
                                 </Link>
                             </li>
                             <li>
