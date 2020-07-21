@@ -10,9 +10,6 @@ class Sidebar extends Component {
                     Tip 2: you can also add an image using data-image tag
                     --> */}
                 <div className="logo">
-                    <a href="/#" className="simple-text logo-mini">
-                        CT
-                    </a>
                     <a href="/#" className="simple-text logo-normal">
                         17Tek
                     </a>

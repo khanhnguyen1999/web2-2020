@@ -14,10 +14,20 @@ router
         asyncHandler(async (req, res, next) => {
             const { username, password } = req.body;
             const user = await User.findByUsername(username);
+            let err = "";
 
-            if (!user || !User.verifyPassword(password, user.password)) {
-                // return res.redirect("/");
-                return res.json({ message: "Fail", redirectSignal: false });
+            if (user) {
+                const checkPass = User.verifyPassword(password, user.password);
+
+                if (!checkPass) {
+                    err = "Wrong password";
+
+                    return res.json({ message: "Something wrong!", redirectSignal: false, err });
+                }
+            } else {
+                err = "Wrong username!";
+
+                return res.json({ message: "Something wrong!", redirectSignal: false, err });
             }
 
             // req.session.userId = user.id;

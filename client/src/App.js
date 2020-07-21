@@ -23,7 +23,7 @@ class App extends Component {
         // console.log(this.state.currentUser);
         return (
             <Router>
-                <div className="App">
+                <>
                     <div className="login-page sidebar-collapse">
                         <Navbar />
                         <Switch>
@@ -36,16 +36,14 @@ class App extends Component {
                             <Route path="/profile" component={Profile} />
                             {/* <Profile />
                             </Route> */}
-                            <Route path="/admin" component={Admin} />
-                            {/* <Admin />
-                            </Route> */}
                             <Route path="/login" component={Login} />
                             {/* <Login />
                             </Route> */}
                         </Switch>
                         <Footer />
                     </div>
-                </div>
+                    <Route path="/admin" component={Admin} />
+                    </>
             </Router>
         );
     }
