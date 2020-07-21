@@ -38,7 +38,6 @@ class LoginForm extends Component {
 
         await Axios.post(url, user)
             .then((res) => {
-                console.log(res);
                 this.setState({
                     redirectSignal: res.data.redirectSignal,
                 });
@@ -47,14 +46,6 @@ class LoginForm extends Component {
                 console.error(err);
             });
     };
-
-    redirectTo(signal) {
-        if (signal) {
-            return <Redirect to="/" />
-        } else {
-            return <Redirect to="/login" />
-        }
-    }
 
     render() {
         const { redirectSignal } = this.state;

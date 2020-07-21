@@ -167,7 +167,7 @@ class HomeBody extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label for="exampleMessage" className="bmd-label-floating">
+                                        <label htmlFor="exampleMessage" className="bmd-label-floating">
                                             Your Message
                                         </label>
                                         <textarea type="email" className="form-control" rows="4" id="exampleMessage"></textarea>

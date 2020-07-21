@@ -14,21 +14,23 @@ class App extends Component {
         return (
             <Router>
                 <div className="App">
-                    <Navbar />
-                    <Switch>
-                        <Route path="/" exact component={Home}>
-                            <Home />
-                        </Route>
-                        <Route path="/transaction" component={Transaction}>
-                            <Transaction />
-                        </Route>
-                        <Route path="/profile" component={Profile}>
-                            <Profile />
-                        </Route>
-                        <Route path="/login" component={Login}>
-                            <Login />
-                        </Route>
-                    </Switch>
+                    <div className="login-page sidebar-collapse">
+                        <Navbar />
+                        <Switch>
+                            <Route path="/" exact component={Home}>
+                                <Home />
+                            </Route>
+                            <Route path="/transaction" component={Transaction}>
+                                <Transaction />
+                            </Route>
+                            <Route path="/profile" component={Profile}>
+                                <Profile />
+                            </Route>
+                            <Route path="/login" component={Login}>
+                                <Login />
+                            </Route>
+                        </Switch>
+                    </div>
                 </div>
             </Router>
         );
