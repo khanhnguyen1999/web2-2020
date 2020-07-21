@@ -56,6 +56,12 @@ class LoginForm extends Component {
     }
 
     render() {
+        const { redirectSignal } = this.state;
+
+        if (redirectSignal) {
+            return <Redirect to="/" />;
+        }
+
         return (
             <div className="container">
                 {/* <Container> */}

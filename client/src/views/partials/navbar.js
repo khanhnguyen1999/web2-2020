@@ -1,38 +1,35 @@
 import React, { Component } from "react";
 
-import { BrowserRouter as Router, Route, Switch, Link, Redirect } from "react-router-dom";
+import { Route, Switch, Link, Redirect } from "react-router-dom";
 import Home from "../pages/home";
-// import Transaction from "../pages/transaction";
-// import Profile from "../pages/profile";
 
 class Navbar extends Component {
     render() {
         return (
-            <Router>
-                <nav className="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
-                    <div className="container">
-                        <div className="navbar-translate">
-                            {/* <a className="navbar-brand" href="/"> */}
-                            <Link to="/" className="navbar-brand">
-                                PROJECT{" "}
-                            </Link>
+            <nav className="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
+                <div className="container">
+                    <div className="navbar-translate">
+                        {/* <a className="navbar-brand" href="/"> */}
+                        <Link to="/" className="navbar-brand">
+                            PROJECT{" "}
+                        </Link>
 
-                            <Switch>
-                                <Route path="/" exact component={Home}>
-                                    <Redirect to="/" />
-                                </Route>
-                            </Switch>
-                            {/* </a> */}
-                            <button className="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
-                                <span className="sr-only">Toggle navigation</span>
-                                <span className="navbar-toggler-icon"></span>
-                                <span className="navbar-toggler-icon"></span>
-                                <span className="navbar-toggler-icon"></span>
-                            </button>
-                        </div>
-                        <div className="collapse navbar-collapse">
-                            <ul className="navbar-nav ml-auto">
-                                {/* <li className="dropdown nav-item">
+                        <Switch>
+                            <Route path="/" exact component={Home}>
+                                <Redirect to="/" />
+                            </Route>
+                        </Switch>
+                        {/* </a> */}
+                        <button className="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="sr-only">Toggle navigation</span>
+                            <span className="navbar-toggler-icon"></span>
+                            <span className="navbar-toggler-icon"></span>
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    <div className="collapse navbar-collapse">
+                        <ul className="navbar-nav ml-auto">
+                            {/* <li className="dropdown nav-item">
                                 <a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown">
                                     <i className="material-icons">apps</i> Components
                                 </a>
@@ -45,36 +42,36 @@ class Navbar extends Component {
                                     </a>
                                 </div>
                             </li> */}
-                                <li className="nav-item">
-                                    {/* <a className="nav-link" href="#" target="_blank">
+                            <li className="nav-item">
+                                {/* <a className="nav-link" href="#" target="_blank">
                                     Home
                                 </a> */}
-                                    <Link className="nav-link" to="/">
-                                        Home
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    {/* <a className="nav-link" href="#" target="_blank">
+                                <Link className="nav-link" to="/">
+                                    Home
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                {/* <a className="nav-link" href="#" target="_blank">
                                     Transaction
                                 </a> */}
-                                    <Link className="nav-link" to="/transaction">
-                                        Transaction
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    {/* <a className="nav-link" href="#" target="_blank">
+                                <Link className="nav-link" to="/transaction">
+                                    Transaction
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                {/* <a className="nav-link" href="#" target="_blank">
                                     Profile
                                 </a> */}
-                                    <Link className="nav-link" to="/profile">
-                                        Profile
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className="nav-link" to="/login">
-                                        Login
-                                    </Link>
-                                </li>
-                                {/* <li className="nav-item">
+                                <Link className="nav-link" to="/profile">
+                                    Profile
+                                </Link>
+                            </li>
+                            <li>
+                                <Link className="nav-link" to="/login">
+                                    Login
+                                </Link>
+                            </li>
+                            {/* <li className="nav-item">
                                 <a className="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://twitter.com/CreativeTim" target="_blank" data-original-title="Follow us on Twitter" rel="nofollow">
                                     <i className="fa fa-twitter"></i>
                                 </a>
@@ -89,11 +86,10 @@ class Navbar extends Component {
                                     <i className="fa fa-instagram"></i>
                                 </a>
                             </li> */}
-                            </ul>
-                        </div>
+                        </ul>
                     </div>
-                </nav>
-            </Router>
+                </div>
+            </nav>
         );
     }
 }

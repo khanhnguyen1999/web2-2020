@@ -12,9 +12,9 @@ import Profile from "./views/pages/profile";
 class App extends Component {
     render() {
         return (
-            <div className="App">
-                <Navbar />
-                <Router>
+            <Router>
+                <div className="App">
+                    <Navbar />
                     <Switch>
                         <Route path="/" exact component={Home}>
                             <Home />
@@ -29,8 +29,8 @@ class App extends Component {
                             <Login />
                         </Route>
                     </Switch>
-                </Router>
-            </div>
+                </div>
+            </Router>
         );
     }
 }
