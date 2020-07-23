@@ -45,7 +45,7 @@ class LoginForm extends Component {
                     currentUser: res.data.currentUser,
                     redirectSignal: res.data.redirectSignal,
                 });
-                localStorage.setItem("currentUser", this.state.currentUser);
+                localStorage.setItem("currentUser", JSON.stringify(this.state.currentUser));
             })
             .catch((err) => {
                 console.error(err);
