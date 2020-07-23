@@ -13,6 +13,7 @@ class LoginForm extends Component {
             password: "",
             currentUser: null,
             redirectSignal: false,
+            err: "",
         };
 
         // Bind functions
@@ -40,17 +41,17 @@ class LoginForm extends Component {
         await Axios.post(url, user)
             .then((res) => {
                 this.setState({
-                    username: '',
-                    password: '',
+                    username: "",
+                    password: "",
                     currentUser: res.data.currentUser,
                     redirectSignal: res.data.redirectSignal,
+                    err: res.data.err,
                 });
                 localStorage.setItem("currentUser", JSON.stringify(this.state.currentUser));
             })
             .catch((err) => {
                 console.error(err);
             });
-            
     };
 
     render() {
@@ -104,6 +105,14 @@ class LoginForm extends Component {
                                         <input onChange={this.handleChange} name="password" type="password" className="form-control" placeholder="Password..." />
                                     </div>
                                 </div>
+
+                                {this.state.err !== "" ? (
+                                    <div className="alert alert-danger" role="alert">
+                                        {this.state.err}
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
                                 <div className="footer text-center">
                                     <button className="btn btn-primary btn-link btn-wd bnt-lg" type="submit" value="login">
                                         Login

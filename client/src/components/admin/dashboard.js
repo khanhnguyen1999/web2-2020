@@ -6,8 +6,6 @@ import MainContent from "./mainContent";
 
 class Dashboard extends Component {
     render() {
-        const currentUser = localStorage.getItem("currentUser");
-        console.log(currentUser);
         return (
             <div className="wrapper">
                 <Sidebar />
