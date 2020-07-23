@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 var app = express();
 const ejs = require('ejs');
 const cookieSession = require('cookie-session');
+var cors = require('cors')
 var port = process.env.PORT || 3000;
 
 // --------DATABASE------------
@@ -20,6 +21,7 @@ const beneficiaryAccount = require('./services/beneficiaryAccount');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieSession({secret: 'todotopsecret'}))
 app.use(express.json());
+app.use(cors())
 
 // --------APP SET------------
 app.set('views', './views');

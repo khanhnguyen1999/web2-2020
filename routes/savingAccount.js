@@ -10,7 +10,6 @@ const Transaction = require('../services/transaction');
 const Bank = require('../services/bank');
 const BeneficiatyAccount= require('../services/beneficiaryAccount');
 const Email = require('../services/email');
-// const { tableName } = require('../services/user');
 const crypto = require('crypto');
 const Sequelize = require('sequelize');
 const { DATE } = require('sequelize');
@@ -20,45 +19,15 @@ const bank17ez= "Vietcombank";
 
 var account ;
 var interestRate;
-var userSavingAccount;
-var opendatesaving=undefined;
-var closedatesaving=undefined;
-// var BeneficiaryDisplayname;
-// var BeneficiaryNumberAccount;
-// var BeneficiaryBalance;
-// var content;
-var ran;
 var token;
 var tokenTatToan;
 var SoTien;
-var fund=0;
 var digits;
 var depositTerm;
 var formInterest;
-
 var now;
 var subEmail
 
-// module.exports = function auto() {
-//     var start = new Date;
-//     start.setHours(1, 0, 0); // 11pm
-  
-//     function pad(num) {
-//       return ("0" + parseInt(num)).substr(-2);
-//     }
-  
-//     function tick() {
-//       var now = new Date;
-//       if (now > start) { // too late, go to tomorrow
-//         updateSaving();
-//         start.setDate(start.getDate() + 1);
-//       }
-//       setTimeout(tick, 20000);
-//     }
-// }
-// function updateSaving(){
-
-// }
 function inWords (num) {
     var a = ['','Một ','Hai ','Ba ','Bốn ', 'Năm ','Sáu ','Bảy ','Tám ','Chín ','Mười ','Mười Một ','Mười Hai ','Mười Ba ','Mười Bốn ','Mười Lăm ','Mười sáu ','Mười Bảy ','Mười Tám ','Mười Chín '];
     var b = ['', '', 'Hai Mươi','Ba Mươi','Bốn Mươi','Năm Mươi', 'Sáu Mươi','Bảy Mươi','Tám Mươi','Chín Mươi'];
@@ -96,23 +65,44 @@ function dateTimeToDate(today,species)
     }
     return datetime;
 }
+
+//--------------hien thi danh sach saving----------------
+router.get('/',async (req,res)=>{
+
+    var userEmail = req.session.currentUser.email;
+    var lengthEmail = userEmail.length;
+    subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
+    console.log(req.session.account)
+    const userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(res.locals.account.accountNumber)
+    var dateNow = new Date();
+    var fund = 0;
+    console.log("/////"+res.locals.account.accountNumber)
+    const accountNew = await Account.findByAccountNumber(res.locals.account.accountNumber);
+    
+    if(userSavingAccount.length>0)
+    {
+        console.log("---"+accountNew)
+        userSavingAccount.forEach((x)=>{
+            fund = fund + x.fund;
+        })
+        return res.render('./pages/savingAccount/listSaving',{accountNew,fund:fund,saving:userSavingAccount,errors:null});
+    }
+    else
+    {
+        return res.render('./pages/savingAccount/listSaving',{accountNew,fund:0,saving:null,errors:null}); 
+    }
+});
+
 //--------- hien thi thong tin saving -------------
 router.get("/saving/listSaving/:id",asyncHandler(async function postLogin(req,res){
     const {id}=req.params;
     const itemSaving = await SavingAccount.findById(id);
     req.session.idSavingIndex = itemSaving.id;
-    res.render('./pages/savingAccount/saving',{fund:fund,saving:itemSaving,errors:null});
+   
+
+    res.render('./pages/savingAccount/saving',{fund:itemSaving.fund,saving:itemSaving,errors:null});
 }))
 
-//-------add saving account----------
-router.get("/saving/addSaving",asyncHandler(async function postLogin(req,res){
-    userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(req.session.account.accountNumber)
-    userSavingAccount.forEach((x)=>{
-        fund=fund + parseInt(x.fund);
-    })
-    
-    res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});
-}))
 
 
 //---------- tat toan --------------
@@ -129,7 +119,7 @@ router.post("/saving/listSaving/tattoan/:id",asyncHandler(async function postLog
     {   
         const {id}=req.params;
         const itemSaving = await SavingAccount.findById(id);
-        let accountUser = await Account.findByUserID(req.currentUser.id)
+        let accountUser = await Account.findByUserId(req.currentUser.id)
         const extraMoney = accountUser.balance + itemSaving.fund;
         await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
         await SavingAccount.deleteById(id);
@@ -141,41 +131,34 @@ router.post("/saving/listSaving/tattoan/:id",asyncHandler(async function postLog
         res.render('./pages/savingAccount/tattoan',{
             errors:"Token không chính xác",
             email:subEmail,
-            fund:fund,
+            fund:itemSaving.fund,
             saving:itemSaving,
             errors:null});
     }
 }))
 
 
+//-------add saving account----------
+var fund = 0;
+router.get("/saving/addSaving",asyncHandler(async function postLogin(req,res){
+    userSavingAccount = await SavingAccount.
+    findSavingAccountrByAccountNumber(req.session.account.accountNumber)
 
-//--------------hien thi danh sach saving----------------
-router.get('/',async (req,res)=>{
-    var userEmail = req.session.currentUser.email;
-    var lengthEmail = userEmail.length;
-    subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
-    console.log(req.session.account)
-    userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(req.session.account.accountNumber)
-    var dateNow = new Date();
-    fund = userSavingAccount?userSavingAccount.fund:0;
-    if(userSavingAccount)
-    {
-        return res.render('./pages/savingAccount/listSaving',{fund:fund,saving:userSavingAccount,errors:null});
-    }
-    else
-    {
-        return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null}); 
-    }
-    return res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});  
-});
+    userSavingAccount.forEach((x)=>{
+        fund=fund + parseInt(x.fund);
+    })
+    res.render('./pages/savingAccount/savingAccount',{fund:fund,errors:null});
+}))
 
 
 router.post('/addSaving',[
     body('amountSaving')
         .custom(async function(SoTienBody,{req}){
-            account = await Account.findByUserID(req.session.currentUser.id);
-            console.log(typeof SoTienBody)
-            console.log(typeof account.balance)
+            if(parseInt(SoTienBody)<1000000)
+            {
+                throw Error('Số tiền tối thiểu 1.000.000');
+            }
+            account = await Account.findByUserId(req.session.currentUser.id);
             if((parseInt(SoTienBody)+50000)>account.balance)
             {
                 throw Error('Số tiền không đủ');
@@ -269,12 +252,8 @@ router.post('/addSaving',[
                 depositTerm = 0;
                 break;
         }
-
-        
         formInterest = req.body.HinhThuc;
-        SoTien= parseInt(req.body.amountSaving);
-        
-        
+        SoTien = parseInt(req.body.amountSaving);
         token = crypto.randomBytes(2).toString("hex").toUpperCase(); res.locals.token = token;
         Email.send(res.locals.currentUser.email,bank17ez,"Mã xác thực TKTK : "+token)
         return res.render('./pages/savingAccount/savingAccount1',{

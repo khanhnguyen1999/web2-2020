@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { body, validationResult } = require('express-validator');
+const { body, check,validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler')
 const router = new Router();
 const db = require('../services/db')
@@ -14,6 +14,8 @@ const Email = require('../services/email');
 const crypto = require('crypto');
 // const { INTEGER } = require('sequelize/types');
 const Sequelize = require('sequelize')
+const axios = require('axios');
+const { json } = require('body-parser');
 
 var token;
 var fee;
@@ -26,7 +28,11 @@ router.route('/')
     .get(asyncHandler(async (req, res) => {
         listBank = await Bank.findAll();
         console.log(listBank);
-        return res.render('./pages/transactions/transaction', { errors: null, listBank: listBank });
+        console.log(req.body)
+        console.log(req.data)
+        console.log("--------"+req)
+        // let account = await Account.findByUserId(req,)
+        return res.status(200);
     }))
     .post([
         body('amount')
@@ -107,9 +113,196 @@ router.route('/')
                 console.log(err);
                 console.log(`>> Error: ${err.beneficiaryAccount}`); 
             });
-            console.log(beneficiaryAccount);
         }
     }));
+router.post('/getInformation',async(req,res)=>{
+    let listBank = await Bank.findAll();
+    const {userId}  = req.body;
+    let account = await Account.findByUserId(userId)
+    res.status(200).json({account,listBank})
+})
+router.post('/postInformation',[
+    check('data.amount')
+        .custom(async function (amount, { req }) {
+            if (req.body.data.beneficiaryAccountNumber) {
+                if (parseInt(amount) < 100000) {
+                    throw Error('Số tiền tối thiểu 100000 VND');
+                }
+                const { binBank, beneficiaryAccountNumber } = req.body.data;
+                const beneficiaryBin = beneficiaryAccountNumber.substr(0, 4);
+                const bank = await Bank.findByBin(binBank);
+                const account = await Account.findByAccountNumber(req.body.data.account.accountNumber);
+                if(!bank || !account)
+                {
+                    throw Error('khong tim thay ngan hang');
+                }
+                else
+                {
+                     // Cung ngan hang
+                    if (binBank === beneficiaryBin) {
+                        fee = bank.internalFee;
+                    }
+                    else // Khac ngan hang
+                    {
+                        fee = bank.externalFee;
+                    }
+
+                    totalMoney = parseInt(amount) + parseInt((parseInt(amount) * fee));
+                    extraMoney = parseInt(account.balance) - parseInt(totalMoney);
+
+                    if (extraMoney < 100000) {
+                        throw Error('Số dư không đủ');
+                    }
+                    return true;
+                }
+            }
+        }),
+    check('data.beneficiaryAccountNumber')
+        .notEmpty()
+        .custom(async function (beneficiaryAccountNumber) {
+            
+            if (!beneficiaryAccountNumber) {
+                return false;
+            } else {
+                const account = await Account.findByAccountNumber(beneficiaryAccountNumber);
+                 if (!account) {
+                    throw Error('Số tài khoản không tồn tại');
+                }
+                // const beneficiatAccount = await BeneficiatyAccount.findByAccountNumber(beneficiaryAccountNumber);
+                // if (!account && !beneficiatAccount) {
+                //     throw Error('Số tài khoản không tồn tại');
+                // }
+                // API here
+            }
+            return true;
+        }),
+],async(req,res)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors)
+        return res.status(200).json({success:false , errors})
+    }
+
+    const { binBank, beneficiaryAccountNumber, amount, content ,user } = req.body.data;
+    
+    const totalFee = parseInt(amount) * fee;
+
+    if (Number(binBank) === binRoot) {
+        const account = await Account.findOne({
+            where: {
+                accountNumber: beneficiaryAccountNumber,
+            }
+        }).then(async (account) => {
+            return await User.findById(account.userId);
+        }).catch((err) => {
+            console.log(err);
+        });
+        // res.locals.confirmInfo = confirmInfo;
+        token = crypto.randomBytes(2).toString("hex").toUpperCase();
+        confirmInfo = {
+            beneficiaryAccountNumber,
+            amount,
+            content,
+            totalFee,
+            displayName: account.displayName,
+            bin:binBank,
+            token,
+        }
+        await Email.send(user.email, "Transaction Confirmation", token);
+        console.log(token)
+        return res.status(200).json({success:true,confirmInfo})
+    }
+
+})
+
+router.post('/verify',async(req,res)=>{
+    const {accountNumber, binBank, beneficiaryAccountNumber, amount, content,totalFee } = req.body.data;
+    const today = new Date();
+    const hour = ('0' + today.getHours()).slice(-2);
+    const min = ('0' + today.getMinutes()).slice(-2);
+    const sec = ('0' + today.getSeconds()).slice(-2);
+    const date = ('0' + today.getDate()).slice(-2);
+    const mon = ('0' + (today.getMonth() + 1)).slice(-2);
+    const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString('hex').toUpperCase();
+
+        const beneficiaryInfo = await Transaction.create({
+            transactionID,
+            accountNumber: accountNumber,
+            amount: amount,
+            content: content,
+            beneficiaryAccount: beneficiaryAccountNumber,
+            fee: totalFee,
+        }).then(async (trans) => {
+            // Current account: New Balance
+            await Account.findOne({
+                where: {
+                    accountNumber: accountNumber,
+                }
+            }).then(async (account) => {
+                const newBalance = account.balance - totalMoney;
+
+                // account: New Balance
+                await Account.updateBalance(newBalance, accountNumber);
+
+                // Beneficiary account: New Balance
+                await Account.findOne({
+                    where: {
+                        accountNumber: trans.beneficiaryAccount,
+                    }
+                }).then(async (account) => {
+                    const newBalance = account.balance + parseInt(amount);
+
+                    await Account.updateBalance(newBalance, account.accountNumber);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            }).catch((err) => {
+                console.log(err);
+            });
+
+        
+            // const account = await Account.findOne(
+            //     {
+            //         where: {
+            //             accountNumber: trans.beneficiaryAccount,
+            //         }
+            //     }).then(async (account) => {
+            //         const user = await User.findOne({
+            //             where: {
+            //                 id: account.userId,
+            //             }
+            //         }).then(async (user) => {
+            //             await BeneficiaryAccount.create({
+            //                 displayName: user.displayName,
+            //                 beneficiaryBank: bank.bankName,
+            //                 pendingAmount: confirmInfo.amount,
+            //             });
+
+            //             return user;
+            //         }).catch((err) => {
+            //             console.log(err);
+            //         });
+
+            //         return user;
+            //     });
+
+            // return { account, trans };
+        }).catch((err) => {
+            console.log(err);
+        });
+
+        // confirmInfo = {
+        //     beneficiaryAccountNumber,
+        //     amount,
+        //     content,
+        //     totalFee,
+        //     displayName: beneficiaryInfo.account.displayName,
+        //     transactionID: beneficiaryInfo.trans.transactionID,
+        // }
+
+    return res.status(200).json({success:true})
+});
+
 
 // router.get('/', async (req, res) => {
 //     listBank = await Bank.AllBank();
@@ -198,8 +391,6 @@ router.route('/')
 //             res.render('./pages/transactions/transaction2')
 //         }
 //         else {
-
-
 //             return res.render('./pages/transactions/transaction1', {
 //                 errors: "Token không chính xác",
 //                 BeneficiaryDisplayname: BeneficiaryDisplayname,
