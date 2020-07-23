@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import MainBody from "../partials/mainBody";
+import MainBody from "./mainBody";
 
 class MainSection extends Component {
     render() {

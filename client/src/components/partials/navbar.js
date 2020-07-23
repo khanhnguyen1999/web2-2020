@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { Route, Switch, Link, Redirect } from "react-router-dom";
-import Home from "../pages/home";
+import Home from "../home/home";
 
 class Navbar extends Component {
     render() {

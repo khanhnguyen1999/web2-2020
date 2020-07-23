@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import LoginForm from "../../views/partials/loginForm";
+import LoginForm from "./loginForm";
 
 class Login extends Component {
     render() {

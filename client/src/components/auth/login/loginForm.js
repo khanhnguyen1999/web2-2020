@@ -63,15 +63,10 @@ class LoginForm extends Component {
 
         return (
             <div className="container">
-                {/* <Container> */}
                 <div className="row">
-                    {/* <Row> */}
                     <div className="col-lg-4 col-md-6 ml-auto mr-auto">
-                        {/* <Col lg={4} md={6} className="ml-auto mr-auto"> */}
                         <div className="card card-login">
-                            {/* <Card className="card-login"> */}
                             <form className="form" onSubmit={this.handleSubmit}>
-                                {/* <Form onSubmit={this.handleSubmit}> */}
                                 <div className="card-header card-header-primary text-center">
                                     <h4 className="card-title">Login</h4>
                                     <div className="social-line">
@@ -123,14 +118,9 @@ class LoginForm extends Component {
                                     </p>
                                 </div>
                             </form>
-                            {/* </Form>
-                        </Card> */}
                         </div>
-                        {/* </Col> */}
                     </div>
-                    {/* </Row> */}
                 </div>
-                {/* </Container> */}
             </div>
         );
     }

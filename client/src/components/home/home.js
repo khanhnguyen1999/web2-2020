@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import HomeHeader from "../partials/homeHeader";
-import HomeBody from "../partials/homeBody";
+import HomeHeader from "./homeHeader";
+import HomeBody from "./homeBody";
 
 class Home extends Component {
     render() {
