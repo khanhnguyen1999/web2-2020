@@ -70,8 +70,11 @@ User.init({
         // allowNull defaults to true
     },
 }, {
+    underscored: true, //change
     sequelize: db,
     modelName: 'user'
 });
 
 module.exports = User;
+
+

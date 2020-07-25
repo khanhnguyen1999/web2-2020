@@ -24,7 +24,7 @@ class BeneficiaryAccount extends Model {
 }
 
 BeneficiaryAccount.init({
-    displayName: {
+    displaName: {
         type: Sequelize.STRING,
     },
     beneficiaryBank: {
@@ -35,8 +35,12 @@ BeneficiaryAccount.init({
         allowNull: false,
     }
 }, {
+    underscored: true,
     sequelize: db,
     modelName: 'beneficiaryAccount',
 });
+
+const Bank = require('./bank');
+BeneficiaryAccount.belongsTo(Bank, { foreignKey: 'bankName' });
 
 module.exports = BeneficiaryAccount;

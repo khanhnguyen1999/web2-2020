@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('./db');
-const Model = Sequelize.Model;
 
+const Model = Sequelize.Model;
 class Account extends Model {
     static async findByUserId(id) {
         return await Account.findOne({
@@ -41,14 +41,12 @@ Account.init({
     },
     balance: {
         type: Sequelize.INTEGER,
-        allowNull: false,
     },
     currencyUnit: {
         type: Sequelize.STRING,
     },
     status: {
         type: Sequelize.STRING,
-        allowNull: false,
     },
     openDate: {
         type: Sequelize.DATE,
@@ -61,7 +59,7 @@ Account.init({
         allowNull: false,
     },
 }, {
-    underscored: true,///change
+    underscored: true,
     sequelize: db,
     modelName: 'account'
 });

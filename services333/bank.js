@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('./db');
-const Model = Sequelize.Model;
 
+const Model = Sequelize.Model;
 class Bank extends Model {
     static async findByBin(bin) {
         return await Bank.findOne({
@@ -17,7 +17,7 @@ Bank.init({
         type: Sequelize.INTEGER,
         autoIncrement: true,
     },
-    nameBank: { ///change
+    nameBank: {
         type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true,
@@ -35,7 +35,7 @@ Bank.init({
         allowNull: false,
     },
 }, {
-    underscored: true, ////change
+    underscored: true,
     sequelize: db,
     modelName: 'bank'
 });

@@ -52,12 +52,14 @@ class SavingAccount extends Model {
     }
 }
 SavingAccount.init({
+    // attributes
     fund: {
         type: Sequelize.INTEGER,
     },
     interest: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        // allowNull defaults to true
     },
     interestRate: {
         type: Sequelize.FLOAT,
@@ -67,6 +69,7 @@ SavingAccount.init({
     },
     openDate: {
         type: Sequelize.DATE,
+        // allowNull defaults to true
     },
     closeDate: {
         type: Sequelize.DATE,

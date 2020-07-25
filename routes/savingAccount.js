@@ -129,7 +129,9 @@ router.post("/saving/listSaving/tattoan/:id",asyncHandler(async function postLog
     {   
         const {id}=req.params;
         const itemSaving = await SavingAccount.findById(id);
-        let accountUser = await Account.findByUserID(req.currentUser.id)
+        console.log("----------------"+id)
+        console.log(itemSaving)
+        let accountUser = await Account.findByUserId(req.currentUser.id)
         const extraMoney = accountUser.balance + itemSaving.fund;
         await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
         await SavingAccount.deleteById(id);
@@ -138,12 +140,14 @@ router.post("/saving/listSaving/tattoan/:id",asyncHandler(async function postLog
     }
     else
     {
+        const {id}=req.params;
+        const itemSaving = await SavingAccount.findById(id);
         res.render('./pages/savingAccount/tattoan',{
             errors:"Token không chính xác",
             email:subEmail,
             fund:fund,
             saving:itemSaving,
-            errors:null});
+            });
     }
 }))
 
@@ -173,7 +177,7 @@ router.get('/',async (req,res)=>{
 router.post('/addSaving',[
     body('amountSaving')
         .custom(async function(SoTienBody,{req}){
-            account = await Account.findByUserID(req.session.currentUser.id);
+            account = await Account.findByUserId(req.session.currentUser.id);
             console.log(typeof SoTienBody)
             console.log(typeof account.balance)
             if((parseInt(SoTienBody)+50000)>account.balance)
