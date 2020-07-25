@@ -3,37 +3,33 @@ const db = require('./db');
 const Model = Sequelize.Model;
 
 class Account extends Model {
-    static async findAccountrByUserId(id) {
-        return await Account.findOne(
-            {
-                where: {
-                    user_id: id,
-                }
-            });
+    static async findByUserId(id) {
+        return await Account.findOne({
+            where: {
+                userId: id,
+            }
+        });
     }
 
-    static async findAccountrByAccountNumber(accountNumber) {
-        return await Account.findOne(
-            {
-                where: {
-                    accountNumber: accountNumber,
-                }
-            });
+    static async findByAccountNumber(accountNumber) {
+        return await Account.findOne({
+            where: {
+                accountNumber,
+            }
+        });
     }
 
     static async updateBalance(balance, accountNumber) {
-        return await Account.update(
-            {
-                balance: balance,
-            }, {
+        return await Account.update({
+            balance
+        }, {
             where: {
-                accountNumber: accountNumber,
+                accountNumber,
             }
         });
     }
 }
 Account.init({
-    // attributes
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -63,9 +59,8 @@ Account.init({
     role: {
         type: Sequelize.STRING,
         allowNull: false,
-    }
+    },
 }, {
-    underscored: true,
     sequelize: db,
     modelName: 'account'
 });

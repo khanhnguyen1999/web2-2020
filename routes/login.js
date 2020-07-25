@@ -7,7 +7,7 @@ router.get('/', function getLogin(req, res) {
 });
 
 router.post('/', asyncHandler(async (req, res) => {
-    const user = await User.findUserByUserName(req.body.acc_username);
+    const user = await User.findByUsername(req.body.acc_username);
 
     if (!user || !User.verifyPassword(req.body.acc_password, user.password)) {
         return res.redirect('/');

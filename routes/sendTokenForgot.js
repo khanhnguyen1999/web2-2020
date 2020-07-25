@@ -17,7 +17,8 @@ router.post('/', asyncHandler(async (req, res) => {
         tokenUser: crypto.randomBytes(3).toString('hex').toUpperCase(),
     }, { 
         where: { 
-            email: req.body.emailchecking } });
+            email: req.body.emailchecking }
+        });
 
     const users = await User.findUserByEmail(req.body.emailchecking);
     await Email.send(req.body.emailchecking, 'THAY ĐỔI MẬT KHẨU NGÂN HÀNG', `link đổi mật khẩu của bạn là : ${process.env.BASE_URL}/changepass/${req.body.emailchecking}/${users.tokenUser}`);

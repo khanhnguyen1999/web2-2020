@@ -1,138 +1,208 @@
-const router = require('express').Router();
-const { body, validationResult } = require('express-validator');
-const asyncHandler = require('express-async-handler');
-const db = require('../services/db');
-const User = require('../services/user');
-const Account = require('../services/account');
-const SavingAccount = require('../services/saving_account');
-const Transaction = require('../services/transaction');
-const Bank = require('../services/bank');
-const Email = require('../services/email');
-const crypto = require('crypto');
+const router = require("express").Router();
+const { body, validationResult } = require("express-validator");
+const asyncHandler = require("express-async-handler");
+const User = require("../services/user");
+const Account = require("../services/account");
+const Transaction = require("../services/transaction");
+const Bank = require("../services/bank");
+const SavingAccount = require("../services/saving_account");
+const BeneficiaryAccount = require("../services/beneficiaryAccount");
+const crypto = require("crypto");
+const Email = require("../services/email");
 
-var account;
-var _beneficiaryAccount;
-var content;
 var token;
-var amount;
+var fee;
+var listBank;
 var totalMoney;
 var extraMoney;
-var beneficiaryExtraMoney;
+var confirmInfo;
+var binRoot = process.env.BIN || 9704;
 
-router.get('/', async (req, res) => {
-    const listBank = await Bank.AllBank();
-    return res.render('./pages/transactions/transaction', { listBank: listBank });
-});
+router
+    .route("/")
+    .get(
+        asyncHandler(async (req, res) => {
+            listBank = await Bank.findAll();
+            return res.render("./pages/transactions/transaction", { errors: null, listBank });
+        })
+    )
+    .post(
+        [
+            body("amount").custom(async function (amount, { req }) {
+                if (req.body.beneficiaryAccountNumber) {
+                    if (amount < 100000) {
+                        throw Error("Số tiền tối thiểu 100000 VND");
+                    }
+                    const { bin, beneficiaryAccountNumber } = req.body;
+                    const beneficiaryBin = beneficiaryAccountNumber.substr(0, 4);
+                    const bank = await Bank.findByBin(bin);
+                    const account = await Account.findByAccountNumber(req.session.account.accountNumber);
 
-router.post('/', [
-    body('amount')
-        .custom(async function (amount) {
-            if (amount < 50) {
-                throw Error('currentUser exists');
+                    // Cung ngan hang
+                    if (bin === beneficiaryBin) {
+                        fee = bank.internalFee;
+                    } // Khac ngan hang
+                    else {
+                        fee = bank.externalFee;
+                    }
+
+                    totalMoney = parseInt(amount) + parseInt(parseInt(amount) * fee);
+                    extraMoney = parseInt(account.balance) - parseInt(totalMoney);
+
+                    if (extraMoney < 100000) {
+                        throw Error("Số dư không đủ");
+                    }
+                    return true;
+                }
+            }),
+            body("beneficiaryAccountNumber").custom(async function (beneficiaryAccountNumber) {
+                if (!beneficiaryAccountNumber) {
+                    return false;
+                } else {
+                    const account = await Account.findByAccountNumber(beneficiaryAccountNumber);
+                    // const beneficiatAccount = await BeneficiatyAccount.findByAccountNumber(beneficiaryAccountNumber);
+                    // if (!account && !beneficiatAccount) {
+                    //     throw Error('Số tài khoản không tồn tại');
+                    // }
+                    // API here
+                }
+
+                return true;
+            }),
+        ],
+        asyncHandler(async (req, res) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(422).render("./pages/transactions/transaction", { errors: ["Wrong OTP"], confirmInfo, listBank });
             }
-            return true;
-        }),
-    body('STKHuongThu')
-        .custom(async function (STKHuongThu) {
-            if (!STKHuongThu) {
-                return false;
+
+            const today = new Date();
+            const hour = ("0" + today.getHours()).slice(-2);
+            const min = ("0" + today.getMinutes()).slice(-2);
+            const sec = ("0" + today.getSeconds()).slice(-2);
+            const date = ("0" + today.getDate()).slice(-2);
+            const mon = ("0" + (today.getMonth() + 1)).slice(-2);
+            const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString("hex").toUpperCase();
+
+            if (!req.body.beneficiaryAccountNumber) {
+                const { OTP } = req.body;
+                const bank = await Bank.findByBin(confirmInfo.bin);
+
+                if (OTP.toUpperCase() === token) {
+                    const beneficiaryInfo = await Transaction.create({
+                        transactionID,
+                        accountNumber: res.locals.account.accountNumber,
+                        amount: confirmInfo.amount,
+                        content: confirmInfo.content,
+                        beneficiaryAccount: confirmInfo.beneficiaryAccountNumber,
+                        fee: confirmInfo.totalFee,
+                    })
+                        .then(async (trans) => {
+                            // Current account: New Balance
+                            await Account.findOne({
+                                where: {
+                                    accountNumber: res.locals.account.accountNumber,
+                                },
+                            })
+                                .then(async (account) => {
+                                    const newBalance = account.balance - totalMoney;
+
+                                    await Account.updateBalance(newBalance, account.accountNumber);
+
+                                    // Beneficiary account: New Balance
+                                    await Account.findOne({
+                                        where: {
+                                            accountNumber: trans.beneficiaryAccount,
+                                        },
+                                    })
+                                        .then(async (account) => {
+                                            const newBalance = account.balance + parseInt(confirmInfo.amount);
+
+                                            await Account.updateBalance(newBalance, account.accountNumber);
+                                        })
+                                        .catch((err) => {
+                                            console.log(err);
+                                        });
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                });
+
+                            const account = await Account.findOne({
+                                where: {
+                                    accountNumber: trans.beneficiaryAccount,
+                                },
+                            }).then(async (account) => {
+                                const user = await User.findOne({
+                                    where: {
+                                        id: account.userId,
+                                    },
+                                })
+                                    .then(async (user) => {
+                                        await BeneficiaryAccount.create({
+                                            displayName: user.displayName,
+                                            beneficiaryBank: bank.bankName,
+                                            pendingAmount: confirmInfo.amount,
+                                        });
+
+                                        return user;
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
+
+                                return user;
+                            });
+
+                            return { account, trans };
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+
+                    return res.render(
+                        "./pages/transactions/result"
+                        // , { errors: null, confirmInfo }
+                    );
+                } else {
+                    return res.render("./pages/transactions/verify", { errors: "OTP wrong", confirmInfo });
+                }
             } else {
-                const account = Account.findAccountrByAccountNumber(STKHuongThu);
-                if (!account) {
-                    throw Error('AccountNumber exists');
+                const { bin, beneficiaryAccountNumber, amount, content } = req.body;
+                const totalFee = parseInt(amount) * fee;
+
+                if (Number(bin) === binRoot) {
+                    const account = await Account.findOne({
+                        where: {
+                            accountNumber: beneficiaryAccountNumber,
+                        },
+                    })
+                        .then(async (account) => {
+                            return await User.findById(account.userId);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+
+                    confirmInfo = {
+                        beneficiaryAccountNumber,
+                        amount,
+                        content,
+                        totalFee,
+                        displayName: account.displayName,
+                        bin,
+                    };
+
+                    res.locals.confirmInfo = confirmInfo;
+
+                    token = crypto.randomBytes(2).toString("hex").toUpperCase();
+                    // await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
+                    return res.render("./pages/transactions/verify", { errors: null, confirmInfo });
+                } else {
+                    return res.render("./pages/transactions/transaction", { errors: "Not supported", listBank: listBank });
                 }
             }
-            return true;
-        }),
-], asyncHandler(async function (req, res) {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        console.log("Error");
-        return res.status(422).render('./pages/transactions/transaction', { errors: errors.array() });
-    }
-
-    if (!req.body.STKHuongThu) {
-        console.log(token)
-        if (req.body.OTP.toUpperCase() == token) {
-            await Account.updateBalance(extraMoney, res.locals.account.accountNumber);
-            await Account.updateBalance(beneficiaryExtraMoney, _beneficiaryAccount.accountNumber);
-            await Email.send('chi1caithoi@gmail.com', 'Vietcombank', account.accountNumber + " " + res.locals.currentUser.displayName + " tới " +
-                _beneficiaryAccount.accountNumber + " " + BeneficiaryUser.displayName + " : " + req.body.amount + "\nSố dư : " + extraMoney);
-            res.render('./pages/transactions/transaction2');
-        } else {
-            throw Error('token khong chinh xac');
-        }
-    } else {
-        account = await Account.findAccountrByAccountNumber(res.locals.account.accountNumber);
-        _beneficiaryAccount = await Account.findAccountrByAccountNumber(req.body.STKHuongThu);
-        BeneficiaryUser = await User.findUserById(_beneficiaryAccount.userId);
-        content = req.body.NoiDung == '' ? account.accountNumber + " " + res.locals.currentUser.displayName + " tới " +
-            _beneficiaryAccount.accountNumber + " " + BeneficiaryUser.displayName + " " : req.body.NoiDung;
-
-        await Transaction.create({
-            accountNumber: res.locals.account.accountNumber,
-            amount: req.body.amount,
-            content: content,
-            beneficiaryBank: req.body.NganHang,
-            beneficiaryAccount: req.body.STKHuongThu
-        });
-
-        amount = req.body.amount;
-        totalMoney = parseInt(req.body.amount) + 5000;
-        extraMoney = parseInt(account.balance) - totalMoney;
-        beneficiaryExtraMoney = parseInt(_beneficiaryAccount.balance) + parseInt(req.body.amount);
-        token = crypto.randomBytes(2).toString("hex").toUpperCase(); res.locals.token = token;
-
-        if (extraMoney < 50000) {
-            throw Error('khong du tien');
-        } else {
-            // await Account.updateBalance(extraMoney,res.locals.account.accountNumber);
-            // await Account.updateBalance(beneficiaryExtraMoney,req.body.STKHuongThu)
-            // await Email.send('chi1caithoi@gmail.com','Vietcombank',account.accountNumber+" "+res.locals.currentUser.displayName+" tới "+
-            // _beneficiaryAccount.accountNumber+" "+BeneficiaryUser.displayName +" : "+req.body.amount +"\nSố dư : "+extraMoney )
-            Email.send(res.locals.currentUser.email, "Vietcombank", token);
-
-            return res.render('./pages/transactions/transaction1', {
-                _beneficiaryAccount: _beneficiaryAccount,
-                BeneficiaryUser: BeneficiaryUser,
-                account: account,
-                amount: req.body.amount,
-                content: content,
-            });
-        }
-    }
-
-
-    // console.log(res.locals.account.accountNumber)
-    // await User.create({
-
-    //     email:'email3@gmail.com',
-    //     username:'nguyen van c',
-    //     password:'$2b$10$RJaT94d1LWSIUH.fbhdrTuZ1Iv1Xw3a/8ZqgSiSuF4uhluqlYX.vC',
-    //     displayName : 'khaidang2',
-    //     idCardType:'33',
-    //     cardId : '1234567',
-    //     provideDate:'2016-08-09 04:05:02',
-    // })
-    // await Account.create({
-    //     accountNumber : '1234567',
-    //     balance : 5000000,
-    //     currencyUnit:'currencyUnit',
-    //     status:true,
-    //     openDate:'2016-08-09 04:05:02',
-    //     limit:5000000
-    // })
-    // const currentUser = await User.create({
-    //     email: req.body.email,
-    //     displayName: req.body.displayName,
-    //     password: (await User.hashPassword(req.body.password)).toString(),
-    //     token : crypto.randomBytes(3).toString('hex').toUpperCase(),
-
-    // })
-    // req.session.userId = currentUser.id
-    // await Email.send(currentUser.email, 'kich hoat tai khoan' ,`${process.env.BASE_URL}/login/activate/${currentUser.id}/${currentUser.token}`);
-    // res.redirect('/')
-}));
+        })
+    );
 
 module.exports = router;
