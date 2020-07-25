@@ -9,7 +9,7 @@ const Op = Sequelize.Op;
 
 router.get('/', asyncHandler(async (req, res) => {
     req.currentUser = req.currentUser ? req.currentUser : [];
-    const account = await Account.findAccountrByUserId(req.currentUser.id);
+    const account = await Account.findByUserId(req.currentUser.id);
 
     if (account) {
         return res.render('./ducbui/pages/admin/admin');
@@ -77,7 +77,7 @@ router.get('/users/management', asyncHandler(async (req, res) => {
 router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const account = await Account.findAccountrByUserId(id);
+    const account = await Account.findByUserId(id);
     if (account) {
         await Account.update({
             status: 'ACTIVE',
@@ -97,7 +97,7 @@ router.get('/users/:id/verify-accept', asyncHandler(async (req, res) => {
 router.get('/users/:id/verify-deny', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const account = Account.findAccountrByUserId(id);
+    const account = Account.findByUserId(id);
     if (account) {
         await Account.update({
             status: 'DENIED',
@@ -117,7 +117,7 @@ router.get('/users/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const user = await User.findUserById(id);
-    const account = await Account.findAccountrByUserId(id);
+    const account = await Account.findByUserId(id);
 
     res.locals.transactions = []; // Marked
 
@@ -128,7 +128,7 @@ router.get('/users/:id', asyncHandler(async (req, res) => {
 router.get('/users/:id/lock', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const account = await Account.findAccountrByUserId(id);
+    const account = await Account.findByUserId(id);
     let status = null;
 
     if (account.status === 'ACTIVE') {
@@ -158,7 +158,7 @@ router.get('/users/:id/lock', asyncHandler(async (req, res) => {
 router.get('/users/:id/transaction', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const account = await Account.findAccountrByUserId(id);
+    const account = await Account.findByUserId(id);
     if (account) {
         const transactions = await Transaction.findAll({
             where: {
@@ -206,7 +206,7 @@ router.post('/users/:id/transfer',[
         return res.status(442).json({ errors: errors.array() });
     }
 
-    const account = await Account.findAccountrByUserId(id);
+    const account = await Account.findByUserId(id);
     if (account) {
         const balance = Number(account.balance) + Number(amount);
         console.log(balance);
