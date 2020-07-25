@@ -1,77 +1,45 @@
 const bcrypt = require('bcrypt');
-const Sequelize = require('sequelize')
-const db = require('./db')
+const Sequelize = require('sequelize');
+const db = require('./db');
 
 const Model = Sequelize.Model;
-class User extends Model {
-    static async findById(id) {
-        return User.findByPk(id)
-    }
+class Transaction extends Model {
 
-    static async findByEmail(email) {
-        return User.findOne({
-            where: {
-                email,
-            }
-        });
-    }
-
-    static findByUsername(username) {
-        return User.findOne({
-            where: {
-                username,
-            }
-        });
-    }
-
-    static hashPassword(password) {
-        return bcrypt.hashSync(password, 10);
-    }
-    
-    static verifyPassword(passwordHash, password) {
-        return bcrypt.compareSync(passwordHash, password)
-    }
 }
-User.init({
-    // attributes
-    email: {
+
+Transaction.init({
+    transactionID: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
     },
-    username: {
+    accountNumber: {
         type: Sequelize.STRING,
-        allowNull: false
-        // allowNull defaults to true
+        allowNull: false,
     },
-    password: {
-        type: Sequelize.STRING,
-
-        // allowNull defaults to true
+    amount: {
+        type: Sequelize.INTEGER,
     },
-    displayName: {
+    content: {
         type: Sequelize.STRING,
     },
-    idCardType: {
+    beneficiaryAccount: {
         type: Sequelize.STRING,
     },
-    cardId: {
+    fee: {
+        type: Sequelize.INTEGER,
+    },
+    status: {
         type: Sequelize.STRING,
     },
-    provideDate: {
-        type: Sequelize.DATE,
-    },
-    idCardPhoto: {
+    details: {
         type: Sequelize.STRING,
-    },
-    tokenUser: {
-        type: Sequelize.STRING,
-        allowNull: true
-        // allowNull defaults to true
-    },
+    }
 }, {
     sequelize: db,
-    modelName: 'user'
+    modelName: 'transaction'
 });
 
-module.exports = User;
+const Account = require('./account');
+Transaction.belongsTo(Account, { foreignKey: 'accountNumber' });
+
+module.exports = Transaction;
