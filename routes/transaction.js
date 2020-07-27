@@ -33,8 +33,7 @@ router
                     if (amount < 100000) {
                         throw Error("Số tiền tối thiểu 100000 VND");
                     }
-                    if(!amount || amount==="")
-                    {
+                    if (!amount || amount === "") {
                         throw Error("Chua nhap so tien gui");
                     }
                     const { bin, beneficiaryAccountNumber } = req.body;
@@ -61,12 +60,12 @@ router
             }),
             body("beneficiaryAccountNumber").custom(async function (beneficiaryAccountNumber) {
                 if (!beneficiaryAccountNumber) {
-                    throw Error('Chua nhap STK nguoi gui');
+                    throw Error("Chua nhap STK nguoi gui");
                 } else {
                     const account = await Account.findByAccountNumber(beneficiaryAccountNumber);
                     // const beneficiatAccount = await BeneficiatyAccount.findByAccountNumber(beneficiaryAccountNumber);
                     if (!account && !beneficiatAccount) {
-                        throw Error('Số tài khoản không tồn tại');
+                        throw Error("Số tài khoản không tồn tại");
                     }
                     // API here
                 }
@@ -76,9 +75,9 @@ router
         ],
         asyncHandler(async (req, res) => {
             const errors = validationResult(req);
-            console.log(errors.errors)
+            console.log(errors.errors);
             if (!errors.isEmpty() && req.body.bin) {
-                return res.status(422).render("./pages/transactions/transaction", { errors:errors.errors , listBank });
+                return res.status(422).render("./pages/transactions/transaction", { errors: errors.errors, listBank });
             }
 
             const today = new Date();
@@ -92,9 +91,9 @@ router
             if (!req.body.beneficiaryAccountNumber && !req.body.bin) {
                 const { OTP } = req.body;
                 const bank = await Bank.findByBin(confirmInfo.bin);
-                console.log(confirmInfo)
-                console.log(transactionID)
-                console.log(res.locals.account.accountNumber)
+                console.log(confirmInfo);
+                console.log(transactionID);
+                console.log(res.locals.account.accountNumber);
                 if (OTP.toUpperCase() === token) {
                     const beneficiaryInfo = await Transaction.create({
                         transactionID,
@@ -113,7 +112,7 @@ router
                             })
                                 .then(async (account) => {
                                     const newBalance = account.balance - totalMoney;
-                                    console.log("new"+newBalance)
+                                    console.log("new" + newBalance);
                                     await Account.updateBalance(newBalance, account.accountNumber);
 
                                     // Beneficiary account: New Balance
@@ -172,11 +171,11 @@ router
                         // , { errors: "Token không chính xác", confirmInfo }
                     );
                 } else {
-                    console.log("---------------------")
+                    console.log("---------------------");
                     return res.render("./pages/transactions/verify", { errors: "OTP wrong", confirmInfo });
                 }
             } else {
-                console.log("---------------------qweq")
+                console.log("---------------------qweq");
                 const { bin, beneficiaryAccountNumber, amount, content } = req.body;
                 const totalFee = parseInt(amount) * fee;
 
@@ -205,7 +204,8 @@ router
                     res.locals.confirmInfo = confirmInfo;
 
                     token = crypto.randomBytes(2).toString("hex").toUpperCase();
-                    await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
+                    console.log(token);
+                    // await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
                     return res.render("./pages/transactions/verify", { errors: null, confirmInfo });
                 } else {
                     return res.render("./pages/transactions/transaction", { errors: errors.errors, listBank: listBank });

@@ -75,7 +75,6 @@ SavingAccount.init({
         type: Sequelize.INTEGER,
     },
 }, {
-    underscored: true,
     sequelize: db,
     modelName: 'saving_account',
 });
