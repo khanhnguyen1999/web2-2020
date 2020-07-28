@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 async function send(to, subject, content) {
     const transporter = nodemailer.createTransport({
@@ -7,19 +7,16 @@ async function send(to, subject, content) {
         secure: false,
         pool: true,
         auth: {
-          // user: process.env.EMAIL_USER,
-          // pass: process.env.EMAIL_PASSWORD,
-          user:'1760079web2@gmail.com',
-          pass:'khai123456'
+            user: process.env.EMAIL_USER || "1760079web2@gmail.com",
+            pass: process.env.EMAIL_PASSWORD || "khai123456",
         },
         tls: {
-            rejectUnauthorized: false
-        }
+            rejectUnauthorized: false,
+        },
     });
 
     transporter.sendMail({
-        // from: process.env.EMAIL_USER,
-        from: '17k1.web2.demo@gmail.com',
+        from: process.env.EMAIL_USER || "17k1.web2.demo@gmail.com",
         to,
         subject,
         html: content,
