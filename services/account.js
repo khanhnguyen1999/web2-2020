@@ -61,7 +61,6 @@ Account.init({
         allowNull: false,
     },
 }, {
-    underscored: true,///change
     sequelize: db,
     modelName: 'account'
 });

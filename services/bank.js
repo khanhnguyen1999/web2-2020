@@ -17,7 +17,7 @@ Bank.init({
         type: Sequelize.INTEGER,
         autoIncrement: true,
     },
-    nameBank: { ///change
+    bankName: { ///change
         type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true,
@@ -35,7 +35,6 @@ Bank.init({
         allowNull: false,
     },
 }, {
-    underscored: true, ////change
     sequelize: db,
     modelName: 'bank'
 });
