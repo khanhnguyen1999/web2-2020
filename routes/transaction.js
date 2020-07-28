@@ -9,6 +9,7 @@ const SavingAccount = require("../services/saving_account");
 const BeneficiaryAccount = require("../services/beneficiaryAccount");
 const crypto = require("crypto");
 const Email = require("../services/email");
+const UserStatus =require("../middlewares/userStatus")
 
 var token;
 var fee;
@@ -17,11 +18,11 @@ var totalMoney;
 var extraMoney;
 var confirmInfo;
 var binRoot = process.env.BIN || 9704;
-
+router.use(UserStatus);
 router
     .route("/")
     .get(
-        asyncHandler(async (req, res) => {
+        asyncHandler( async (req, res) => {
             listBank = await Bank.findAll();
             return res.render("./pages/transactions/transaction", { errors: null, listBank });
         })
