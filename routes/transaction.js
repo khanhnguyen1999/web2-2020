@@ -5,38 +5,38 @@ const User = require("../services/user");
 const Account = require("../services/account");
 const Transaction = require("../services/transaction");
 const Bank = require("../services/bank");
-const SavingAccount = require("../services/saving_account");
 const BeneficiaryAccount = require("../services/beneficiaryAccount");
 const crypto = require("crypto");
 const Email = require("../services/email");
-const UserStatus =require("../middlewares/userStatus")
+const UserStatus = require("../middlewares/userStatus");
 
 var token;
 var fee;
 var listBank;
 var totalMoney;
-var extraMoney;
 var confirmInfo;
 var binRoot = process.env.BIN || 9704;
 router.use(UserStatus);
 router
     .route("/")
     .get(
-        asyncHandler( async (req, res) => {
-            listBank = await Bank.findAll();
+        asyncHandler(async (req, res) => {
+            listBank = await Bank.findAll(); // Lay danh sach ngan hang
             return res.render("./pages/transactions/transaction", { errors: null, listBank });
         })
     )
     .post(
         [
             body("amount").custom(async function (amount, { req }) {
+                // Kiem tra tien hien co trong tai khoan
                 if (req.body.beneficiaryAccountNumber) {
                     if (amount < 100000) {
-                        throw Error("Số tiền tối thiểu 100000 VND");
+                        throw Error("Check your balance!");
                     }
                     if (!amount || amount === "") {
-                        throw Error("Chua nhap so tien gui");
+                        throw Error("Amount is required");
                     }
+
                     const { bin, beneficiaryAccountNumber } = req.body;
                     const beneficiaryBin = beneficiaryAccountNumber.substr(0, 4);
                     const bank = await Bank.findByBin(bin);
@@ -50,23 +50,24 @@ router
                         fee = bank.externalFee;
                     }
 
-                    totalMoney = parseInt(amount) + parseInt(parseInt(amount) * fee);
-                    extraMoney = parseInt(account.balance) - parseInt(totalMoney);
+                    totalMoney = parseInt(amount) + parseInt(parseInt(amount) * fee); // Tong tien da bao gom phi
+                    const newBalance = parseInt(account.balance) - parseInt(totalMoney); // So tien con lai
 
-                    if (extraMoney < 100000) {
-                        throw Error("Số dư không đủ");
+                    // Kiem tra so tien con lai sau khi chuyen
+                    if (newBalance < 100000) {
+                        throw Error("Check your balance!");
                     }
                     return true;
                 }
             }),
             body("beneficiaryAccountNumber").custom(async function (beneficiaryAccountNumber) {
                 if (!beneficiaryAccountNumber) {
-                    throw Error("Chua nhap STK nguoi gui");
+                    throw Error("Beneficiary Account is required!");
                 } else {
+                    // Kiem tra tai khoan nguoi nhan hop le
                     const account = await Account.findByAccountNumber(beneficiaryAccountNumber);
-                    // const beneficiatAccount = await BeneficiatyAccount.findByAccountNumber(beneficiaryAccountNumber);
                     if (!account && !beneficiatAccount) {
-                        throw Error("Số tài khoản không tồn tại");
+                        throw Error("Account not exists.");
                     }
                     // API here
                 }
@@ -92,9 +93,7 @@ router
             if (!req.body.beneficiaryAccountNumber && !req.body.bin) {
                 const { OTP } = req.body;
                 const bank = await Bank.findByBin(confirmInfo.bin);
-                console.log(confirmInfo);
-                console.log(transactionID);
-                console.log(res.locals.account.accountNumber);
+
                 if (OTP.toUpperCase() === token) {
                     const beneficiaryInfo = await Transaction.create({
                         transactionID,
@@ -113,7 +112,6 @@ router
                             })
                                 .then(async (account) => {
                                     const newBalance = account.balance - totalMoney;
-                                    console.log("new" + newBalance);
                                     await Account.updateBalance(newBalance, account.accountNumber);
 
                                     // Beneficiary account: New Balance
@@ -172,11 +170,9 @@ router
                         // , { errors: "Token không chính xác", confirmInfo }
                     );
                 } else {
-                    console.log("---------------------");
-                    return res.render("./pages/transactions/verify", { errors: "OTP wrong", confirmInfo });
+                    return res.render("./pages/transactions/verify", { errors: "Wrong OTP.", confirmInfo });
                 }
             } else {
-                console.log("---------------------qweq");
                 const { bin, beneficiaryAccountNumber, amount, content } = req.body;
                 const totalFee = parseInt(amount) * fee;
 

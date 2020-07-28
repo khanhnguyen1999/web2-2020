@@ -38,10 +38,10 @@ app.use("/transaction", require("./routes/transaction"));
 
 // --------Saving Account ----------
 app.use("/saving", require("./routes/savingAccount"));
-app.get("/saving/listSaving/:id", require("./routes/savingAccount"));
-app.get("/saving/listSaving/tattoan/:id", require("./routes/savingAccount"));
-app.post("/saving/listSaving/tattoan/:id", require("./routes/savingAccount"));
-app.get("/saving/addSaving", require("./routes/savingAccount"));
+// app.get("/saving/listSaving/:id", require("./routes/savingAccount"));
+// app.get("/saving/listSaving/tattoan/:id", require("./routes/savingAccount"));
+// app.post("/saving/listSaving/tattoan/:id", require("./routes/savingAccount"));
+// app.get("/saving/addSaving", require("./routes/savingAccount"));
 
 // --------APP USE----------
 app.use(express.static("public"));

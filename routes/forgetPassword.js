@@ -32,18 +32,12 @@ router
                     }
                 );
 
-                await Email.send(
-                    email,
-                    "Forget Password",
-                    `${
-                        process.env.BASE_URL || "http://localhost:3000"
-                    }/forget-password/change-password/${token}`
-                );
+                await Email.send(email, "Forget Password", `${process.env.BASE_URL || "http://localhost:3000"}/forget-password/change-password/${token}`);
                 return res.render("../views/pages/error", {
-                    error: "Check mail ho",
+                    error: "Check your email.",
                 });
             } else {
-                res.render("../views/pages/error", { error: "Email dack co" });
+                res.render("../views/pages/error", { error: "Email not exists." });
             }
         })
     );
