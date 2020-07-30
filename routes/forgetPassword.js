@@ -4,16 +4,17 @@ const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const Email = require("../services/email");
 const crypto = require("crypto");
+const { Passport } = require("passport");
 
 router
     .route("/")
     .get((req, res) => {
-        res.render("../views/pages/forgetPassword");
+        res.render("../views/pages/forgot");
     })
     .post(
         asyncHandler(async (req, res, next) => {
             const { email } = req.body;
-
+            console.log(email)
             const user = await User.findByEmail(email);
 
             if (user) {
@@ -51,7 +52,7 @@ router
 
             const user = await User.findByEmail(email);
             if (user.tokenUser === token) {
-                res.render("../views/pages/changePassword");
+                res.render("../views/pages/changePassword2");
             } else {
                 res.render("../views/pages/error", { error: "Wrong token" });
             }
@@ -59,11 +60,11 @@ router
     )
     .post(
         asyncHandler(async (req, res) => {
-            const { newPass, confPass } = req.body;
-            if (newPass === confPass) {
+            const { pass, conf_pass } = req.body;
+            if (pass === conf_pass) {
                 await User.update(
                     {
-                        password: User.hashPassword(newPass),
+                        password: User.hashPassword(pass),
                         tokenUser: null,
                     },
                     {
@@ -74,7 +75,7 @@ router
                 );
                 res.redirect("/");
             } else {
-                res.redirect("back");
+                res.redirect("/");
             }
         })
     );

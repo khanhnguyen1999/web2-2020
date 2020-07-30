@@ -3,6 +3,9 @@ const Account = require("../services/account");
 const router = require("express").Router();
 const asyncHandler = require("express-async-handler");
 const multer = require("multer");
+const fsExtra = require('fs-extra')
+const fs = require('fs')
+const del = require('del');
 var fileupload = require("express-fileupload");
 
 router.use(
@@ -46,7 +49,6 @@ router.post("/upload", (req, res) => {
     const file = req.files.image;
     console.log(req.files);
     console.log(file.tempFilePath);
-
     // upload image here
     cloudinary.uploader
         .upload(file.tempFilePath)
@@ -69,6 +71,6 @@ router.post("/upload", (req, res) => {
                 error,
             });
         });
+        del.sync(['../tmp/**'])
 });
-
 module.exports = router;
