@@ -5,13 +5,14 @@ const asyncHandler = require("express-async-handler");
 router
     .route("/")
     .get((req, res) => {
-        res.render("pages/login");
+        res.render("ducbui/pages/login");
     })
     .post(
         asyncHandler(async (req, res) => {
-            const user = await User.findByUsername(req.body.acc_username);
+            const { username, password } = req.body;
+            const user = await User.findByUsername(username);
 
-            if (!user || !User.verifyPassword(req.body.acc_password, user.password)) {
+            if (!user || !User.verifyPassword(password, user.password)) {
                 return res.redirect("/");
             }
 

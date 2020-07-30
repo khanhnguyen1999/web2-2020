@@ -1,0 +1,140 @@
+<%- include ("../../partials/header", { title: "Transaction - E-Banking" }) -%>
+
+<div class="login-page sidebar-collapse">
+    <%- include ("../../partials/navbar") %>
+
+    <div class="page-header header-filter" style="background-image: url('../assets/img/bg7.jpg'); background-size: cover; background-position: top center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 ml-auto mr-auto">
+                    <div class="card card-login text-center">
+                        <form class="form" method="POST">
+                            <div class="card-header card-header-primary text-center">
+                                <h4 class="card-title">Transaction</h4>
+                                <div class="social-line">
+                                    <div class="row m-3">
+                                        <div class="col-lg-4 col-md-12">
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p class="card-text">
+                                                        <b>Account Owner: </b>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p class="class-text">
+                                                        <%= currentUser.displayName %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-12">
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p class="card-text">
+                                                        <b>Account Number: </b>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p class="class-text">
+                                                        <%= account.accountNumber %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-12">
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p class="card-text">
+                                                        <b>Balance: </b>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="col-12">
+                                                    <p class="class-text">
+                                                        <% var rs=account.balance.toString(); %> <% const formatter= new Intl.NumberFormat('de-DE', { currency: 'VND', minimumFractionDigits: 2 }); rs = formatter.format(rs); %> <%= rs%>
+                                                        <small class="muted-text">VND</small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification -->
+                            <% if (errors != null) { error.forEach(err => { %>
+                            <div class="alert alert-danger">
+                                <div class="container">
+                                    <div class="alert-icon">
+                                        <i class="material-icons">error_outline</i>
+                                    </div>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true"><i class="material-icons">clear</i></span>
+                                    </button>
+                                    <b>Error Alert:</b> <%= err.msg %>
+                                </div>
+                            </div>
+                            <% });} %>
+                            <!-- End Notification -->
+
+                            <div class="card-body">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <!-- <i class="material-icons">face</i> -->
+                                            Beneficiary Bank
+                                        </span>
+                                    </div>
+                                    <select class="form-control" name="bin">
+                                        <option>Vietcombank</option>
+                                        <option>VPBank</option>
+                                        <option>TPBank</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            Beneficiary Account
+                                        </span>
+                                    </div>
+                                    <input name="beneficiaryAccountNumber" type="text" class="form-control" />
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            Amount
+                                        </span>
+                                    </div>
+                                    <input name="amount" type="number" class="form-control" placeholder="50.000 - 50.000.000" />
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            Content
+                                        </span>
+                                    </div>
+                                    <textarea name="content" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="card-footer" style="display: inherit;">
+                                <div class="text-center">
+                                    <button type="" class="btn btn-danger btn-link btn-wd btn-lg">Cancel</button>
+                                    <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include ("../../partials/footer") -%>
+    </div>
+</div>
+
+<%- include ("../../partials/scripts") -%>

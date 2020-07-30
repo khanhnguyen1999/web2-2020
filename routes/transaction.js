@@ -22,7 +22,7 @@ router
     .get(
         asyncHandler(async (req, res) => {
             listBank = await Bank.findAll(); // Lay danh sach ngan hang
-            return res.render("./pages/transactions/transaction", { errors: null, listBank });
+            return res.render("./ducbui/pages/transactions/transaction", { errors: null, listBank });
         })
     )
     .post(

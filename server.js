@@ -27,9 +27,6 @@ app.set("views", "./views");
 app.set("view engine", "ejs");
 
 // ----------APP GET------------
-app.get("/home", function (req, res) {
-    res.render("pages/home");
-});
 app.get("/logout", require("./routes/logout"));
 
 // --------Transaction----------
@@ -46,7 +43,9 @@ app.use("/saving", require("./routes/savingAccount"));
 // --------APP USE----------
 app.use(express.static("public"));
 app.use("/", require("./routes/login"));
+app.use("/home", require("./routes/home"));
 app.use("/register", require("./routes/register"));
+app.use("/profile", require("./routes/profile"));
 app.use("/admin", require("./routes/admin"));
 app.use("/multer", require("./routes/multer"));
 app.use("/forget-password", require("./routes/forgetPassword"));

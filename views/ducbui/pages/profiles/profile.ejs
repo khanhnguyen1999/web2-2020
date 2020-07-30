@@ -1,0 +1,24 @@
+<%- include ("../../partials/header", { title: "Transaction - E-Banking" }) -%>
+
+<div class="profile-page sidebar-collapse">
+    <%- include ("../../partials/navbar") %>
+
+    <div class="page-header header-filter" data-parallax="true" style="background-image: url('../assets/img/city-profile.jpg');"></div>
+    <div class="main main-raised">
+        <div class="profile-content">
+            <!-- My custom-->
+            <div class="container-fluid">
+                <div class="row justify-content-center tab-space">
+                    <p class="h1">Account Management</p>
+                </div>
+
+                <div class="row justify-content-center tab-space">
+                    <%- include ("./profileLeft") %> <%- include ("./profileRight") %>
+                </div>
+            </div>
+            <!-- End My custom-->
+        </div>
+    </div>
+</div>
+
+<%- include ("../../partials/footer") -%> <%- include ("../../partials/scripts") -%>
