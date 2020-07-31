@@ -84,44 +84,72 @@
 
                             <!-- Main section -->
                             <div class="card-body">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            <!-- <i class="material-icons">face</i> -->
-                                            Beneficiary Bank
-                                        </span>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="row text-right">
+                                            <div class="col-12">
+                                                <p class="h4">Sender:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Account Number:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Amount:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Beneficiary Account:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Beneficiary Name:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Content:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Fee:</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <select class="form-control" name="bin">
-                                        <!-- <option>Vietcombank</option>
-                                        <option>VPBank</option> -->
-                                        <% listBank.forEach(bank => { %>
-                                        <option value="<%= bank.bin %>"><%= bank.bankName %></option>
-                                        <% }); %>
-                                    </select>
+                                    <div class="col-8">
+                                        <div class="row text-left">
+                                            <div class="col-12">
+                                                <p class="h4"><%= currentUser.displayName %></p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4"><%= account.accountNumber %></p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">
+                                                    <%= confirmInfo.amount %>
+                                                    <small class="text-muted">VND</small>
+                                                </p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4"><%= confirmInfo.beneficiaryAccountNumber %></p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4"><%= confirmInfo.displayName %></p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4"><%= confirmInfo.content %></p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">
+                                                    <%= confirmInfo.totalFee %>
+                                                    <small class="text-muted">VND</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
-                                            Beneficiary Account
+                                            OTP
                                         </span>
                                     </div>
-                                    <input name="beneficiaryAccountNumber" type="text" class="form-control" />
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            Amount
-                                        </span>
-                                    </div>
-                                    <input name="amount" type="number" class="form-control" placeholder="50.000 - 50.000.000" />
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            Content
-                                        </span>
-                                    </div>
-                                    <textarea name="content" class="form-control"></textarea>
+                                    <input name="OTP" type="text" class="form-control" />
                                 </div>
                             </div>
                             <!-- End Main section -->

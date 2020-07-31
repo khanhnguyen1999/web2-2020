@@ -19,13 +19,14 @@
                         Home
                     </a>
                 </li>
+                <% if (currentUser) { %>
                 <li class="nav-item">
                     <a href="/transaction" class="nav-link">
                         Transaction
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/profile" class="nav-link">
+                    <a href="/profile/<%= currentUser.id %>" class="nav-link">
                         Profile
                     </a>
                 </li>
@@ -34,6 +35,18 @@
                         Admin
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link">
+                        Logout
+                    </a>
+                </li>
+            <% } else { %>
+                <li class="nav-item">
+                    <a href="/register" class="nav-link">
+                        Register
+                    </a>
+                </li>
+            <% } %>
             </ul>
         </div>
     </div>

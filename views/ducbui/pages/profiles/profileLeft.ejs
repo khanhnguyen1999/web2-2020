@@ -9,27 +9,32 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="inputEmail4">Email</label>
-                            <input type="email" class="form-control" id="inputEmail4" value="DanielBecker29@gmail.com" />
+                            <input type="email" class="form-control" id="inputEmail4" value="<%= user.displayName %>" />
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputPassword4">Password</label>
-                            <input type="password" class="form-control" id="inputPassword4" value="Password" />
+                            <input type="password" class="form-control" id="inputPassword4" value="<%= user.password %>" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputAddress">Username</label>
-                        <input type="text" class="form-control" id="inputAddress" value="danielbecker29" />
+                        <input type="text" class="form-control" id="inputAddress" value="<%= user.username %>" />
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress2">Account Number</label>
+                        <input type="text" class="form-control" id="inputAddress2" value="<%= user.accountNumber %>" />
                     </div>
                     <div class="form-group">
                         <label for="inputAddress2">ID Card Number</label>
-                        <input type="text" class="form-control" id="inputAddress2" value="121212123" />
+                        <input type="text" class="form-control" id="inputAddress2" value="<%= user.cardId %>" />
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputCity">Status</label>
                             <div class="row justify-content-start">
+                                <% var signal = "primary"; if (user.status === "LOCKED" || user.status === "UNVERIFIED") { signal = "danger"; } else if (user.status === "PENDING" || user.status === "DENY") { signal = "warning"; } %>
                                 <div class="col-lg-3">
-                                    <span class="badge badge-pill badge-primary">ACTIVE</span>
+                                    <span class="badge badge-pill badge-<%= signal %>"><%= user.status %></span>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +45,7 @@
                         <a href="/change-password" class="btn btn-primary btn-round">Change Password</a>
                     </div>
                     <div class="form-group col-md-3 text-center">
-                        <a href="/lock-request-route" class="btn btn-warning btn-round">Request Lock Account</a>
+                        <a href="/request-lock" class="btn btn-warning btn-round">Request Lock Account</a>
                     </div>
                 </div>
             </form>

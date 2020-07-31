@@ -84,45 +84,78 @@
 
                             <!-- Main section -->
                             <div class="card-body">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            <!-- <i class="material-icons">face</i> -->
-                                            Beneficiary Bank
-                                        </span>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="row text-right">
+                                            <div class="col-12">
+                                                <p class="h4">Sender:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Account Number:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Amount:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Beneficiary Account:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Beneficiary Name:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Content:</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Fee:</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <select class="form-control" name="bin">
-                                        <!-- <option>Vietcombank</option>
-                                        <option>VPBank</option> -->
-                                        <% listBank.forEach(bank => { %>
-                                        <option value="<%= bank.bin %>"><%= bank.bankName %></option>
-                                        <% }); %>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            Beneficiary Account
-                                        </span>
+                                    <div class="col-8">
+                                        <div class="row text-left">
+                                            <div class="col-12">
+                                                <p class="h4">Bui Tien Duc</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">9704607407650543</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">
+                                                    500000
+                                                    <small class="text-muted">VND</small>
+                                                </p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">12083971698</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Khanh Bui</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">Chao ban</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="h4">
+                                                    15000
+                                                    <small class="text-muted">VND</small>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <input name="beneficiaryAccountNumber" type="text" class="form-control" />
                                 </div>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            Amount
-                                        </span>
+
+                                <!-- Success Notification -->
+                                <div class="alert alert-success">
+                                    <div class="container">
+                                        <div class="alert-icon">
+                                            <i class="material-icons">check</i>
+                                        </div>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true"><i class="material-icons">clear</i></span>
+                                        </button>
+                                        <b>Success Alert:</b> Tranferred Successfully!
                                     </div>
-                                    <input name="amount" type="number" class="form-control" placeholder="50.000 - 50.000.000" />
                                 </div>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">
-                                            Content
-                                        </span>
-                                    </div>
-                                    <textarea name="content" class="form-control"></textarea>
-                                </div>
+                                <!-- End Success Notification -->
                             </div>
                             <!-- End Main section -->
 

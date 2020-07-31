@@ -16,7 +16,10 @@ var listBank;
 var totalMoney;
 var confirmInfo;
 var binRoot = process.env.BIN || 9704;
+
+// Apply middleware
 router.use(UserStatus);
+
 router
     .route("/")
     .get(
@@ -33,8 +36,14 @@ router
                     if (amount < 100000) {
                         throw Error("Check your balance!");
                     }
+
                     if (!amount || amount === "") {
                         throw Error("Amount is required");
+                    }
+
+                    const checkAmount = amount % 1000;
+                    if (checkAmount !== 0) {
+                        throw Error("Amount is multiple of 1000");
                     }
 
                     const { bin, beneficiaryAccountNumber } = req.body;
@@ -79,136 +88,242 @@ router
             const errors = validationResult(req);
             console.log(errors.errors);
             if (!errors.isEmpty() && req.body.bin) {
-                return res.status(422).render("./pages/transactions/transaction", { errors: errors.errors, listBank });
+                return res.status(422).render("./ducbui/pages/transactions/transaction", { errors: errors.errors, listBank });
             }
 
-            const today = new Date();
-            const hour = ("0" + today.getHours()).slice(-2);
-            const min = ("0" + today.getMinutes()).slice(-2);
-            const sec = ("0" + today.getSeconds()).slice(-2);
-            const date = ("0" + today.getDate()).slice(-2);
-            const mon = ("0" + (today.getMonth() + 1)).slice(-2);
-            const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString("hex").toUpperCase();
+            // if (!req.body.beneficiaryAccountNumber && !req.body.bin) {
+            //     const { OTP } = req.body;
+            //     const bank = await Bank.findByBin(confirmInfo.bin);
 
-            if (!req.body.beneficiaryAccountNumber && !req.body.bin) {
-                const { OTP } = req.body;
-                const bank = await Bank.findByBin(confirmInfo.bin);
+            //     if (OTP) {
+            //         if (OTP.toUpperCase() === token) {
+            //             const beneficiaryInfo = await Transaction.create({
+            //                 transactionID,
+            //                 accountNumber: res.locals.account.accountNumber,
+            //                 amount: confirmInfo.amount,
+            //                 content: confirmInfo.content,
+            //                 beneficiaryAccount: confirmInfo.beneficiaryAccountNumber,
+            //                 fee: parseInt(confirmInfo.totalFee),
+            //             })
+            //                 .then(async (trans) => {
+            //                     // Current account: New Balance
+            //                     await Account.findOne({
+            //                         where: {
+            //                             accountNumber: res.locals.account.accountNumber,
+            //                         },
+            //                     })
+            //                         .then(async (account) => {
+            //                             const newBalance = account.balance - totalMoney;
+            //                             await Account.updateBalance(newBalance, account.accountNumber);
 
-                if (OTP.toUpperCase() === token) {
-                    const beneficiaryInfo = await Transaction.create({
-                        transactionID,
-                        accountNumber: res.locals.account.accountNumber,
-                        amount: confirmInfo.amount,
-                        content: confirmInfo.content,
-                        beneficiaryAccount: confirmInfo.beneficiaryAccountNumber,
-                        fee: parseInt(confirmInfo.totalFee),
+            //                             // Beneficiary account: New Balance
+            //                             await Account.findOne({
+            //                                 where: {
+            //                                     accountNumber: trans.beneficiaryAccount,
+            //                                 },
+            //                             })
+            //                                 .then(async (account) => {
+            //                                     const newBalance = account.balance + parseInt(confirmInfo.amount);
+
+            //                                     await Account.updateBalance(newBalance, account.accountNumber);
+            //                                 })
+            //                                 .catch((err) => {
+            //                                     console.log(err);
+            //                                 });
+            //                         })
+            //                         .catch((err) => {
+            //                             console.log(err);
+            //                         });
+
+            //                     const account = await Account.findOne({
+            //                         where: {
+            //                             accountNumber: trans.beneficiaryAccount,
+            //                         },
+            //                     }).then(async (account) => {
+            //                         const user = await User.findOne({
+            //                             where: {
+            //                                 id: account.userId,
+            //                             },
+            //                         })
+            //                             .then(async (user) => {
+            //                                 await BeneficiaryAccount.create({
+            //                                     displayName: user.displayName,
+            //                                     beneficiaryBank: bank.bankName,
+            //                                     pendingAmount: confirmInfo.amount,
+            //                                 });
+
+            //                                 return user;
+            //                             })
+            //                             .catch((err) => {
+            //                                 console.log(err);
+            //                             });
+
+            //                         return user;
+            //                     });
+
+            //                     return { account, trans };
+            //                 })
+            //                 .catch((err) => {
+            //                     console.log(err);
+            //                 });
+
+            //             return res.render(
+            //                 "./pages/transactions/result"
+            //                 // , { errors: "Token không chính xác", confirmInfo }
+            //             );
+            //         }
+            //     }
+            //     return res.render("./ducbui/pages/transactions/verify", { errors: "Wrong OTP.", confirmInfo, listBank });
+            // } else {
+            const { bin, beneficiaryAccountNumber, amount, content } = req.body;
+
+            const totalFee = parseInt(amount) * fee;
+
+            if (Number(bin) === binRoot) {
+                const account = await Account.findOne({
+                    where: {
+                        accountNumber: beneficiaryAccountNumber,
+                    },
+                })
+                    .then(async (account) => {
+                        return await User.findById(account.userId);
                     })
-                        .then(async (trans) => {
-                            // Current account: New Balance
-                            await Account.findOne({
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+                confirmInfo = {
+                    beneficiaryAccountNumber,
+                    amount,
+                    content,
+                    totalFee,
+                    displayName: account.displayName,
+                    bin,
+                };
+
+                res.locals.confirmInfo = confirmInfo;
+
+                token = crypto.randomBytes(2).toString("hex").toUpperCase();
+                console.log(token);
+                // await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
+                // return res.render("./ducbui/pages/transactions/verify", { errors: null, confirmInfo });
+                return res.redirect("/transaction/verify");
+            } else {
+                return res.render("./pages/transactions/transaction", { errors: errors.errors, listBank });
+            }
+            // }
+        })
+    );
+
+router
+    .route("/verify")
+    .get(async (req, res, next) => {
+        return res.render("./ducbui/pages/transactions/verify", { errors: null, confirmInfo });
+    })
+    .post(async (req, res, next) => {
+        const { OTP } = req.body;
+        const bank = await Bank.findByBin(confirmInfo.bin);
+        const transactionID = IDGenerator();
+
+        console.log(token);
+        console.log(OTP);
+
+        if (OTP) {
+            if (OTP.toUpperCase() === token) {
+                const beneficiaryInfo = await Transaction.create({
+                    transactionID,
+                    accountNumber: res.locals.account.accountNumber,
+                    amount: confirmInfo.amount,
+                    content: confirmInfo.content,
+                    beneficiaryAccount: confirmInfo.beneficiaryAccountNumber,
+                    fee: parseInt(confirmInfo.totalFee),
+                })
+                    .then(async (trans) => {
+                        // Current account: New Balance
+                        await Account.findOne({
+                            where: {
+                                accountNumber: res.locals.account.accountNumber,
+                            },
+                        })
+                            .then(async (account) => {
+                                const newBalance = account.balance - totalMoney;
+                                await Account.updateBalance(newBalance, account.accountNumber);
+
+                                // Beneficiary account: New Balance
+                                await Account.findOne({
+                                    where: {
+                                        accountNumber: trans.beneficiaryAccount,
+                                    },
+                                })
+                                    .then(async (account) => {
+                                        const newBalance = account.balance + parseInt(confirmInfo.amount);
+
+                                        await Account.updateBalance(newBalance, account.accountNumber);
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+
+                        const account = await Account.findOne({
+                            where: {
+                                accountNumber: trans.beneficiaryAccount,
+                            },
+                        }).then(async (account) => {
+                            const user = await User.findOne({
                                 where: {
-                                    accountNumber: res.locals.account.accountNumber,
+                                    id: account.userId,
                                 },
                             })
-                                .then(async (account) => {
-                                    const newBalance = account.balance - totalMoney;
-                                    await Account.updateBalance(newBalance, account.accountNumber);
+                                .then(async (user) => {
+                                    await BeneficiaryAccount.create({
+                                        displayName: user.displayName,
+                                        beneficiaryBank: bank.bankName,
+                                        pendingAmount: confirmInfo.amount,
+                                    });
 
-                                    // Beneficiary account: New Balance
-                                    await Account.findOne({
-                                        where: {
-                                            accountNumber: trans.beneficiaryAccount,
-                                        },
-                                    })
-                                        .then(async (account) => {
-                                            const newBalance = account.balance + parseInt(confirmInfo.amount);
-
-                                            await Account.updateBalance(newBalance, account.accountNumber);
-                                        })
-                                        .catch((err) => {
-                                            console.log(err);
-                                        });
+                                    return user;
                                 })
                                 .catch((err) => {
                                     console.log(err);
                                 });
 
-                            const account = await Account.findOne({
-                                where: {
-                                    accountNumber: trans.beneficiaryAccount,
-                                },
-                            }).then(async (account) => {
-                                const user = await User.findOne({
-                                    where: {
-                                        id: account.userId,
-                                    },
-                                })
-                                    .then(async (user) => {
-                                        await BeneficiaryAccount.create({
-                                            displayName: user.displayName,
-                                            beneficiaryBank: bank.bankName,
-                                            pendingAmount: confirmInfo.amount,
-                                        });
-
-                                        return user;
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                    });
-
-                                return user;
-                            });
-
-                            return { account, trans };
-                        })
-                        .catch((err) => {
-                            console.log(err);
+                            return user;
                         });
 
-                    return res.render(
-                        "./pages/transactions/result"
-                        // , { errors: "Token không chính xác", confirmInfo }
-                    );
-                } else {
-                    return res.render("./pages/transactions/verify", { errors: "Wrong OTP.", confirmInfo });
-                }
-            } else {
-                const { bin, beneficiaryAccountNumber, amount, content } = req.body;
-                const totalFee = parseInt(amount) * fee;
-
-                if (Number(bin) === binRoot) {
-                    const account = await Account.findOne({
-                        where: {
-                            accountNumber: beneficiaryAccountNumber,
-                        },
+                        return { account, trans };
                     })
-                        .then(async (account) => {
-                            return await User.findById(account.userId);
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
+                    .catch((err) => {
+                        console.log(err);
+                    });
 
-                    confirmInfo = {
-                        beneficiaryAccountNumber,
-                        amount,
-                        content,
-                        totalFee,
-                        displayName: account.displayName,
-                        bin,
-                    };
-
-                    res.locals.confirmInfo = confirmInfo;
-
-                    token = crypto.randomBytes(2).toString("hex").toUpperCase();
-                    console.log(token);
-                    // await Email.send(res.locals.currentUser.email, "Transaction Confirmation", token);
-                    return res.render("./pages/transactions/verify", { errors: null, confirmInfo });
-                } else {
-                    return res.render("./pages/transactions/transaction", { errors: errors.errors, listBank: listBank });
-                }
+                // return res.render("./pages/transactions/result");
+                return res.redirect("/transaction/result");
             }
-        })
-    );
+        }
+        return res.render("./ducbui/pages/transactions/verify", { errors: [{ msg: "Wrong OTP."}], confirmInfo });
+    });
+
+router
+    .route("/result")
+    .get((req, res, next) => {
+        return res.render("./ducbui/pages/transactions/result", { errors: null });
+    })
+    .post((req, res, next) => {});
+
+function IDGenerator() {
+    const today = new Date();
+    const hour = ("0" + today.getHours()).slice(-2);
+    const min = ("0" + today.getMinutes()).slice(-2);
+    const sec = ("0" + today.getSeconds()).slice(-2);
+    const date = ("0" + today.getDate()).slice(-2);
+    const mon = ("0" + (today.getMonth() + 1)).slice(-2);
+    const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString("hex").toUpperCase();
+
+    return transactionID;
+}
 
 module.exports = router;

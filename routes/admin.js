@@ -108,7 +108,7 @@ router.get(
             );
         }
 
-        // const user = await User.findUserById(id);
+        // const user = await User.findById(id);
         res.redirect(`/admin/users/${id}`);
     })
 );
@@ -144,7 +144,7 @@ router.get(
     asyncHandler(async (req, res) => {
         const { id } = req.params;
 
-        const user = await User.findUserById(id);
+        const user = await User.findById(id);
         const account = await Account.findByUserId(id);
 
         res.locals.transactions = []; // Marked
@@ -181,7 +181,7 @@ router.get(
             );
         }
 
-        // const user = await User.findUserById(id);
+        // const user = await User.findById(id);
 
         // res.render(`./ducbui/pages/admin/details`, { user, account });
         res.redirect("back");
@@ -226,7 +226,7 @@ router
         asyncHandler(async (req, res) => {
             const { id } = req.params;
 
-            const user = await User.findUserById(id);
+            const user = await User.findById(id);
             if (user) {
                 return res.render("./ducbui/pages/admin/transfer", { user });
             }
@@ -273,7 +273,7 @@ router
         asyncHandler(async (req, res) => {
             const { id } = req.params;
 
-            const user = await User.findUserById(id);
+            const user = await User.findById(id);
             if (user) {
                 req.session.currentCustomer = user;
                 return res.render(`./ducbui/pages/admin/editProfile`, { user });
@@ -323,7 +323,7 @@ router
                 return res.status(442).json({ errors: errors.array() });
             }
 
-            user = await User.findUserById(id);
+            user = await User.findById(id);
 
             if (user) {
                 await User.update(

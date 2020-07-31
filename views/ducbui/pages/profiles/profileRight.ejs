@@ -31,39 +31,50 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="all">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label>ID</label>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label>Amount</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>From</label>
                         </div>
                         <div class="col-md-3">
                             <label>To</label>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label>Time</label>
                         </div>
                     </div>
                     <!-- For here-->
+                    <% if (transactions) { %>
+                    <!-- Divider -->
+                    <% transactions.forEach(tran => { %>
                     <div class="row">
-                        <div class="col-md-3">
-                            <p class="h4">123123412413</p>
+                        <div class="col-md-2">
+                            <p class="h4">****<%= tran.transactionID.slice(-7, -1) %></p>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <p class="h4">
-                                500.000
+                                <%= tran.amount %>
                                 <small class="muted-text">VND</small>
                             </p>
                         </div>
                         <div class="col-md-3">
-                            <p class="h4">9704 5902 2341 4235</p>
+                            <p class="h4"><%= tran.accountNumber %></p>
                         </div>
                         <div class="col-md-3">
-                            <p class="h4">14:50 - 1 Jul, 2020</p>
+                            <p class="h4"><%= tran.beneficiaryAccount %></p>
+                        </div>
+                        <div class="col-md-2">
+                            <p class="h4"><%= new Date(tran.createdAt).toUTCString(); %></p>
                         </div>
                     </div>
+                    <% }); } %>
+
                     <!-- End For here-->
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-3">
                             <p class="h4">123123412413</p>
                         </div>
@@ -79,7 +90,7 @@
                         <div class="col-md-3">
                             <p class="h4">14:50 - 1 Jul, 2020</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="tab-pane" id="send">
                     <div class="row">
@@ -97,23 +108,29 @@
                         </div>
                     </div>
                     <!-- For here-->
+                    <% if (transactions) { %>
+                    <!-- Divider -->
+                    <% transactions.forEach(tran => { %>
+                    <!-- Divider -->
+                    <% if (tran.accountNumber === user.accountNumber) { %>
                     <div class="row">
                         <div class="col-md-3">
-                            <p class="h4">123123412413</p>
+                            <p class="h4">****<%= tran.transactionID.slice(-7, -1) %></p>
                         </div>
                         <div class="col-md-3">
                             <p class="h4">
-                                500.000
+                                <%= tran.amount %>
                                 <small class="muted-text">VND</small>
                             </p>
                         </div>
                         <div class="col-md-3">
-                            <p class="h4">9704 5902 2341 4235</p>
+                            <p class="h4"><%= tran.beneficiaryAccount %></p>
                         </div>
                         <div class="col-md-3">
-                            <p class="h4">14:50 - 1 Jul, 2020</p>
+                            <p class="h4"><%= new Date(tran.createdAt).toUTCString() %></p>
                         </div>
                     </div>
+                    <% }}); } %>
                     <!-- End For here-->
                 </div>
                 <div class="tab-pane" id="recive">
@@ -125,30 +142,36 @@
                             <label>Amount</label>
                         </div>
                         <div class="col-md-3">
-                            <label>To</label>
+                            <label>From</label>
                         </div>
                         <div class="col-md-3">
                             <label>Time</label>
                         </div>
                     </div>
                     <!-- For here-->
-                    <div class="row">
-                        <div class="col-md-3">
-                            <p class="h4">123123412413</p>
+                    <% if (transactions) { %>
+                        <!-- Divider -->
+                        <% transactions.forEach(tran => { %>
+                        <!-- Divider -->
+                        <% if (tran.beneficiaryAccount === user.accountNumber) { %>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p class="h4">****<%= tran.transactionID.slice(-7, -1) %></p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="h4">
+                                    <%= tran.amount %>
+                                    <small class="muted-text">VND</small>
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="h4"><%= tran.accountNumber %></p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="h4"><%= new Date(tran.createdAt).toUTCString() %></p>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <p class="h4">
-                                500.000
-                                <small class="muted-text">VND</small>
-                            </p>
-                        </div>
-                        <div class="col-md-3">
-                            <p class="h4">9704 5902 2341 4235</p>
-                        </div>
-                        <div class="col-md-3">
-                            <p class="h4">14:50 - 1 Jul, 2020</p>
-                        </div>
-                    </div>
+                        <% }}); } %>
                     <!-- End For here-->
                 </div>
             </div>
