@@ -48,7 +48,7 @@ app.use("/register", require("./routes/register"));
 app.use("/profile", require("./routes/profile"));
 app.use("/admin", require("./routes/admin"));
 app.use("/multer", require("./routes/multer"));
-app.use("/forget-password", require("./routes/forgetPassword"));
+app.use("/forget-password", require("./routes/forgotPassword"));
 app.use("/change-password", require("./routes/changePassword"));
 
 // -------CONNECTION---------

@@ -23,7 +23,7 @@ router
                     }
                     return true;
                 }),
-            body("username").trim().notEmpty(),
+            body("username").trim().notEmpty(), // Need Handle
             body("displayName").trim().notEmpty(),
             body("password").isLength({ min: 6 }).notEmpty(),
             body("conf_password").isLength({ min: 6 }).notEmpty(),

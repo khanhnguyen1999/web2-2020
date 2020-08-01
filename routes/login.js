@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 router
     .route("/")
     .get((req, res) => {
-        res.render("ducbui/pages/login");
+        res.render("ducbui/pages/auth/login");
     })
     .post(
         asyncHandler(async (req, res) => {

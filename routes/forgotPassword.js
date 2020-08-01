@@ -8,7 +8,7 @@ const crypto = require("crypto");
 router
     .route("/")
     .get((req, res) => {
-        res.render("../views/pages/forgetPassword");
+        res.render("../views/pages/forgotPassword");
     })
     .post(
         asyncHandler(async (req, res, next) => {
@@ -32,7 +32,7 @@ router
                     }
                 );
 
-                await Email.send(email, "Forget Password", `${process.env.BASE_URL || "http://localhost:3000"}/forget-password/change-password/${token}`);
+                await Email.send(email, "Forget Password", `${process.env.BASE_URL || "http://localhost:3000"}/forget-password/change-password/?token=${token}`);
                 return res.render("../views/pages/error", {
                     error: "Check your email.",
                 });
@@ -41,6 +41,19 @@ router
             }
         })
     );
+// I'm here. Automatic checking token!
+router.route("/check-token").post(async (req, res, next) => {
+    const { token } = req.body;
+    const { email } = res.locals.currentUser;
+
+    const user = await User.findByEmail(email);
+    res.locals.currentUser = user;
+    if (user.tokenUser === token) {
+        return res.redirect("/changePassword");
+    } else {
+        return res.render("../views/pages/error", { error: "Wrong token" });
+    }
+});
 
 router
     .route("/change-password/:token")

@@ -1,0 +1,40 @@
+<%- include ("../../../partials/header", { title: "Login - E-Banking" }) -%>
+
+<div class="login-page sidebar-collapse">
+    <%- include ("../../../partials/navbar") %>
+
+    <div class="page-header header-filter" style="background-image: url('../assets/img/bg7.jpg'); background-size: cover; background-position: top center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 ml-auto mr-auto">
+                    <div class="card card-login">
+                        <form class="form" method="POST">
+                            <div class="card-header card-header-primary text-center">
+                                <h4 class="card-title">Check Token</h4>
+                            </div>
+                            <div class="card-body">
+                                <!-- Main section -->
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="material-icons">vpn_key</i>
+                                        </span>
+                                    </div>
+                                    <input name="token" type="password" class="form-control" placeholder="Token" />
+                                </div>
+                                <!-- End Main section -->
+                            </div>
+                            <div class="footer text-center">
+                                <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include ("../../../partials/footer") -%>
+    </div>
+</div>
+
+<%- include ("../../../partials/scripts") -%>

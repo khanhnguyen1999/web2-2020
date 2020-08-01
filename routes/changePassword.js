@@ -8,20 +8,28 @@ const crypto = require("crypto");
 router
     .route("/")
     .get((req, res) => {
-        res.render("../views/pages/changePassword1");
+        res.render("./ducbui/pages/auth/changePassword", { errors: null });
     })
     .post(
+        [body("currentPassword", "Current password is required!").notEmpty().trim(), body("newPassword", "New password is required! At least 6 characters.").trim().isLength({ min: 6 }), body("confirmPassword", "Confirm password is required! At least 6 characters.").trim().isLength({ min: 6 })],
         asyncHandler(async (req, res, next) => {
-            const { curPass, newPass, confPass } = req.body;
+            let errors = validationResult(req);
+            console.log(errors);
 
-            const user = User.findByEmail(req.currentUser);
-            const check = User.verifyPassword(user.password, curPass);
+            if (!errors.isEmpty()) {
+                return res.status(422).render("./ducbui/pages/auth/changePassword", { errors: errors.errors });
+            }
 
+            const { currentPassword, newPassword, confirmPassword } = req.body;
+
+            const user = await User.findByEmail(req.currentUser.email);
+            const check = User.verifyPassword(currentPassword, user.password);
+            console.log(check);
             if (check) {
-                if (newPass === confPass) {
+                if (newPassword === confirmPassword) {
                     await User.update(
                         {
-                            password: User.hashPassword(newPass),
+                            password: User.hashPassword(newPassword),
                             tokenUser: null,
                         },
                         {
@@ -30,11 +38,15 @@ router
                             },
                         }
                     );
-                    return res.redirect("/");
+                    return res.redirect(`/profile/${user.id}`);
+                } else {
+                    errors = { errors: [{ msg: "Confirn password wrong!" }] };
                 }
+            } else {
+                errors = { errors: [{ msg: "Current password wrong!" }] };
             }
 
-            res.redirect("back");
+            res.render("./ducbui/pages/auth/changePassword", { errors: errors.errors });
         })
     );
 
