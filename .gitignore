@@ -1,3 +1,5 @@
+tmp/
+services/db.js
 # Logs
 logs
 *.log

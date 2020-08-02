@@ -14,12 +14,14 @@ module.exports = asyncHandler(async function auth(req, res, next) {
         return next();
     }
 
-    req.currentUser = user;
-    res.locals.currentUser = user;
+    const account = await Account.findByUserId(user.id);
+    const currentUser = { ...user.dataValues, ...account.dataValues };
 
-    const account = await Account.findByUserId(req.currentUser.id);
+    req.currentUser = currentUser;
+    res.locals.currentUser = currentUser;
+
     res.locals.account = account;
     req.session.account = account;
-    req.session.currentUser = user;
+    req.session.currentUser = currentUser;
     return next();
 });

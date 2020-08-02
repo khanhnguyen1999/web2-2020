@@ -35,10 +35,6 @@ app.use("/transaction", require("./routes/transaction"));
 
 // --------Saving Account ----------
 app.use("/saving", require("./routes/savingAccount"));
-// app.get("/saving/listSaving/:id", require("./routes/savingAccount"));
-// app.get("/saving/listSaving/tattoan/:id", require("./routes/savingAccount"));
-// app.post("/saving/listSaving/tattoan/:id", require("./routes/savingAccount"));
-// app.get("/saving/addSaving", require("./routes/savingAccount"));
 
 // --------APP USE----------
 app.use(express.static("public"));
@@ -47,7 +43,7 @@ app.use("/home", require("./routes/home"));
 app.use("/register", require("./routes/register"));
 app.use("/profile", require("./routes/profile"));
 app.use("/admin", require("./routes/admin"));
-app.use("/multer", require("./routes/multer"));
+app.use("/verify", require("./routes/multer"));
 app.use("/forgot-password", require("./routes/forgotPassword"));
 app.use("/change-password", require("./routes/changePassword"));
 

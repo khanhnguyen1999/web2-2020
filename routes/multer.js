@@ -39,36 +39,58 @@ const upload = multer({
 }).single("myImage");
 
 // Check File Type
-router.get("/", (req, res) => res.render("pages/profile"));
+router
+    .route("/")
+    .get((req, res) => {
+        res.render("ducbui/pages/auth/verify", { errors: null });
+    })
+    .post((req, res) => {
+        // collected image from a user
+        const file = req.files.image;
+        // console.log(req.files);
+        // console.log(file.tempFilePath);
 
-router.post("/upload", (req, res) => {
-    // collected image from a user
-    const file = req.files.image;
-    console.log(req.files);
-    console.log(file.tempFilePath);
+        // console.log(file.mimetype.slice(0, 5) === "image");
+        // console.log(file.mimetype);
 
-    // upload image here
-    cloudinary.uploader
-        .upload(file.tempFilePath)
-        .then((result) => {
-            User.update(
-                {
-                    idCardPhoto: result.secure_url,
-                },
-                {
-                    where: {
-                        id: req.session.userId,
-                    },
-                }
-            );
-            res.redirect("/multer");
-        })
-        .catch((error) => {
-            res.status(500).send({
-                message: "failure",
-                error,
-            });
-        });
-});
+        if (file.mimetype.slice(0, 5) === "image") {
+            // upload image here
+            cloudinary.uploader
+                .upload(file.tempFilePath)
+                .then(async (result) => {
+                    await User.update(
+                        {
+                            idCardPhoto: result.secure_url,
+                        },
+                        {
+                            where: {
+                                id: req.session.userId,
+                            },
+                        }
+                    ).then(async (data) => {
+                        await Account.update(
+                            {
+                                status: "PENDING",
+                            },
+                            {
+                                where: {
+                                    userId: req.session.userId,
+                                },
+                            }
+                        );
+                        return;
+                    });
+                    return res.redirect("/verify");
+                })
+                .catch((error) => {
+                    res.status(500).send({
+                        message: "failure",
+                        error,
+                    });
+                });
+        } else {
+            return res.render("ducbui/pages/auth/verify", { errors: [{ msg: "Wrong file type!" }] });
+        }
+    });
 
 module.exports = router;
