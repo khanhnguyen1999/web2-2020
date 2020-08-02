@@ -54,6 +54,28 @@
                         </form>
                     </div>
                 </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-md-6">
+                        <% if (errors != null) { %>
+                        <!-- Notification -->
+                        <% errors.forEach(err => { %>
+                        <div class="alert alert-danger">
+                            <div class="container">
+                                <div class="alert-icon">
+                                    <i class="material-icons">error_outline</i>
+                                </div>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true"><i class="material-icons">clear</i></span>
+                                </button>
+                                <b>Error Alert:</b> <%= err.msg %>
+                            </div>
+                        </div>
+                        <% }); %>
+                        <!-- End Notification -->
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
 
