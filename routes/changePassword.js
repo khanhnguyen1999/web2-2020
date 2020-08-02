@@ -5,13 +5,39 @@ const asyncHandler = require("express-async-handler");
 const Email = require("../services/email");
 const crypto = require("crypto");
 
+var signal = false; // Changing password
+
 router
     .route("/")
     .get((req, res) => {
-        res.render("./ducbui/pages/auth/changePassword", { errors: null });
+        const user = req.session.currentUser;
+
+        if (user) {
+            if (user.tokenUser) {
+                signal = true; // Recovering password
+            }
+        }
+
+        res.render("./ducbui/pages/auth/changePassword", { errors: null, signal });
     })
     .post(
-        [body("currentPassword", "Current password is required!").notEmpty().trim(), body("newPassword", "New password is required! At least 6 characters.").trim().isLength({ min: 6 }), body("confirmPassword", "Confirm password is required! At least 6 characters.").trim().isLength({ min: 6 })],
+        [
+            body("currentPassword", "Current password is required!")
+                .trim()
+                .custom(async (currentPassword, { req }) => {
+                    const user = req.session.currentUser;
+                    if (user.tokenUser) {
+                        return true;
+                    } else {
+                        if (!currentPassword) {
+                            return false;
+                        }
+                        return true;
+                    }
+                }),
+            body("newPassword", "New password is required! At least 6 characters.").trim().isLength({ min: 6 }),
+            body("confirmPassword", "Confirm password is required! At least 6 characters.").trim().isLength({ min: 6 }),
+        ],
         asyncHandler(async (req, res, next) => {
             let errors = validationResult(req);
             console.log(errors);
@@ -20,11 +46,23 @@ router
                 return res.status(422).render("./ducbui/pages/auth/changePassword", { errors: errors.errors });
             }
 
-            const { currentPassword, newPassword, confirmPassword } = req.body;
+            const { newPassword, confirmPassword } = req.body;
+            let check = false;
+            // Initial Current User
+            const currentUser = req.session.currentUser;
 
-            const user = await User.findByEmail(req.currentUser.email);
-            const check = User.verifyPassword(currentPassword, user.password);
-            console.log(check);
+            const user = await User.findByEmail(currentUser.email);
+
+            // Checking signal
+            if (!signal) {
+                //- False -> Changing password
+                const { currentPassword } = req.body;
+                check = User.verifyPassword(currentPassword, user.password);
+            } else {
+                //- True -> Recovering password
+                check = true;
+            }
+
             if (check) {
                 if (newPassword === confirmPassword) {
                     await User.update(
@@ -34,11 +72,14 @@ router
                         },
                         {
                             where: {
-                                id: res.locals.currentUser.id,
+                                id: currentUser.id,
                             },
                         }
                     );
-                    return res.redirect(`/profile/${user.id}`);
+                    if (!signal) {
+                        return res.redirect(`/profile/${user.id}`);
+                    }
+                    return res.redirect("/");
                 } else {
                     errors = { errors: [{ msg: "Confirn password wrong!" }] };
                 }
@@ -46,7 +87,7 @@ router
                 errors = { errors: [{ msg: "Current password wrong!" }] };
             }
 
-            res.render("./ducbui/pages/auth/changePassword", { errors: errors.errors });
+            res.render("./ducbui/pages/auth/changePassword", { errors: errors.errors, signal });
         })
     );
 
