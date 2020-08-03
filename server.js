@@ -10,7 +10,7 @@ var port = process.env.PORT || 3000;
 const db = require("./services/db");
 const User = require("./services/user");
 const Account = require("./services/account");
-const SavingAccount = require("./services/saving_account");
+const SavingAccount = require("./services/savingAccount");
 const RSavingAccount = require("./autoupdate");
 const Transaction = require("./services/transaction");
 const { pipeline } = require("nodemailer/lib/xoauth2");
@@ -29,12 +29,8 @@ app.set("view engine", "ejs");
 // ----------APP GET------------
 app.get("/logout", require("./routes/logout"));
 
-// --------Transaction----------
+// --------Middlewares----------
 app.use(require("./middlewares/auth"));
-app.use("/transaction", require("./routes/transaction"));
-
-// --------Saving Account ----------
-app.use("/saving", require("./routes/savingAccount"));
 
 // --------APP USE----------
 app.use(express.static("public"));
@@ -46,6 +42,8 @@ app.use("/admin", require("./routes/admin"));
 app.use("/verify", require("./routes/multer"));
 app.use("/forgot-password", require("./routes/forgotPassword"));
 app.use("/change-password", require("./routes/changePassword"));
+app.use("/saving", require("./routes/savingAccount"));
+app.use("/transaction", require("./routes/transaction"));
 
 // -------CONNECTION---------
 db.sync()

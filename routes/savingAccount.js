@@ -1,18 +1,13 @@
 const router = require("express").Router();
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
-const User = require("../services/user");
-const Account = require("../services/account");
-const SavingAccount = require("../services/saving_account");
-const Transaction = require("../services/transaction");
-const Bank = require("../services/bank");
-const BeneficiatyAccount = require("../services/beneficiaryAccount");
-const Email = require("../services/email");
 const crypto = require("crypto");
-const { DATE } = require("sequelize");
+const Email = require("../services/email");
+const Account = require("../services/account");
+const SavingAccount = require("../services/savingAccount");
 const UserStatus = require("../middlewares/userStatus");
 
-const bank17ez = "Vietcombank";
+const bankRoot = "Vietcombank";
 
 var account;
 var interestRate;
@@ -83,11 +78,9 @@ router.get("/", async (req, res) => {
 
     fund = userSavingAccount ? userSavingAccount.fund : 0;
     if (userSavingAccount) {
-        return res.render("./pages/savingAccount/listSaving", { fund: fund, saving: userSavingAccount, errors: null });
-    } else {
-        return res.render("./pages/savingAccount/savingAccount", { fund: fund, errors: null });
+        return res.render("./pages/savingAccount/listSaving", { fund, saving: userSavingAccount, errors: null });
     }
-    // return res.render("./pages/savingAccount/savingAccount", { fund: fund, errors: null });
+    return res.render("./pages/savingAccount/savingAccount", { fund, errors: null });
 });
 
 //--------- hien thi thong tin saving -------------
@@ -97,7 +90,7 @@ router.route("/listSaving/:id").get(
         const itemSaving = await SavingAccount.findById(id);
 
         req.session.idSavingIndex = itemSaving.id;
-        res.render("./pages/savingAccount/saving", { fund: fund, saving: itemSaving, errors: null });
+        res.render("./pages/savingAccount/saving", { fund, saving: itemSaving, errors: null });
     })
 );
 
@@ -110,7 +103,7 @@ router
             const itemSaving = await SavingAccount.findById(id);
 
             tokenTatToan = crypto.randomBytes(2).toString("hex").toUpperCase();
-            Email.send(res.locals.currentUser.email, bank17ez, "TOKEN: " + tokenTatToan);
+            Email.send(res.locals.currentUser.email, bankRoot, "TOKEN: " + tokenTatToan);
             res.render("./pages/savingAccount/tattoan", { email: subEmail, fund: fund, saving: itemSaving, errors: null });
         })
     )
@@ -124,7 +117,7 @@ router
                 const extraMoney = accountUser.balance + itemSaving.fund;
                 await Account.updateBalance(extraMoney, res.locals.account.accountNumber);
                 await SavingAccount.deleteById(id);
-                Email.send(res.locals.currentUser.email, bank17ez, "Success: " + itemSaving.fund);
+                Email.send(res.locals.currentUser.email, bankRoot, "Success: " + itemSaving.fund);
                 res.render("./pages/savingAccount/savingAccount2");
             } else {
                 const { id } = req.params;
@@ -248,7 +241,7 @@ router
 
                 token = crypto.randomBytes(2).toString("hex").toUpperCase();
                 res.locals.token = token;
-                Email.send(res.locals.currentUser.email, bank17ez, "Token: " + token);
+                Email.send(res.locals.currentUser.email, bankRoot, "Token: " + token);
 
                 return res.render("./pages/savingAccount/savingAccount1", {
                     errors: undefined,

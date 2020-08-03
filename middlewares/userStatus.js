@@ -1,7 +1,7 @@
-var mess = function (req, res, next) {
+var message = function (req, res, next) {
     var msg;
     var signal = false;
-    var custom = "<a href='/verify' class='btn btn-primary btn-sm'>Verify Account</a>";
+    var custom = "";
 
     if (req.session.account.status === "ACTIVE") {
         return next();
@@ -14,9 +14,10 @@ var mess = function (req, res, next) {
     }
     if (req.session.account.status === "UNVERIFIED") {
         msg = "Tai khoan tai chua xac thuc";
+        custom = "<a href='/verify' class='btn btn-primary btn-sm'>Verify Account</a>";
         signal = true;
     }
     return res.render("ducbui/pages/errors", { errors: [{ msg, signal, custom }] });
 };
 
-module.exports = mess;
+module.exports = message;
