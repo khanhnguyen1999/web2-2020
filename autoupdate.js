@@ -10,7 +10,7 @@ const asyncHandler = require('express-async-handler')
 var CronJob = require('cron').CronJob;
 
 
-var job = new CronJob('00 44 21 * * *',asyncHandler(async function() {
+var job = new CronJob('00 01 00 * * *',asyncHandler(async function() {
     const listSavingAccount = await SavingAccount.findAll();
     console.log(listSavingAccount)
     let now = new Date();

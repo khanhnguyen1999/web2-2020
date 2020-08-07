@@ -6,19 +6,23 @@ const initState = {
     confirmInfo:{},
     movedOn:false,
     virify : false,
+    listTransaction : {},
+    
 }
 
 const transaction = (state = initState, action) => {
     switch(action.type){
         case Types.GET_INFORMATION_TRANSACTION:
+
             const { account , listBank} = action.data;
             state.errors = {};
-            // state.confirmInfo = {};
             state.account = account;
             state.listBank = listBank;
             console.log(state)
             console.log(state.listBank)
             console.log({...state})
+            
+            
             return {
                 ...state
             }
@@ -59,9 +63,11 @@ const transaction = (state = initState, action) => {
             if(action.data.success === true)
             {
                 state.virify = true;
-               
             }
             console.log("co update moved")
+            return {...state}
+        case Types.GET_LIST_TRANSACTION :
+            state.listTransaction = action.data;
             return {...state}
         default:
             return {...state}

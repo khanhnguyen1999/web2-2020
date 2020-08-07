@@ -1,5 +1,5 @@
 const {Router} =require('express');
-const { body, validationResult } = require('express-validator');
+const {check, body, validationResult } = require('express-validator');
 const asyncHandler = require('express-async-handler')
 const router = new Router();
 const db = require('../services/db')
@@ -63,16 +63,166 @@ function dateTimeToDate(today,species)
     {
         return datetime;
     }
+
     return datetime;
 }
+//lay thong tin 
+router.post('/getInformation',async(req,res)=>{
+    const {userId}  = req.body;
+    let account = await Account.findByUserId(userId)
+    let savingAccount = await SavingAccount.findSavingAccountrByAccountNumber(account.accountNumber)
+    console.log("--dasd")
+    console.log(savingAccount)
+    res.status(200).json({account,savingAccount})
+})
+// ---------  tat toan ---------
+//get tat toan
+router.post('/onfinalization',async(req,res)=>{
+    const {userId}  = req.body; 
+    const user =await User.findById(userId);
+    const token = crypto.randomBytes(2).toString("hex").toUpperCase();
+    console.log(user)
+    console.log(token)
+    await Email.send(user.email, "Finalization Token", token);
+    return res.status(200).json(token)
+})
+router.post('/onfinalization/verify',async(req,res)=>{
+    const {data}  = req.body;
+    console.log(data)
+    const user = await User.findById(data.userId);
+    const itemSaving = await SavingAccount.findById(data.id);
+    let accountUser = await Account.findByUserId(data.userId)
+    const extraMoney = accountUser.balance + itemSaving.fund;
+    await Account.updateBalance(extraMoney,accountUser.accountNumber);
+    await SavingAccount.deleteById(data.id);
+    Email.send(user.email,bank17ez,"Tất toán thành công số tiền  : "+itemSaving.fund)
+    res.status(200).json({success:true})
+})
 
-//--------------hien thi danh sach saving----------------
+//-----------  add saving ------------
+router.post("/addSaving",[
+    check('data.amount')
+        .custom(async function (amount, { req }) {
+            console.log(req.body.data)
+            if (req.body.data.user.id) {
+                const account = await Account.findByUserId(req.body.data.user.id)
+                if(!account)
+                {
+                    throw Error('khong tim thay tai khoan');
+                }
+                else
+                {
+                    // Cung ngan hang
+                    if(account.balance<parseInt(amount)+50000)
+                    {
+                    throw Error('Số dư không đủ');
+                    }
+                    return true;
+                }
+            }
+        }),
+],asyncHandler(async function postLogin(req,res){
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors)
+        return res.status(200).json({success:false , errors})
+    }
+    // const { data } = req.body;
+    // const account = await Account.findByUserId(data.user.id)
+    // if(account.balance<parseInt(data.amount)+50000)
+    // {
+    //     res.json({success : false})
+    // }
+    // else
+    // {
+    //     res.json({success : true})
+    // }
+    const { amount ,user,depositTerm, accountNumber,type} = req.body.data;
+    var interestRate = 0;
+    switch(depositTerm.toString())
+        {
+            case "1":
+                interestRate = 4.5;
+                break;
+            case "3":
+                interestRate = 5;
+                break;
+            case "6":
+                interestRate = 5.5;
+                break;
+            case "9":
+                interestRate = 5.5;
+                break;
+            case "12":
+                interestRate = 6.8;
+                break;
+            case "24":
+                interestRate = 6.8;
+                break;
+            default:
+                interestRate = 0;
+                break;
+        }
+    
+    const account = await Account.findOne({
+        where: {
+            accountNumber: accountNumber,
+        }
+    }).then(async (account) => {
+        return await User.findById(account.userId);
+    }).catch((err) => {
+        console.log(err);
+    });
+    const d = new Date();
+    let ran = crypto.randomBytes(3).toString('hex').toUpperCase() +  ('0' + d.getMinutes()).slice(-2) +  ('0' + d.getSeconds()).slice(-2) +  ('0' + d.getMonth() + 1).slice(-2)
+    let token = crypto.randomBytes(2).toString("hex").toUpperCase();
+    var today = dateTimeToDate(new Date(),0);
+    var dt = new Date()
+    var closeDate = new Date(dt.setMonth(dt.getMonth() + depositTerm));
+    let interest = parseInt(amount*interestRate/100);
+    let now = dateTimeToDate(new Date(),1)
+    confirmInfo = {
+        amount,
+        depositTerm,
+        interestRate,
+        interest,
+        openDate:today,
+        closeDate,
+        now,
+        type,
+        token,
+        accountNumber,
+        ran,
+    }
+    await Email.send(user.email, "Transaction Confirmation", token);
+    console.log(token)
+    console.log(confirmInfo)
+    return res.status(200).json({success:true,confirmInfo})
+    
+}))
+
+router.post("/addSaving/verify",async (req,res)=>{
+    const { amount,interest,interestRate,openDate,closeDate,depositTerm, accountNumber,type} = req.body.data;
+    const svAccount = await SavingAccount.create({
+        fund:amount,
+        interest: interest,
+        depositTerm: depositTerm,
+        interestRate:interestRate,
+        openDate:openDate,
+        closeDate:closeDate,
+        accountAccountNumber:accountNumber,
+        type:type,
+    })
+    res.json({success:true})
+})
+
+//##############   hien thi danh sach saving   ####################
 router.get('/',async (req,res)=>{
+    const { accountNumber } = req.body.data;
 
     var userEmail = req.session.currentUser.email;
     var lengthEmail = userEmail.length;
     subEmail = userEmail.substring(0,6)+"****"+ userEmail.substring(lengthEmail-11,lengthEmail)
-    console.log(req.session.account)
     const userSavingAccount = await SavingAccount.findSavingAccountrByAccountNumber(res.locals.account.accountNumber)
     var dateNow = new Date();
     var fund = 0;

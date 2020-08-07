@@ -1,13 +1,13 @@
-const Sequelize = require('sequelize');
-const db = require('./db');
-
+const Sequelize = require("sequelize");
+const db = require("./db");
 const Model = Sequelize.Model;
+
 class Account extends Model {
     static async findByUserId(id) {
         return await Account.findOne({
             where: {
                 userId: id,
-            }
+            },
         });
     }
 
@@ -15,56 +15,63 @@ class Account extends Model {
         return await Account.findOne({
             where: {
                 accountNumber,
-            }
+            },
         });
     }
 
     static async updateBalance(balance, accountNumber) {
-        return await Account.update({
-            balance
-        }, {
-            where: {
-                accountNumber,
+        return await Account.update(
+            {
+                balance,
+            },
+            {
+                where: {
+                    accountNumber,
+                },
             }
-        });
+        );
     }
 }
-Account.init({
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
+Account.init(
+    {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+        },
+        accountNumber: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            primaryKey: true,
+        },
+        balance: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        currencyUnit: {
+            type: Sequelize.STRING,
+        },
+        status: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        openDate: {
+            type: Sequelize.DATE,
+        },
+        limit: {
+            type: Sequelize.INTEGER,
+        },
+        role: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
     },
-    accountNumber: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        primaryKey: true,
-    },
-    balance: {
-        type: Sequelize.INTEGER,
-    },
-    currencyUnit: {
-        type: Sequelize.STRING,
-    },
-    status: {
-        type: Sequelize.STRING,
-    },
-    openDate: {
-        type: Sequelize.DATE,
-    },
-    limit: {
-        type: Sequelize.INTEGER,
-    },
-    role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-}, {
-    underscored: true,
-    sequelize: db,
-    modelName: 'account'
-});
+    {
+        sequelize: db,
+        modelName: "account",
+    }
+);
 
-const User = require('./user');
+const User = require("./user");
 User.hasMany(Account);
 Account.belongsTo(User);
 

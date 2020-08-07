@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {Redirect ,withRouter} from 'react-router-dom';
-import {actSwitchMoved,actPostVerify} from '../../store/actions/transaction'
+import {actSwitchMoved,actPostVerify} from '../../store/actions/transaction';
+import * as FC from '../../utils/fc'
 
 
 class Cverify extends Component {
@@ -11,16 +12,19 @@ class Cverify extends Component {
             confirmInfo : {},
             token:'',
             error:true,
+            account:{},
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onBack = this.onBack.bind(this);
     }
-    componentDidMount(){
+    componentWillMount(){
         this.props.switchMovedOn();
         const { ifTransaction } = this.props;
         const { confirmInfo } = ifTransaction;
+        const {account} = ifTransaction;
         this.setState({
             confirmInfo:confirmInfo,
+            account:account,
         })
     }
     onChange = (e) => {
@@ -54,17 +58,24 @@ class Cverify extends Component {
     }
     showError = ()=>{
 
-       
-        return <div className="alert alert-success mt-3" role="alert">
-            <i style={{color: "red"}} className="fas fa-exclamation-triangle pr-2"></i>
-                Token không chính xác
-        </div>
+        return (
+            <div className="alert alert-danger">
+            <div className="container">
+            <div className="alert-icon">
+                <i className="material-icons">error_outline</i>
+            </div>
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true"><i className="material-icons">clear</i></span>
+            </button>
+            <b>Error Alert:</b> Token không chính xác
+            </div>
+        </div>)
     }
     render() {
         
         const { ifTransaction } = this.props;
         const { user } = this.props.currentUser;
-        const { confirmInfo } = ifTransaction;
+        const { confirmInfo ,account} = ifTransaction;
         const {error,token} = this.state;
         const {virify} = this.props.ifTransaction;
         console.log("vr"+ virify)
@@ -76,7 +87,156 @@ class Cverify extends Component {
         return (
 
             <div>
-                <section className="blog_part section_padding section_transaction row">
+                 <div className="page-header header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8 col-md-10 ml-auto mr-auto">
+              <div className="card card-login text-center">
+                <form className="form" method="POST">
+                  <div className="card-header card-header-primary text-center">
+                    <h4 className="card-title">Transaction</h4>
+                    <div className="social-line">
+                      <div className="row m-3">
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Account Owner: </b>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                                {user?user.dislayName:''}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Account Number: </b>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                                {account?account.accountNumber:''}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Balance: </b>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                                {account?FC.inMoney(account.balance):''}
+                                <small className="muted-text">VND</small>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Notification */}
+                  
+                  {error===true?"":this.showError()}
+                 
+                  {/* End Notification */}
+                  {/* Main section */}
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-4">
+                        <div className="row text-right">
+                          <div className="col-12">
+                            <p className="h4">Sender:</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">Account Number:</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">Amount:</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">Beneficiary Account:</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">Beneficiary Name:</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">Content:</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">Fee:</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-8">
+                        <div className="row text-left">
+                          <div className="col-12">
+                            <p className="h4">&nbsp; {user?user.displayName:''}</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">&nbsp;  {ifTransaction?ifTransaction.account.accountNumber:''}</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">
+                                &nbsp;  {confirmInfo?confirmInfo.amount:''}
+                              <small className="text-muted">VND</small>
+                            </p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">&nbsp;  {confirmInfo?confirmInfo.beneficiaryAccountNumber:''}</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">&nbsp;  {confirmInfo?confirmInfo.displayName:''}</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">&nbsp;  {confirmInfo?confirmInfo.content:''}</p>
+                          </div>
+                          <div className="col-12">
+                            <p className="h4">
+                            &nbsp; {confirmInfo?confirmInfo.totalFee:''}
+                              <small className="text-muted">VND</small>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">
+                          OTP
+                        </span>
+                      </div>
+                      <input onChange={this.onChange} name="OTP" type="text" className="form-control" />
+                    </div>
+                  </div>
+                  {/* End Main section */}
+                  <div className="card-footer" style={{display: 'inherit'}}>
+                    <div className="text-center">
+                      <button onClick={this.onBack} type className="btn btn-danger btn-link btn-wd btn-lg">Bank</button>
+                      <button onClick={this.onSubmit} className="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+                {/* <section className="blog_part section_padding section_transaction row">
                     <div className="container container_transaction1 col-4">
                         <div className="modal-header">
                             <p className="heading lead">Chuyển khoản </p>
@@ -123,7 +283,7 @@ class Cverify extends Component {
                             </div><br />
                         </form>
                     </div>
-                </section>
+                </section> */}
             </div>
         );
     }

@@ -2,7 +2,10 @@ import React,{useEffect,useState,useRef} from 'react';
 import { connect } from 'react-redux';
 import {Redirect} from 'react-router-dom';
 import {actGetInformation,actPostInformation,actSwitchMoved} from '../../store/actions/transaction'
+import {actGetAccount} from '../../store/actions/account';
 import * as Config from '../../constants/Config'
+import * as FC from '../../utils/fc';
+import Message from '../message/Message';
 
 
 function transaction(props) {
@@ -22,6 +25,7 @@ function transaction(props) {
         const {user} = props.user;
         setUser(user);
         props.getInformation(user.id);
+        props.getAccount(user.id);
     },[])
 
     useEffect(() => {
@@ -101,10 +105,18 @@ function transaction(props) {
         if(ListError.length > 0 )
         {
             result = ListError.map((error,index)=>{
-                return <div key={index} className="alert alert-success mt-3" role="alert">
-                <i style={{color: "red"}} className="fas fa-exclamation-triangle pr-2"></i>
-                    {error}
-                </div> 
+                return <div key={index} className="alert alert-danger">
+                <div className="container">
+                  <div className="alert-icon">
+                    <i className="material-icons">error_outline</i>
+                  </div>
+                  <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i className="material-icons">clear</i></span>
+                  </button>
+                  <b>Error Alert:</b> {error}
+                </div>
+              </div>
+
             })
         }
         return result;
@@ -114,15 +126,15 @@ function transaction(props) {
         if(ListBank.length >0)
         {
             result = ListBank.map((bank,index)=>{
-                if(bank.nameBank===selectBank)
+                if(bank.bin===selectBank)
                 {
                     return(
-                        <option key={index} selected value={bank.bin}>{bank.nameBank}</option>
+                        <option key={index} selected value={bank.bin}>{bank.bankName}</option>
                     )
                 }
                 else{
                     return(
-                        <option key={index}  value={bank.bin}>{bank.nameBank}</option>
+                        <option key={index}  value={bank.bin}>{bank.bankName}</option>
                     )
                 }
                 
@@ -132,54 +144,147 @@ function transaction(props) {
     }
     const {movedOn} = props.ifTransaction
     console.log(movedOn)
+    if(account)
+    {
+      if(account.status !== "ACTIVE")
+      {
+        console.log(account)
+        const mess = FC.checkStatus(account.status);
+        console.log(mess)
+        return (
+
+            <Message history = {props.history} title={"TK CHUA KICH HOAT"} message={mess}/>
+
+         
+        )
+      }
+     
+    }
+   
     if(movedOn===true)
     {
         return <Redirect to="/transaction/verify"/>
     }
     return (
-        
-        <div>
-            <section className="blog_part section_padding section_transaction">
-                <div className="container container_transaction">
-                <div className=" p-4 transaction_profile">
-                    <div className="task-profile">
-                    <p><i className="fas fa-user" />Chủ tài khoản : <span>{user.displayName}</span></p>
+        <div className="page-header header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8 col-md-10 ml-auto mr-auto">
+              <div className="card card-login text-center">
+                <form className="form" method="POST">
+                  <div className="card-header card-header-primary text-center">
+                    <h4 className="card-title">Transaction</h4>
+                    <div className="social-line">
+                      <div className="row m-3">
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Account Owner: </b>
+
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                                {user.displayName}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Account Number: </b>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                                {account?account.accountNumber:''}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Balance: </b>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                              {account?FC.inMoney(account.balance):''}
+                                <small className="muted-text">&nbsp;  VND</small>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="task-profile">
-                    <p><i className="fas fa-address-card" />Số tài khoản : <span>{account?account.accountNumber:''}</span></p>
+                  </div>
+                  {/* Notification */}
+                  {error? showError(error):''}
+                  
+
+                  {/* End Notification */}
+                  {/* Main section */}
+                  <div className="card-body">
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">
+                          {/* <i class="material-icons">face</i> */}
+                          Beneficiary Bank
+                        </span>
+                      </div>
+                      <select onChange={onBankChange} className="form-control" name="bin">
+                        {listBank? showListBank(listBank,Config.BIN_BANK_ROOT):''}
+                      </select>
                     </div>
-                    <div className="task-profile">
-                    <p><i className="fas fa-dollar-sign" />Số dư : <span>{account?account.balance:''} VND</span></p>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">
+                          Beneficiary Account
+                        </span>
+                      </div>
+                      <input onChange={onBeneficiaryChange}  value={beneficiaryAccountNumber?beneficiaryAccountNumber:''}name="beneficiaryAccountNumber" type="text" className="form-control" />
                     </div>
-                </div>
-                {error? showError(error):''}
-                <form method="POST" className="mt-4">
-                    <div className="form-group mb-3 ">
-                    <label htmlFor="formGroupExampleInput">Ngân hàng</label>
-                    <select onChange={onBankChange} name="bin" className="custom-select" id="inputGroupSelect02">
-                        {listBank? showListBank(listBank,binBank):''}
-                    </select>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">
+                          Amount
+                        </span>
+                      </div>
+                      <input onChange={onAmountChange} value={amount?amount:''} name="amount" type="number" className="form-control" placeholder="50.000 - 50.000.000" />
                     </div>
-                    <div className="form-group">
-                    <label htmlFor="formGroupExampleInput">Số tài khoản hưởng thụ</label>
-                    <input onChange={onBeneficiaryChange} value={beneficiaryAccountNumber?beneficiaryAccountNumber:''} name="beneficiaryAccountNumber" type="number" className="form-control" id="formGroupExampleInput" placeholder="VD : 0123456789" />
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">
+                          Content
+                        </span>
+                      </div>
+                      <textarea onChange={onContentChange} name="content" className="form-control" defaultValue={""} />
                     </div>
-                    <div className="form-group">
-                    <label htmlFor="amount">Số tiền</label>
-                    <input onChange={onAmountChange} value={amount?amount:''} name="amount" type="number" className="form-control" id="amount" placeholder="50.000 - 5.000.000" />
+                  </div>
+                  {/* End Main section */}
+                  <div className="card-footer" style={{display: 'inherit'}}>
+                    <div className="text-center">
+                      <button type className="btn btn-danger btn-link btn-wd btn-lg">Cancel</button>
+                      <button onClick={onSubmit} className="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
                     </div>
-                    <div className="form-group">
-                    <label htmlFor="exampleFormControlTextarea1">Nội dung</label>
-                    <textarea onChange={onContentChange} name="content" className="form-control" id="exampleFormControlTextarea1" rows={3} defaultValue={""} />
-                    </div>
-                    <div className="form-group  text-right">
-                    <button type="button" className="btn btn-primary  mr-3">Hủy</button>
-                    <button onClick={onSubmit} type="submit" className="btn btn-primary">Tiếp tục</button>
-                    </div><br />
+                  </div>
                 </form>
-                </div>
-            </section>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     )
 }
 const mapStateToProps = state =>{
@@ -191,14 +296,17 @@ const mapStateToProps = state =>{
 const mapDispatchToProps = dispatch =>{
     return {
         getInformation : (id)=>{
-            dispatch(actGetInformation(id));
+          dispatch(actGetInformation(id));
         },
         postInformation : (data)=>{
-            dispatch(actPostInformation(data))
+          dispatch(actPostInformation(data))
         },
         switchMovedOn : () => {
-            dispatch(actSwitchMoved())
-        }
+          dispatch(actSwitchMoved())
+        },
+        getAccount : (userId)=>{
+          dispatch(actGetAccount(userId))
+        },
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(transaction)

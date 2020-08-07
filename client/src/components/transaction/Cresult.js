@@ -20,8 +20,11 @@ function Cresult(props) {
     },[])
     return (
         <div>
-            <section className="blog_part section_padding section_transaction2 col-4">
-                <div className="modal-dialog modal-notify modal-success" role="document">
+            
+            <div className="page-header header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+        <div className="container">
+              <div className="text-center">
+              <div className="card modal-dialog modal-notify modal-success" role="document">
                     <div className="modal-content">
 
                         {/*Header*/}
@@ -45,7 +48,10 @@ function Cresult(props) {
                     </div>
 
                 </div>
-            </section>
+              </div>
+        </div>
+      </div>
+          
         </div>
     )
 }

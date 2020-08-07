@@ -14,7 +14,6 @@ export const actGetInformation = (userId) => {
     return dispatch => {
         return callApi('transaction/getInformation', 'POST', {userId})
         .then(res => {
-            console.log(res.data)
             dispatch({type:Types.GET_INFORMATION_TRANSACTION,data:res.data});
         })
         .catch(err => {
@@ -72,8 +71,21 @@ export const actSwitchVerify = () => {
 export const verify = (data) => {
     return dispatch => {
         return callApi('transaction', 'POST', data).then(res => {
-            console.log(res);
             dispatch({type:Types.VERIFY,data:res.data});
         });
     };
+}
+
+export const actGetListTransaction = (userId) => {
+    return dispatch => {
+        return callApi('information/getListTransaction','POST',{userId})
+        .then(res => {
+            console.log(res.data)
+            dispatch({type : Types.GET_LIST_TRANSACTION , data : res.data})
+        })
+        .catch(err => {
+            console.log("loi get list transaction ")
+            console.log(err)
+        })
+    }
 }

@@ -16,6 +16,7 @@ const crypto = require('crypto');
 const Sequelize = require('sequelize')
 const axios = require('axios');
 const { json } = require('body-parser');
+const UserStatus = require("../middlewares/userStatus");
 
 var token;
 var fee;
@@ -23,6 +24,8 @@ var listBank;
 var totalMoney;
 var extraMoney;
 var binRoot = process.env.BIN || 9704;
+
+// router.use(UserStatus);
 
 router.route('/')
     .get(asyncHandler(async (req, res) => {
@@ -217,6 +220,7 @@ router.post('/postInformation',[
 
 router.post('/verify',async(req,res)=>{
     const {accountNumber, binBank, beneficiaryAccountNumber, amount, content,totalFee } = req.body.data;
+    console.log("sdasd"+req.body.data)
     const today = new Date();
     const hour = ('0' + today.getHours()).slice(-2);
     const min = ('0' + today.getMinutes()).slice(-2);
@@ -231,7 +235,7 @@ router.post('/verify',async(req,res)=>{
             amount: amount,
             content: content,
             beneficiaryAccount: beneficiaryAccountNumber,
-            fee: totalFee,
+            fee: parseInt(totalFee),
         }).then(async (trans) => {
             // Current account: New Balance
             await Account.findOne({
@@ -256,49 +260,17 @@ router.post('/verify',async(req,res)=>{
                 }).catch((err) => {
                     console.log(err);
                 });
+                console.log("accccc")
+                console.log(account)
             }).catch((err) => {
                 console.log(err);
             });
 
         
-            // const account = await Account.findOne(
-            //     {
-            //         where: {
-            //             accountNumber: trans.beneficiaryAccount,
-            //         }
-            //     }).then(async (account) => {
-            //         const user = await User.findOne({
-            //             where: {
-            //                 id: account.userId,
-            //             }
-            //         }).then(async (user) => {
-            //             await BeneficiaryAccount.create({
-            //                 displayName: user.displayName,
-            //                 beneficiaryBank: bank.bankName,
-            //                 pendingAmount: confirmInfo.amount,
-            //             });
-
-            //             return user;
-            //         }).catch((err) => {
-            //             console.log(err);
-            //         });
-
-            //         return user;
-            //     });
-
-            // return { account, trans };
         }).catch((err) => {
             console.log(err);
         });
-
-        // confirmInfo = {
-        //     beneficiaryAccountNumber,
-        //     amount,
-        //     content,
-        //     totalFee,
-        //     displayName: beneficiaryInfo.account.displayName,
-        //     transactionID: beneficiaryInfo.trans.transactionID,
-        // }
+        
 
     return res.status(200).json({success:true})
 });

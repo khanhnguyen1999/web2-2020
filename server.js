@@ -5,6 +5,7 @@ var app = express();
 const ejs = require('ejs');
 const cookieSession = require('cookie-session');
 var cors = require('cors')
+
 var port = process.env.PORT || 3000;
 
 // --------DATABASE------------
@@ -48,9 +49,16 @@ app.get('/saving/addSaving',require('./routes/savingAccount'));
 
 
 // --------APP USE----------
-app.use(express.static('public'))
-app.use('/register',require('./routes/register'))
-app.use('/',require('./routes/login'))
+app.use(express.static('public'));
+app.use('/register',require('./routes/register'));
+app.use('/',require('./routes/login'));
+app.use('/login',require('./routes/login'));
+app.use("/verify", require("./routes/multer"));
+app.use("/forgot-password", require("./routes/forgotPassword"));
+app.use("/change-password", require("./routes/changePassword"));
+
+// --------API INFORMATION ------------
+app.use('/information',require('./routes/information'))
 
 // -------CONNECTION---------
 db.sync().then(function(){

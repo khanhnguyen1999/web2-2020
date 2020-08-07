@@ -1,13 +1,13 @@
-const Sequelize = require('sequelize');
-const db = require('./db');
-
+const Sequelize = require("sequelize");
+const db = require("./db");
 const Model = Sequelize.Model;
+
 class SavingAccount extends Model {
     static async findSavingAccountrByAccountNumber(accountNumber) {
         return await SavingAccount.findAll({
             where: {
                 accountAccountNumber: accountNumber,
-            }
+            },
         });
     }
 
@@ -15,19 +15,21 @@ class SavingAccount extends Model {
         return await SavingAccount.findOne({
             where: {
                 id,
-            }
+            },
         });
     }
 
     static async updateFund(fund, id) {
         return await SavingAccount.update(
             {
-                fund
-            }, {
-            where: {
-                id,
+                fund,
+            },
+            {
+                where: {
+                    id,
+                },
             }
-        });
+        );
     }
 
     static async updateDateSaving(openDate, closeDate, interest, id) {
@@ -36,54 +38,56 @@ class SavingAccount extends Model {
                 openDate,
                 closeDate,
                 interest,
-            }, {
-            where: {
-                id,
+            },
+            {
+                where: {
+                    id,
+                },
             }
-        });
+        );
     }
 
     static async deleteById(id) {
         return await SavingAccount.destroy({
             where: {
                 id,
-            }
+            },
         });
     }
 }
-SavingAccount.init({
-    // attributes
-    fund: {
-        type: Sequelize.INTEGER,
-    },
-    interest: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        // allowNull defaults to true
-    },
-    interestRate: {
-        type: Sequelize.FLOAT,
-    },
-    depositTerm: {
-        type: Sequelize.INTEGER,
-    },
-    openDate: {
-        type: Sequelize.DATE,
-        // allowNull defaults to true
-    },
-    closeDate: {
-        type: Sequelize.DATE,
-    },
-    type: {
-        type: Sequelize.INTEGER,
-    },
-}, {
-    underscored: true,
-    sequelize: db,
-    modelName: 'saving_account',
-});
 
-const Account = require('./account');
+SavingAccount.init(
+    {
+        fund: {
+            type: Sequelize.INTEGER,
+        },
+        interest: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        interestRate: {
+            type: Sequelize.FLOAT,
+        },
+        depositTerm: {
+            type: Sequelize.INTEGER,
+        },
+        openDate: {
+            type: Sequelize.DATE,
+        },
+        closeDate: {
+            type: Sequelize.DATE,
+        },
+        type: {
+            type: Sequelize.INTEGER,
+        },
+    },
+    {
+        sequelize: db,
+        modelName: "saving_account",
+    }
+);
+
+const Account = require("./account");
 Account.hasMany(SavingAccount);
 SavingAccount.belongsTo(Account);
 
