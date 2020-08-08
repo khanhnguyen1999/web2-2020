@@ -1,7 +1,15 @@
-import React from "react";
+import React ,{useEffect} from "react";
+import {connect} from "react-redux";
+import {actGetUserByEmail} from "../../store/actions/login";
 
-function Landing() {
-    
+function Landing(props) {
+    useEffect(()=>{
+        const user = JSON.parse(localStorage.getItem("currentUser"))
+        if(user)
+        {
+            props.getUser(user.email)
+        } 
+    },[])
     return (
         <div>
             <div className="landing-page sidebar-collapse">
@@ -356,5 +364,11 @@ function Landing() {
         </div>
     );
 }
-
-export default Landing;
+const mapDispatchToProps = dispatch => {
+    return {
+        getUser : (email) => {
+            dispatch(actGetUserByEmail(email))
+        }
+    }
+}
+export default connect(null,mapDispatchToProps)(Landing);

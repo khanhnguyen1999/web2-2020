@@ -8,6 +8,7 @@ function Message(props) {
         if(props.to){
             to = props.to
         }
+        console.log(to)
         props.history.push(to)
     }
     return (

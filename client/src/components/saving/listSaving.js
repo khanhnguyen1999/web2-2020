@@ -39,8 +39,8 @@ export class listSaving extends Component {
     render() {
         var {user,account,savingAccount} = this.state;
         return (
-            <div>
-                <section className="blog_part section_padding section_transaction list-saving row">
+            <div className="page-header header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+                {/* <section className="blog_part section_padding section_transaction list-saving row"> */}
                     <div className="container container_transaction1 col-6">
                         <div className="modal-header">
                             <p className="heading lead">Tài khoản tiết kiệm </p>
@@ -65,7 +65,7 @@ export class listSaving extends Component {
                                 <span>{savingAccount?inMoney(this.sumMountSaving(savingAccount)):0} VND</span>
                             </div>
                         </div>
-                        <div className="mt-5">
+                        <div >
                             {this.showListSaving(savingAccount)}
                             {/* <ItemSaving/>
                             <ItemSaving/> */}
@@ -77,7 +77,7 @@ export class listSaving extends Component {
                             </div><br />
                         </form>
                     </div>
-                </section>
+                {/* </section> */}
             </div >
         )
     }

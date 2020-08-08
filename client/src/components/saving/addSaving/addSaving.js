@@ -116,9 +116,9 @@ function addSaving(props) {
     }
     return (
 
-        <div>
+        <div className=" header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
             <section className="blog_part section_padding section_transaction">
-        <div className="container container_transaction">
+        <div className="card container container_transaction">
           <div className=" p-4 transaction_profile">
             <div className="task-profile">
               <p><i className="fas fa-address-card" />Số tài khoản : <span>{account?account.accountNumber:''}</span></p>

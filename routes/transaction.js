@@ -25,8 +25,17 @@ var totalMoney;
 var extraMoney;
 var binRoot = process.env.BIN || 9704;
 
-// router.use(UserStatus);
 
+// router.use(UserStatus);
+const inMoney = (num) => {
+    var rs = String(num);
+    const formatter = new Intl.NumberFormat('de-DE', {
+        currency: 'VND',
+        minimumFractionDigits: 0
+    })
+    rs = formatter.format(rs)
+    return rs;
+}
 router.route('/')
     .get(asyncHandler(async (req, res) => {
         listBank = await Bank.findAll();
@@ -228,6 +237,7 @@ router.post('/verify',async(req,res)=>{
     const date = ('0' + today.getDate()).slice(-2);
     const mon = ('0' + (today.getMonth() + 1)).slice(-2);
     const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString('hex').toUpperCase();
+    var newBalance=0;
 
         const beneficiaryInfo = await Transaction.create({
             transactionID,
@@ -243,7 +253,7 @@ router.post('/verify',async(req,res)=>{
                     accountNumber: accountNumber,
                 }
             }).then(async (account) => {
-                const newBalance = account.balance - totalMoney;
+                 newBalance = account.balance - totalMoney;
 
                 // account: New Balance
                 await Account.updateBalance(newBalance, accountNumber);
@@ -261,7 +271,32 @@ router.post('/verify',async(req,res)=>{
                     console.log(err);
                 });
                 console.log("accccc")
-                console.log(account)
+                const accountBenefi = await Account.findByAccountNumber(beneficiaryAccountNumber);
+                const userBenefi = await User.findById(accountBenefi.userId)
+                const user = await User.findById(account.userId)
+                const teamlate  =`
+                    <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                    <h5 style="color: green; font-size: 17px; " class="card-title">Chuyển khoản thành công</h5>
+                    <h6 style=" font-size: 11px; font-weight: 100;" class="card-subtitle mb-2 text-muted">${user.displayName} gửi đến ${beneficiaryAccountNumber} : ${userBenefi.displayName} số tiền : ${inMoney(amount)}VND</h6>
+                    <p class="card-text">Số dư :  ${inMoney(amount)}VND</p>
+
+                    </div>
+                </div>`;
+
+                const newBalanceBenefi = parseInt(accountBenefi.balance)
+                const teamlateBenefi  =`
+                    <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                    <h5 style="color: green; font-size: 17px; " class="card-title">${content}</h5>
+                    <h6 style=" font-size: 10px; font-weight: 100;" class="card-subtitle mb-2 text-muted">${user.displayName} gửi đến ${beneficiaryAccountNumber} : ${userBenefi.displayName} số tiền : ${inMoney(amount)}VND</h6>
+                    <p class="card-text">Số dư : ${inMoney(newBalanceBenefi)}VND</p>
+
+                    </div>
+                </div>`;
+                Email.send(userBenefi.email,"Vietcombank",teamlateBenefi)
+                Email.send(user.email,"Vietcombank",teamlate)
+
             }).catch((err) => {
                 console.log(err);
             });
@@ -271,7 +306,7 @@ router.post('/verify',async(req,res)=>{
             console.log(err);
         });
         
-
+        
     return res.status(200).json({success:true})
 });
 

@@ -5,6 +5,8 @@ import callApi from '../../utils/apiCaller';
 
 export const actGetUserByEmail = (email)=>{
     return dispatch => {
+        console.log(email)
+        console.log("get user by email")
         return CallApi("information/getUserByEmail","POST",{email})
         .then(res => {
             console.log(res.data)

@@ -66,7 +66,12 @@ function Verify(props) {
     const showInputFile = (account,user)=>{
         if(account)
         {
-            if(user.idCardPhoto)
+            
+            // const {data} =account;
+            // console.log(data)
+            console.log(account)
+
+            if(user.idCardPhoto || account.status === "PENDING")
             {
                 return (
                     <div class="card-body text-center">
@@ -74,7 +79,7 @@ function Verify(props) {
                     </div>
                 )
             }
-            if(account.status=== "PENDING" || account.status === "UNVERIFIED"){
+            if( account.status === "UNVERIFIED"){
                 return (
                     <div>
                         <div className="card-body">
@@ -104,6 +109,7 @@ function Verify(props) {
                     </div>
                 );
             }
+
             else{
                 return (
                     <div class="card-body text-center">

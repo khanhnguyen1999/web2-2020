@@ -47,13 +47,14 @@ class savingFinalization extends Component {
     render() {
         const { saving , user } = this.state;
         return (
-            <div>
-                <section className="blog_part section_padding section_transaction row">
-                    <div className="container container_transaction1 col-4">
+  
+            <div className=" header-filter" style={{backgroundImage: 'url("/assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+                <section className=" blog_part section_padding section_transaction row">
+                    <div className=" card container container_transaction1 col-4">
                         <div className="modal-header">
                             <p className="heading lead">Tất toán</p>
                         </div>
-                        {this.state.error===true ? this.showError():'das'}
+                        {this.state.error===true ? this.showError():''}
                         <form method="POST" action className="mt-4 ">
                             <table>
                                 <tbody>
@@ -89,11 +90,10 @@ class savingFinalization extends Component {
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlTextarea1">Ghi chú</label>
                                 <p className="ghichu">Ambitioni dedisse scripsisse iudicaretur. Cras mattis iudicium purus sit amet fermentum. <br />
-                Donec sed odio operae, eu vulputate felis rhoncus.<br />
-                Praeterea iter est quasdam res quas ex communi. At nos hinc posthac, sitientis piros Afros. Petierunt uti sibi concilium totius Galliae in diem certam indicere. <br />
+     
                                 </p>
                             </div>
-                            <div className="form-group text-right">
+                            <div className="form-group text-right mr-4">
                                 <button type="button" onClick={this.onGoBack} className="btn btn-primary  mr-3">Quay lại</button>
                                 <button onClick={this.onSubmit} type="submit" className="btn btn-primary">Tất toán</button>
                             </div><br />

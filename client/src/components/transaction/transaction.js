@@ -153,7 +153,7 @@ function transaction(props) {
         console.log(mess)
         return (
 
-            <Message history = {props.history} title={"TK CHUA KICH HOAT"} message={mess}/>
+            <Message history = {props.history} title={"TK CHUA KICH HOAT"} message={mess} to={"/verify"}/>
 
          
         )

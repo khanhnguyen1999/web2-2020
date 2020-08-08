@@ -4,11 +4,13 @@ import {connect} from 'react-redux';
 import {actLogout}  from '../../store/actions/login';
 import { withRouter } from "react-router-dom";
 import user from "../../store/reducers/user";
+import Button from '@material-ui/core/Button';
 
 function Navbar(props) {
     const [user,setUser] = useState();
     useEffect(()=>{
         const {user} = props.user;
+        console.log(user)
         setUser(user);
     })
     const menus = [
@@ -80,6 +82,7 @@ function Navbar(props) {
     };
     const showMenus = (menus) => {
         var result = null;
+
         if(menus.length > 0){
             result = menus.map((menu, index) => {
                 return (
@@ -105,6 +108,9 @@ function Navbar(props) {
     const onCLickLogout = ()=> {
         props.logout();
         props.history.push('/')
+    }
+    const onClickVerify =(e)=>{
+        props.history.push('/verify')
     }
     return (
 
@@ -135,6 +141,9 @@ function Navbar(props) {
                     </div>
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav ml-auto">
+                            {user&&!user.idCardPhoto?<Button onClick={onClickVerify} variant="contained" color="secondary">
+                            Verify
+                            </Button>:''}
                             {user?showMenus(menus):showMenus(menus1)}
 
                             {user?showLogout():''}

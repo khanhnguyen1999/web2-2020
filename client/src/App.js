@@ -3,10 +3,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useRouteMatch,
-  useParams,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 import Menu from './components/partials/navbar' ;
 import Footer from './components/partials/footer' ;
@@ -24,12 +21,8 @@ import AddSaving from './components/saving/addSaving/addSaving' ;
 import AddSavingVerify from './components/saving/addSaving/addSavingVerify' ;
 import AddSavingResult from './components/saving/addSaving/addSavingResult' ;
 
-
-
-
-
-
 import ListSaving from './components/saving/listSaving' ;
+import ListSaving1 from './components/saving/listSaving1' ;
 
 import itemSaving from './components/saving/itemSaving' ;
 import SavingFinalization from './components/saving/savingFinalization' ;
@@ -84,9 +77,11 @@ class App extends Component {
 
       {/* router saving account */}
 
-      <Route exact path='/savingAccount' component={({match, history}) => <ListSaving match={match} history={history}/>} />
+      <Route exact path='/savingAccount' component={({match, history}) => <ListSaving1 match={match} history={history}/>} />
 
-      <Route exact path='/savingAccount/:id' component={({match, history}) => <SavingDetail match={match} history={history}/>} />
+      <Route exact path='/savingAccount1' component={({match, history}) => <ListSaving1 match={match} history={history}/>} />
+
+      <Route exact path='/savingAccount1/:id' component={({match, history}) => <SavingDetail match={match} history={history}/>} />
 
       <Route exact path='/savingAccount/:id/finalization' component={({match, history}) => <SavingFinalization match={match} history={history}/>} />
 

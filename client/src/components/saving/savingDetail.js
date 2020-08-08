@@ -42,9 +42,12 @@ class savingDetail extends Component {
         const { saving , user } = this.state;
         const { id } = this.props.match.params;
         return (
-            <div>
+            <div style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+
+
+                    
                 <section className="blog_part section_padding section_transaction row">
-                    <div className="container container_transaction1 col-4">
+                    <div className="card container container_transaction1 col-4">
                         <div className="modal-header">
                             <p className="heading lead">Tài khoản tiết kiệm </p>
                         </div>
@@ -76,13 +79,15 @@ class savingDetail extends Component {
                                         <td>&nbsp;  {saving?dateTimeToDate(saving.closeDate,0):''}</td>
                                     </tr>
                                 </tbody></table>
-                            <div className="form-group text-right">
+                            <div className="mt-5 form-group text-center">
                                 <button type="button" onClick={this.onGoBack}className="btn btn-primary  mr-3">Quay lại</button>
                                 <button onClick={this.onSubmitFinalization} type="submit" className="btn btn-primary">Tất toán</button>
                             </div><br />
                         </form>
                     </div>
                 </section>
+
+
             </div>
         )
     }
