@@ -16,7 +16,6 @@ module.exports = asyncHandler(async function auth(req, res, next) {
 
     const account = await Account.findByUserId(user.id);
     const currentUser = { ...user.dataValues, ...account.dataValues };
-
     req.currentUser = currentUser;
     res.locals.currentUser = currentUser;
 

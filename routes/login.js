@@ -5,7 +5,12 @@ const asyncHandler = require("express-async-handler");
 router
     .route("/")
     .get((req, res) => {
-        res.render("ducbui/pages/auth/login", { errors: null });
+        if(!req.session.userId){
+            res.render("ducbui/pages/auth/login", { errors: null });
+        }
+        else{
+            res.redirect("/home")
+        }
     })
     .post(
         asyncHandler(async (req, res) => {

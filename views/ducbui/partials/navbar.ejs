@@ -20,21 +20,21 @@
                     </a>
                 </li>
                 <% if (currentUser) { %>
-                <li class="nav-item">
-                    <a href="/transaction" class="nav-link">
-                        Transaction
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/profile/<%= currentUser.id %>" class="nav-link">
-                        Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/admin" class="nav-link">
-                        Admin
-                    </a>
-                </li>
+                        <li class="nav-item">
+                            <a href="/transaction" class="nav-link">
+                                Transaction
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/profile/<%= currentUser.id %>" class="nav-link">
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/admin" class="nav-link">
+                                Admin
+                            </a>
+                        </li>
                 <li class="nav-item">
                     <a href="/logout" class="nav-link">
                         Logout

@@ -10,7 +10,12 @@ var user = null;
 router
     .route("/")
     .get((req, res) => {
-        res.render("ducbui/pages/auth/register", { errors: null });
+        if(!req.session.userId){
+            res.render("ducbui/pages/auth/register", { errors: null });
+        }
+        else{
+            res.redirect("/home")
+        }
     })
 
     .post(

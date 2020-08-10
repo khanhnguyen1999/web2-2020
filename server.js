@@ -44,7 +44,6 @@ app.use("/forgot-password", require("./routes/forgotPassword"));
 app.use("/change-password", require("./routes/changePassword"));
 app.use("/saving", require("./routes/savingAccount"));
 app.use("/transaction", require("./routes/transaction"));
-
 // -------CONNECTION---------
 db.sync()
     .then(function () {
