@@ -11,21 +11,17 @@ router
     .get(
         async (req, res, next) => {
             // Set role
-            const currentAccount = res.locals.account.dataValues;
-            role = currentAccount.role;
+            // const currentAccount = res.locals.account.dataValues;
+            const currentUser = res.locals.currentUser;
+            role = currentUser.role;
 
             // Check user role
             if (role === "admin") {
                 return next();
             }
 
-            // Get user's data
-            const currentUser = res.locals.currentUser.dataValues;
             // Hide hashed password
             currentUser.password = "**********";
-
-            // Combine user info w/ account info
-            const thisUser = { ...currentAccount, ...currentUser };
 
             // Get user's transactions
             const transactions = await Transaction.findAll(
@@ -34,17 +30,17 @@ router
                     where: {
                         [Op.or]: [
                             {
-                                accountNumber: thisUser.accountNumber,
+                                accountNumber: currentUser.accountNumber,
                             },
                             {
-                                beneficiaryAccount: thisUser.accountNumber,
+                                beneficiaryAccount: currentUser.accountNumber,
                             },
                         ],
                     },
                 }
             );
 
-            return res.render("./ducbui/pages/profiles/profile", { user: thisUser, transactions });
+            return res.render("./ducbui/pages/profiles/profile", { user: currentUser, transactions });
         },
         async (req, res, next) => {
             const { id } = req.params;
