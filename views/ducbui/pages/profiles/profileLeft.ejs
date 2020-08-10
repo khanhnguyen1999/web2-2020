@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group">
                         <label for="inputAddress2">Account Number</label>
-                        <input type="text" class="form-control" id="inputAddress2" value="<%= user.accountNumber %>" />
+                        <input type="text" class="form-control" id="inputAddress2" value="<%= user.accountNumber.replace(/^(.{4})(.{4})(.{4})(.{4})$/, "$1 $2 $3 $4") %>" />
                     </div>
                     <div class="form-group">
                         <label for="inputAddress2">ID Card Number</label>

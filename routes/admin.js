@@ -289,7 +289,7 @@ router
                 .optional()
                 .normalizeEmail()
                 .custom(async (email, { req }) => {
-                    const found = await User.findUserByEmail(email);
+                    const found = await User.findByEmail(email);
 
                     if (found && email !== req.session.currentCustomer.email) {
                         throw Error("User exists");
@@ -300,7 +300,7 @@ router
             body("username")
                 .optional()
                 .custom(async (username, { req }) => {
-                    const found = await User.findUserByUserName(username);
+                    const found = await User.findByUsername(username);
 
                     if (found && username !== req.session.currentCustomer.username) {
                         throw Error("User exists");

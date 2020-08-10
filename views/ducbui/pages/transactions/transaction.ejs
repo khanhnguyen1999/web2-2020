@@ -40,7 +40,7 @@
                                             <div class="row justify-content-center">
                                                 <div class="col-12">
                                                     <p class="class-text">
-                                                        <%= account.accountNumber %>
+                                                        <%= account.accountNumber.replace(/^(.{4})(.{4})(.{4})(.{4})$/, "$1 $2 $3 $4") %>
                                                     </p>
                                                 </div>
                                             </div>

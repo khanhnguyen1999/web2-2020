@@ -36,7 +36,7 @@
         <% if (account.status === 'PENDING' || account.status === 'DENIED') { %>
         <div class="row justify-content-center my-5">
             <div class="card mb-3">
-                <img src="/uploads/<%= user.idCardPhoto %>" class="card-img-top"
+                <img src="<%= user.idCardPhoto %>" class="card-img-top"
                      alt="<%= user.idCardPhoto %>">
                 <div class="card-body">
                     <a href="/admin/users/<%= user.id %>/verify-accept"
