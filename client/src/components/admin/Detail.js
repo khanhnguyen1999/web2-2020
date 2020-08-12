@@ -112,6 +112,11 @@ function Detail(props) {
         setChose("verify")
     }
 
+    const onClickViewPhoto = e => {
+        setListTransaction(null)
+        setChose("verify")
+    }
+
 
     const showChose = (chose,random)=>{
         if(chose==="tranfer"){
@@ -146,6 +151,7 @@ function Detail(props) {
                     <p className="card-text">Balance: {account?inMoney(account.balance):''} VND</p>
                     <p className="card-text">Status: {account?account.accountNumber:''}</p>
                     <p className="card-text">CardId: {user?user.cardId?user.cardId:'Not cardId':''}</p>
+                    <p className="card-text">IdCardPhoto: {user?user.idCardPhoto?<Button variant="contained" onClick={onClickViewPhoto}>View</Button>:'Not Photo':''}</p>
     
                     {showButton(account.status)}
 
