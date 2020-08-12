@@ -147,7 +147,7 @@ function addSaving(props) {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p className="card-text">
-                                <b>Balance </b>
+                                <b>Total: </b>
                               </p>
                             </div>
                           </div>
@@ -164,7 +164,7 @@ function addSaving(props) {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p className="card-text">
-                                <b>Total </b>
+                                <b>Balance: </b>
                               </p>
                             </div>
                           </div>

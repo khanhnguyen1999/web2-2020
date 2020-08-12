@@ -65,7 +65,7 @@ class addSavingVerify extends Component {
     }
     onBack(e){
         // this.props.deleteConfirmInfo();
-        this.props.history.push('/transaction');
+        this.props.history.push("/addsaving");
     }
     showError = ()=>{
         return <div className="alert alert-success mt-3" role="alert">
@@ -85,9 +85,9 @@ class addSavingVerify extends Component {
             this.props.history.push("/addsaving/result")
         }
         return (
-            <div>
+            <div className=" header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
                 <section className="blog_part section_padding section_transaction row">
-                    <div className="container container_transaction1 col-6">
+                    <div style={{backgroundColor: "rgba(150,255,255,0.8)"}} className="card container container_transaction1 col-6">
                         <div className="modal-header">
                             <p className="heading lead">Tài khoản tiết kiệm </p>
                         </div>

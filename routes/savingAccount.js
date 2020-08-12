@@ -27,7 +27,15 @@ var depositTerm;
 var formInterest;
 var now;
 var subEmail
-
+const inMoney = (num) => {
+    var rs = String(num);
+    const formatter = new Intl.NumberFormat('de-DE', {
+        currency: 'VND',
+        minimumFractionDigits: 0
+    })
+    rs = formatter.format(rs)
+    return rs;
+}
 function inWords (num) {
     var a = ['','Một ','Hai ','Ba ','Bốn ', 'Năm ','Sáu ','Bảy ','Tám ','Chín ','Mười ','Mười Một ','Mười Hai ','Mười Ba ','Mười Bốn ','Mười Lăm ','Mười sáu ','Mười Bảy ','Mười Tám ','Mười Chín '];
     var b = ['', '', 'Hai Mươi','Ba Mươi','Bốn Mươi','Năm Mươi', 'Sáu Mươi','Bảy Mươi','Tám Mươi','Chín Mươi'];
@@ -93,9 +101,19 @@ router.post('/onfinalization/verify',async(req,res)=>{
     const itemSaving = await SavingAccount.findById(data.id);
     let accountUser = await Account.findByUserId(data.userId)
     const extraMoney = accountUser.balance + itemSaving.fund;
-    await Account.updateBalance(extraMoney,accountUser.accountNumber);
+    const ac = await Account.updateBalance(extraMoney,accountUser.accountNumber);
     await SavingAccount.deleteById(data.id);
-    Email.send(user.email,bank17ez,"Tất toán thành công số tiền  : "+itemSaving.fund)
+
+    const newAccount = await Account.findByUserId(data.userId)
+    const teamlate  =`
+        <div class="card" style="width: 18rem;">
+        <div class="card-body">
+        <h5 style="color: green; font-size: 14px; " class="card-title">Tất toán thành công số tiền : ${inMoney(itemSaving.fund)} VND</h5>
+        <p class="card-text">Số dư :  ${inMoney(newAccount.balance)}VND</p>
+        </div>
+    </div>`;
+
+    Email.send(user.email,bank17ez,teamlate)
     res.status(200).json({success:true})
 })
 
@@ -178,7 +196,11 @@ router.post("/addSaving",[
     let token = crypto.randomBytes(2).toString("hex").toUpperCase();
     var today = dateTimeToDate(new Date(),0);
     var dt = new Date()
-    var closeDate = new Date(dt.setMonth(dt.getMonth() + depositTerm));
+    var closeDate = new Date(dt.setMonth(dt.getMonth() + parseInt(depositTerm)));
+
+    console.log(dt.getFullYear())
+    console.log(closeDate.getFullYear())
+
     let interest = parseInt(amount*interestRate/100);
     let now = dateTimeToDate(new Date(),1)
     confirmInfo = {
@@ -194,6 +216,8 @@ router.post("/addSaving",[
         accountNumber,
         ran,
     }
+   
+
     await Email.send(user.email, "Transaction Confirmation", token);
     console.log(token)
     console.log(confirmInfo)
@@ -203,6 +227,9 @@ router.post("/addSaving",[
 
 router.post("/addSaving/verify",async (req,res)=>{
     const { amount,interest,interestRate,openDate,closeDate,depositTerm, accountNumber,type} = req.body.data;
+    const ac = await Account.findByAccountNumber(accountNumber)
+    const newBalance = parseInt(ac.balance) - parseInt(amount)
+    await Account.updateBalance(newBalance,accountNumber);
     const svAccount = await SavingAccount.create({
         fund:amount,
         interest: interest,
@@ -213,6 +240,17 @@ router.post("/addSaving/verify",async (req,res)=>{
         accountAccountNumber:accountNumber,
         type:type,
     })
+
+    const us = await User.findById(ac.userId)
+    const teamlate  =`
+        <div class="card" style="width: 18rem;">
+        <div class="card-body">
+        <h5 style="color: green; font-size: 14px; " class="card-title">Thêm TKTK thành công </h5>
+        <h6 style=" font-size: 10px; font-weight: 100;" class="card-subtitle mb-2 text-muted">Số tiền : ${inMoney(amount)} VND trong ${depositTerm} tháng</h6>
+        <p class="card-text">Số dư :  ${inMoney(newBalance)}VND</p>
+        </div>
+    </div>`;
+    await Email.send(us.email,"Vietcombank",teamlate)
     res.json({success:true})
 })
 

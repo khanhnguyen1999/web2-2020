@@ -10,7 +10,14 @@ function finalizationResult(props) {
     }
     const onClickHome = ()=> {
         props.history.push('/home')
+        
     }
+    useEffect(()=>{
+        return ()=>{
+            props.switchVerify();
+            props.deleteConfirmInfo();
+        }
+    },[])
     // useEffect(()=>{
     //     props.deleteConfirmInfo()
     // },[])

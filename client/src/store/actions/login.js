@@ -1,6 +1,6 @@
 import * as Types from '../../constants/ActionTypes';
 import CallApi from '../../utils/apiCaller';
-import callApiImage from '../../utils/apiCallerImage';
+import  callApiImage  from '../../utils/apiCallerImage';
 import callApi from '../../utils/apiCaller';
 
 export const actGetUserByEmail = (email)=>{

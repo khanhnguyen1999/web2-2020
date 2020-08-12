@@ -10,7 +10,6 @@ function Navbar(props) {
     const [user,setUser] = useState();
     useEffect(()=>{
         const {user} = props.user;
-        console.log(user)
         setUser(user);
     })
     const menus = [
@@ -112,6 +111,7 @@ function Navbar(props) {
     const onClickVerify =(e)=>{
         props.history.push('/verify')
     }
+
     return (
 
             <nav

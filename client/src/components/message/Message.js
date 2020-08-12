@@ -12,7 +12,7 @@ function Message(props) {
         props.history.push(to)
     }
     return (
-        <div className="page-header header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+        <div className="page-header header-filter" style={{backgroundImage: 'url("/assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
             <div className="container">
               <div className="text-center">
               <div className="card modal-dialog modal-notify modal-success" role="document">

@@ -60,7 +60,7 @@ export class listSaving extends Component {
                             </div>
                             <div className="itemInformation">
                                 <div className="task-profile-saving">
-                                    <p><i className="fa fa-money" aria-hidden="true" />Số tiền TKTK</p>
+                                    <p><i className="fa fa-money" aria-hidden="true" />Tolal</p>
                                 </div>
                                 <span>{savingAccount?inMoney(this.sumMountSaving(savingAccount)):0} VND</span>
                             </div>

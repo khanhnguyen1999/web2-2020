@@ -24,6 +24,7 @@ app.use(cookieSession({secret: 'todotopsecret'}))
 app.use(express.json());
 app.use(cors())
 
+
 // --------APP SET------------
 app.set('views', './views');
 app.set('view engine', 'ejs');
@@ -45,7 +46,10 @@ app.get('/saving/listSaving/:id',require('./routes/savingAccount'));
 app.get('/saving/listSaving/tattoan/:id',require('./routes/savingAccount'));
 app.post('/saving/listSaving/tattoan/:id',require('./routes/savingAccount'));
 app.get('/saving/addSaving',require('./routes/savingAccount'));
-// var a = RSavingAccount;
+
+// -------- Admin ------------
+
+app.use("/admin", require("./routes/admin"));
 
 
 // --------APP USE----------

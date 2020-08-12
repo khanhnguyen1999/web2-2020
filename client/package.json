@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "axios": "^0.17.1",
     "form-data": "^3.0.0",
     "history": "^5.0.0",
+    "qs": "^6.9.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-fontawesome": "^1.7.1",
@@ -14,6 +17,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.5",
+    "react-window": "^1.8.5",
     "redux": "^3.7.2",
     "redux-thunk": "^2.3.0"
   },

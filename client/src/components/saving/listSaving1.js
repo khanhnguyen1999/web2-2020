@@ -56,7 +56,7 @@ export class listSaving extends Component {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p className="card-text">
-                                <b>Account Owner: </b>
+                                <b>Account Number: </b>
 
                               </p>
                             </div>
@@ -64,23 +64,7 @@ export class listSaving extends Component {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p className="class-text">
-                                {user.displayName}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-4 col-md-12">
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="card-text">
-                                <b>Account Number: </b>
-                              </p>
-                            </div>
-                          </div>
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="class-text">
-                                {account?account.accountNumber:''}
+                              {account&&account.accountNumber?account.accountNumber:''}
                               </p>
                             </div>
                           </div>
@@ -96,7 +80,23 @@ export class listSaving extends Component {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p className="class-text">
-                              {account?FC.inMoney(account.balance):''}
+                              {account&&account.balance?inMoney(account.balance):''}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-4 col-md-12">
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="card-text">
+                                <b>Total </b>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="row justify-content-center">
+                            <div className="col-12">
+                              <p className="class-text">
+                              {savingAccount?inMoney(this.sumMountSaving(savingAccount)):0}
                                 <small className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>

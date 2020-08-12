@@ -21,8 +21,9 @@ export default function callApi(endpoint, method = 'GET', body){
             console.log(err);
         });
     }
-
-
+    var data = qs.stringify({
+        'amount': body
+    });
     return axios({
         method: method,
         url: `${Config.API_URL}/${endpoint}`,

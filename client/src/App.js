@@ -21,6 +21,8 @@ import AddSaving from './components/saving/addSaving/addSaving' ;
 import AddSavingVerify from './components/saving/addSaving/addSavingVerify' ;
 import AddSavingResult from './components/saving/addSaving/addSavingResult' ;
 
+import Admin from './components/admin/Admin' ;
+
 import ListSaving from './components/saving/listSaving' ;
 import ListSaving1 from './components/saving/listSaving1' ;
 
@@ -94,6 +96,8 @@ class App extends Component {
       <Route exact  path='/addsaving/verify' component={({match, history}) => <AddSavingVerify match={match} history={history}/>} />
 
       <Route exact  path='/addsaving/result' component={({match, history}) => <AddSavingResult match={match} history={history}/>} />
+
+      <Route   path='/admin' component={({match, history}) => <Admin timestamp={new Date().toString()} match={match} history={history}/>} />
 
       <PrivateRoute authed={currentUser} path='/transaction' component={Transaction}/>
 

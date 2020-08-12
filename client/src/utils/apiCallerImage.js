@@ -8,6 +8,4 @@ export default function callApiImage( endpoint,method = 'POST',formData){
         data: formData,
         headers: {'Content-Type': 'multipart/form-data' }
         })    
-      
-
 }
