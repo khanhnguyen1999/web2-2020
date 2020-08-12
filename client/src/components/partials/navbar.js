@@ -33,14 +33,32 @@ function Navbar(props) {
             to: '/profile',
             exact: false
         },
+        
+    ];
+    const menusNotActive = [
+        {
+            name: 'Home',
+            to: '/home',
+            exact: true
+        },
+        {
+            name: 'PROFILE',
+            to: '/profile',
+            exact: false
+        },    
+        
+    ];
+    const menusAdmin = [
+        {
+            name: 'Home',
+            to: '/home',
+            exact: true
+        },
         {
             name: 'ADMIN',
             to: '/admin',
-            exact: false
-        },
-
-      
-        
+            exact: false,
+        },   
     ];
     const menus1 = [
         {
@@ -104,6 +122,45 @@ function Navbar(props) {
             </li>
         )
     }
+    const showNavbar = (user)=>{
+        if(user.role==="user"){
+            if(user.status === "ACTIVE")
+            {
+                return showMenus(menus)
+            }
+            else{
+                return showMenus(menusNotActive)
+            }
+        }else if(user.role === "admin")
+        {
+            return showMenus(menusAdmin)
+        }
+    }
+
+    const showButtonVerify = (user) => {
+        if(user.role==="user" && !user.idCardPhoto){
+            if(user.status==="PENDING")
+            {
+                return (<Button  variant="contained" color="secondary">
+                        PENDING
+                    </Button>)
+            }else if(user.status==="LOCKED")
+            {
+                return (<Button  variant="contained" color="secondary">
+                        LOCKED
+                    </Button>)
+            }else if (user.status==="DENIED")
+            {
+                return (<Button onClick={onClickVerify} variant="contained" color="secondary">
+                            DENIED
+                        </Button>)
+            }
+            return (<Button onClick={onClickVerify} variant="contained" color="secondary">
+                        Verify
+                    </Button>)
+        }
+    }
+
     const onCLickLogout = ()=> {
         props.logout();
         props.history.push('/')
@@ -111,7 +168,8 @@ function Navbar(props) {
     const onClickVerify =(e)=>{
         props.history.push('/verify')
     }
-
+    console.log("assasasa")
+    console.log(user)
     return (
 
             <nav
@@ -141,10 +199,12 @@ function Navbar(props) {
                     </div>
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav ml-auto">
-                            {user&&!user.idCardPhoto?<Button onClick={onClickVerify} variant="contained" color="secondary">
+                            {user?showButtonVerify(user):''}
+                            {/* {user&&!user.idCardPhoto&&user.role!=="admin"?<Button onClick={onClickVerify} variant="contained" color="secondary">
                             Verify
-                            </Button>:''}
-                            {user?showMenus(menus):showMenus(menus1)}
+                            </Button>:''} */}
+                            {user?showNavbar(user):''}
+                            {/* {user?user.role==="user"?showMenus(menus):showMenus(menusAdmin):showMenus(menus1)} */}
 
                             {user?showLogout():''}
                         </ul>

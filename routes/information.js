@@ -18,6 +18,9 @@ router.post('/getUserByEmail',async function getLogin(req,res){
     const {email} = req.body;
     console.log(email);
     const user = await User.findByEmail(email);
+    const account = await Account.findByUserId(user.id);
+    user.dataValues.role = account.role;
+    user.dataValues.status = account.status;
     res.json({data:user});
 });
 

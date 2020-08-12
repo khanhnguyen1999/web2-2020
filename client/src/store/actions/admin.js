@@ -14,6 +14,10 @@ export const actGetAllUser = () => {
     }
 }
 
+export const actResetAdmin= ()=> {
+    return {type:Types.RESET_ADMIN }
+}
+
 export const actGetAllUserPending = () => {
     return dispatch => {
         return callApi("admin/users/management","GET","")

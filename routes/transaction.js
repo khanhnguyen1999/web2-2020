@@ -70,6 +70,7 @@ router.route('/')
                     totalMoney = parseInt(amount) + parseInt((parseInt(amount) * fee));
                     extraMoney = parseInt(account.balance) - parseInt(totalMoney);
 
+
                     if (extraMoney < 100000) {
                         throw Error('Số dư không đủ');
                     }
@@ -162,6 +163,11 @@ router.post('/postInformation',[
                     totalMoney = parseInt(amount) + parseInt((parseInt(amount) * fee));
                     extraMoney = parseInt(account.balance) - parseInt(totalMoney);
 
+                    const lm = parseInt(account.limitAmount) +parseInt(amount)
+
+                    if(lm > account.limit){
+                        throw Error('Vượt quá hạn mức chuyển khoản');
+                    }
                     if (extraMoney < 100000) {
                         throw Error('Số dư không đủ');
                     }
@@ -229,6 +235,7 @@ router.post('/postInformation',[
 
 router.post('/verify',async(req,res)=>{
     const {accountNumber, binBank, beneficiaryAccountNumber, amount, content,totalFee } = req.body.data;
+    console.log(accountNumber)
     console.log("sdasd"+req.body.data)
     const today = new Date();
     const hour = ('0' + today.getHours()).slice(-2);
@@ -257,6 +264,10 @@ router.post('/verify',async(req,res)=>{
 
                 // account: New Balance
                 await Account.updateBalance(newBalance, accountNumber);
+                console.log("limit")
+                console.log(amount + "   "+accountNumber)
+                await Account.updateLimitAmount(amount,accountNumber)
+                console.log("limit")
 
                 // Beneficiary account: New Balance
                 await Account.findOne({

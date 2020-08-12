@@ -19,6 +19,7 @@ function Detail(props) {
     const [account,setAccount] = useState();
     const [user,setUser] = useState();
     const [chose,setChose] = useState();
+    const [random,setRandom] = useState();
     const [listTransaction,setListTransaction] = useState();
     const userId = props.match.params.id;
 
@@ -90,6 +91,8 @@ function Detail(props) {
     }
 
     const onClickEditProfile = (e)=>{
+        console.log("chaa")
+        setRandom(Math.random())
         setListTransaction(null)
         setChose("editProfile")
     }
@@ -110,12 +113,13 @@ function Detail(props) {
     }
 
 
-    const showChose = (chose)=>{
+    const showChose = (chose,random)=>{
         if(chose==="tranfer"){
             return <Tranfer user={user} />
         }else if(chose==="editProfile"){
-            return <EditProfile user={user}/>
+            return <EditProfile date={random} user={user}/>
         }else if(chose==="verify"){
+           
             return <ImageVerify idCardPhoto = {user.idCardPhoto} userId={user.id}/>
         }
         return '';
@@ -152,7 +156,7 @@ function Detail(props) {
             :''}
 
             {listTransaction? <Transaction listTransaction={listTransaction} account={account} /> :''}
-            {chose?showChose(chose):''}
+            {chose?showChose(chose,random):''}
           {/* If user is needing verification */}
   
           {/* <div className="row justify-content-center my-5">

@@ -12,9 +12,13 @@ var CronJob = require('cron').CronJob;
 
 var job = new CronJob('00 01 00 * * *',asyncHandler(async function() {
     const listSavingAccount = await SavingAccount.findAll();
-    console.log(listSavingAccount)
+    const listAccount = await Account.findAll();
+    listAccount.forEach(async (x)=> {
+        await Account.updateLimit(x.accountNumber)
+    })
     let now = new Date();
     listSavingAccount.forEach(async (x)=>{
+        
         let closeDate = new Date(x.openDate.setMonth(x.openDate.getMonth() + x.depositTerm))
         if(now>=x.closeDate){
             if(parseInt(x.type)==1)

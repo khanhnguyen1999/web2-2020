@@ -56,13 +56,15 @@ export const POST_VERIFY_IMAGE ="POST_VERIFY_IMAGE";
 
 export const GET_ALL_USER = "GET_ALL_USER";
 export const GET_ALL_USER_PENDING = "GET_ALL_USER_PENDING";
+export const RESET_ADMIN = "RESET_ADMIN";
 //detail user
 export const GET_USER_TRANSACTION = "GET_USER_TRANSACTION";
 export const ADD_USER_AMOUNT = "ADD_USER_AMOUNT";
 export const EDIT_USER_PROFILE = "EDIT_USER_PROFILE";
 export const LOCK_USER = "LOCK_USER";
 export const ACCEPT_USER = "ACCEPT_USER";
-export const DENY_USER = "ACCEPT_USER"
+export const DENY_USER = "ACCEPT_USER";
+ 
 
 
 

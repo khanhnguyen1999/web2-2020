@@ -145,10 +145,53 @@ router
         // res.redirect(`/admin/users/${id}`);
         // res.render(`./ducbui/pages/admin/transactions`, { transactions: res.locals.transactions, account });
     })
-    .post(async (req,res)=>{    //cap nhat thong tin MODIFY
+    .post( [
+        body("data.email")
+            .isEmail()
+            .optional()
+            .normalizeEmail()
+            .custom(async (email, { req }) => {
+                const { id } = req.params;
+                const user = await User.findById(id);
+                const found = await User.findByEmail(email);
+                if (found && email !== user.email) {
+                    throw Error("User exists");
+                }
+                
+
+                return true;
+            }),
+        body("data.username")
+            .optional()
+            .custom(async (username, { req }) => {
+                const found = await User.findByUsername(username);
+                const { id } = req.params;
+                const user = await User.findById(id);
+                if (found && username !== user.username) {
+                    throw Error("User exists");
+                }
+
+                return true;
+            }),
+        body("data.displayName").trim().optional(),
+        body("data.cardId").trim().optional(),
+
+    ],async (req,res)=>{    //cap nhat thong tin MODIFY
+        console.log("1")
+        const errors = validationResult(req);
+        console.log("2")
+        // API here
+        if (!errors.isEmpty()) {
+            console.log("3")
+            return res.json({success:false , errors: errors.array() });
+            
+        }
+        console.log("4")
         const {data} = req.body;
         const { id } = req.params;
         const {email,username,displayName,cardId} =data
+        console.log("5")
+        console.log (email + "  " +username +"   "+displayName+"    "+cardId)
         await User.update(
             {
                 email,
@@ -162,6 +205,7 @@ router
                 },
             }
         );
+        console.log("6")
         const newAccountUser = await Account.findOne({
             include: [{
                  model: User,
@@ -170,6 +214,7 @@ router
                 }
             }]
         })
+        console.log("7")
         return res.json(newAccountUser)
     })
     .put(async (req,res)=>{  //Them tien 
@@ -190,17 +235,7 @@ router
 
         res.json(a) 
     })
-    .patch(async(req,res)=>{  //xac thuc
-        const {data} = req.body;
-        console.log(data)
-        res.json("patch")
-    })  
 
-    .delete(async(req,res)=>{ //denny
-        const {data} = req.body;
-        console.log(data)
-        res.json("un lock "+data)
-    })
 
 router.get(
     "/users/:id/verify-accept",
@@ -256,7 +291,7 @@ router.get(
 
         const newAccountUser = await Account.findOne({
             include: [{
-                 model: User,
+                model: User,
                 where:{
                     id:id
                 }

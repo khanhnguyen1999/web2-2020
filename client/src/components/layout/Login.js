@@ -13,7 +13,7 @@ function Login(props) {
         if(props.user.successLogin===true){
             props.history.push('/home')
         }
-        if(props.user.successLogin===true)
+        if(props.user.successLogin===false)
         {
             setError("Username hoac Password khong chinh xac")
         }

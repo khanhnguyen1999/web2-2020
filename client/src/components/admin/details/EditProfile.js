@@ -1,8 +1,8 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {connect} from 'react-redux';
 import Alert from '@material-ui/lab/Alert';
 
-import {actEditUserProfile} from '../../../store/actions/admin';
+import {actEditUserProfile,actResetAdmin} from '../../../store/actions/admin';
 import account from '../../../store/reducers/account';
 import user from '../../../store/reducers/user';
 
@@ -15,8 +15,28 @@ function EditProfile(props) {
     const [cardId,setCardId] =useState(user.cardId);
 
     const [success,setSuccess] = useState();
+    const [listError,setListError] = useState();
     const [error,setError] = useState();
 
+    useEffect(()=>{
+      const {errorEditProfile} = props.admin;
+      if(errorEditProfile){
+        setListError(errorEditProfile);
+      }
+      if(errorEditProfile === null){
+        setListError(null);
+      }
+    },[props.admin])
+
+    useEffect(()=>{
+      props.resetAdmin();
+      return ()=>{
+        props.resetAdmin();
+      }
+    },[])
+    useEffect(()=>{
+      props.resetAdmin();
+    },[props.date])
 
     const onChangeEmail = e => {
         setEmail(e.currentTarget.value);
@@ -49,7 +69,7 @@ function EditProfile(props) {
             }
             console.log(data)
             props.editUserProfile(user.id,data)
-            setSuccess(true)
+            
         }
     }
 
@@ -58,7 +78,20 @@ function EditProfile(props) {
             <Alert severity="info">{error}</Alert>
         )
     }
-    if(success==true)
+
+    const showListError = (ListError) => {
+      let result = null;
+      if(ListError.length > 0 )
+      {
+          result = ListError.map((error,index)=>{
+            console.log(error.msg)
+            return <Alert  severity="info">{error.msg}</Alert>
+
+          })
+      }
+      return result;
+  }
+    if(listError===true)
     {
         return (
             <Alert variant="filled" severity="success">
@@ -75,7 +108,10 @@ function EditProfile(props) {
             <div className="col-6">
               <div className="card">
                 <div className="card-body">
-                    {error?showError(error):''}
+
+                  {listError?showListError(listError):''}
+                  {error?showError(error):''}
+
                   <form method="POST">
                     <div className="form-group">
                       <label htmlFor="email">Email address</label>
@@ -105,11 +141,19 @@ function EditProfile(props) {
         </div>
     )
 }
+const mapStateToProps = state => {
+   return {
+     admin : state.admin,
+   }
+}
 const mapDispatchToProps = dispatch => {
     return{
         editUserProfile : (userId,data)=>{
             dispatch(actEditUserProfile(userId,data))
-        }
+        },
+        resetAdmin : () => {
+          dispatch(actResetAdmin())
+        },
     }
 }
-export default connect(null,mapDispatchToProps)(EditProfile)
+export default connect(mapStateToProps,mapDispatchToProps)(EditProfile)

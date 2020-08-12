@@ -3,6 +3,7 @@ const initState = {
     listUser : {},
     listUserTransaction:null,
     accountUser:null,
+    errorEditProfile : null,
 }
 
 export const Admin = (state = initState, action)=>{
@@ -12,6 +13,12 @@ export const Admin = (state = initState, action)=>{
             state.listUser = action.data;
             console.log(state.listUser);
             return {...state};
+        
+        case Types.RESET_ADMIN :
+            console.log("reducer admin reset admin")
+            state.errorEditProfile = null;
+            return {...state};
+
 
         case Types.GET_USER_TRANSACTION :
             console.log("reducer get user transaction")
@@ -26,6 +33,11 @@ export const Admin = (state = initState, action)=>{
             return {...state};
 
         case Types.EDIT_USER_PROFILE :
+            if(action.data.success===false){
+                state.errorEditProfile = action.data.errors;
+                return {...state}
+            }
+            state.errorEditProfile=true;
             console.log("reducer edit user profile")
             console.log(action.data)
             state.accountUser = action.data;

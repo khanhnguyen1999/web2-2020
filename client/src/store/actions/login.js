@@ -50,6 +50,7 @@ export const actPostLogin  = (data)=>{
         
         return CallApi('login','POST',{data})
         .then(res =>{
+            console.log(res.data)
             dispatch({type:Types.POST_LOGIN,data:res.data})
         })
         .catch(err => {
