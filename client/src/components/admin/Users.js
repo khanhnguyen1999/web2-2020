@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
         height: 600,
-        maxWidth: 1700,
+        maxWidth: 1100,
         backgroundColor: theme.palette.background.paper,
         
         overflow: 'auto',
@@ -88,7 +88,7 @@ function Users(props) {
       const regex = new RegExp(seach,'i')
       const result = listUser.filter(x =>{
         console.log(x.user)
-        return x.accountNumber.toLowerCase().toString().match(regex) || x.user.username.toLowerCase().toString().match(regex) || x.user.displayName.toLowerCase().toString().match(regex);
+        return x.accountNumber.toLowerCase().toString().match(regex) || x.user.username.toLowerCase().toString().match(regex) || x.user.displayName.toLowerCase().toString().match(regex)||x.user.email.toLowerCase().toString().match(regex);
       })
       
       setListSeach (result);
@@ -106,7 +106,7 @@ function Users(props) {
     }
     return (
         <div className="row justify-content-center my-5">
-        <div className="col-md-10 row justify-content-center">
+        <div className="col-md-12 row justify-content-center">
           <div className="row justify-content-center">
             <div className="col-">  
               <div className="card text-center shadow-lg">
@@ -130,12 +130,16 @@ function Users(props) {
             </div>
           </div>
           {/* Users */}
+          <div style={{padding:"8px 58px"  , borderRadius : "10px",backgroundColor: "rgba(10,10,10,0.1)"}}>
+
+          
           <Paper className={classes.root} style={{ height:500 , width: 1500, padding: 15, margin: 25 }}>
             <List >
               {listSeach?showListUser(listSeach):''}
             </List>
           </Paper>
        
+          </div>
           {/* End Users */}
         </div>
       </div>

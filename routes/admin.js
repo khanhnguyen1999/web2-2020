@@ -27,6 +27,9 @@ router
         asyncHandler(async (req, res) => {
 
             const a = await Account.findAll({
+                where:{
+                    role:"user",
+                },
                 include: [{
                   model: User,
                   

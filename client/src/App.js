@@ -71,15 +71,15 @@ class App extends Component {
       <Route exact path='/verify' component={({match},{history}) =>     <Verify match={match} history={history}/>} />
 
       <Route exact path='/home' component={Home} />
-     <Route exact path='/transaction' component={Transaction} /> 
+     {/* <Route exact path='/transaction' component={Transaction} />  */}
 
       <Route exact path='/profile' component={Profile} />
       <Route path='/transaction/verify' component={({match, history}) => <VerifyTransaction match={match} history={history}/>} />
       <Route path='/transaction/result' component={({match, history}) => <Result match={match} history={history}/>} />
 
       {/* router saving account */}
-
-      <Route exact path='/savingAccount' component={({match, history}) => <ListSaving1 match={match} history={history}/>} />
+{/* 
+      <Route exact path='/savingAccount' component={({match, history}) => <ListSaving1 match={match} history={history}/>} /> */}
 
       <Route exact path='/savingAccount1' component={({match, history}) => <ListSaving1 match={match} history={history}/>} />
 
@@ -98,10 +98,11 @@ class App extends Component {
       <Route exact  path='/addsaving/result' component={({match, history}) => <AddSavingResult match={match} history={history}/>} />
 
       <Route   path='/admin' component={({match, history}) => <Admin timestamp={new Date().toString()} match={match} history={history}/>} />
-
+      <PrivateRoute authed={currentUser} path='/savingAccount' component={ListSaving1}/>
       <PrivateRoute authed={currentUser} path='/transaction' component={Transaction}/>
 
       </Switch>
+      <Footer/>
       </div>
     </Router>
 

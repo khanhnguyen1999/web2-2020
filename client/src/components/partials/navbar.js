@@ -138,6 +138,9 @@ function Navbar(props) {
     }
 
     const showButtonVerify = (user) => {
+        if(user.role==="user"&&user.status==="ACTIVE"){
+            return;
+        }
         if(user.role==="user" && !user.idCardPhoto){
             if(user.status==="PENDING")
             {
@@ -203,7 +206,7 @@ function Navbar(props) {
                             {/* {user&&!user.idCardPhoto&&user.role!=="admin"?<Button onClick={onClickVerify} variant="contained" color="secondary">
                             Verify
                             </Button>:''} */}
-                            {user?showNavbar(user):''}
+                            {user?showNavbar(user):showMenus(menus1)}
                             {/* {user?user.role==="user"?showMenus(menus):showMenus(menusAdmin):showMenus(menus1)} */}
 
                             {user?showLogout():''}
