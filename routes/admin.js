@@ -15,7 +15,7 @@ router.get(
 
         if (account) {
             return res.render("./ducbui/pages/admin/admin");
-        }
+        } 
 
         res.redirect("/logout");
     })
