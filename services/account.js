@@ -104,6 +104,7 @@ Account.init(
     {
         sequelize: db,
         modelName: "account",
+        unique: false,
     }
 );
 
