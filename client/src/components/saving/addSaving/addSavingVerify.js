@@ -93,8 +93,8 @@ class addSavingVerify extends Component {
                         </div>
                         {error===true?"":this.showError()}
                         <form method="POST" className="mt-4 ">
-                            <div className="card">
-                                <table className="col6">
+                            <div className="card" >
+                                <table className="col6" style={{transform: "translateX(10%)"}}>
                                     <tbody><tr>
                                         <td>Chủ tài khoản : </td>
                                         <td> &nbsp;   {user?user.displayName:''}</td>

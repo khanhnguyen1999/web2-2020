@@ -4,6 +4,7 @@ import {actAcceptUser,actDenytUser} from '../../../store/actions/admin';
 
 function ImageVerify(props) {
     const {idCardPhoto,userId} = props;
+    const [success,setSuccess] =useState();
 
     const onAccept = e => {
       props.accept(userId);
@@ -12,7 +13,7 @@ function ImageVerify(props) {
     const onDeny = e => {
       props.deny(userId);
     }
-
+    
     return (
         <div>
             <div className="row justify-content-center my-5">

@@ -5,8 +5,52 @@ import {actLogout}  from '../../store/actions/login';
 import { withRouter } from "react-router-dom";
 import user from "../../store/reducers/user";
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal'
+// import SimpleModal from '@material-ui/core/SimpleModal'
 
+function getModalStyle() {
+    const top = 50 ;
+    const left = 50 ;
+  
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+}
+const useStyles = makeStyles((theme) => ({
+    paper: {
+      position: 'absolute',
+      width: 400,
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  }));
 function Navbar(props) {
+    const classes = useStyles();
+    const [modalStyle] = React.useState(getModalStyle);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const body = (
+        <div style={modalStyle} className={classes.paper}>
+          <h2 id="simple-modal-title">Message</h2>
+          <p id="simple-modal-description">
+            Vui long cho xac thuc
+          </p>
+          {/* <SimpleModal /> */}
+        </div>
+    );
+
     const [user,setUser] = useState();
     useEffect(()=>{
         const {user} = props.user;
@@ -137,6 +181,8 @@ function Navbar(props) {
         }
     }
 
+
+
     const showButtonVerify = (user) => {
         if(user.role==="user"&&user.status==="ACTIVE"){
             return;
@@ -144,7 +190,7 @@ function Navbar(props) {
         if(user.role==="user" && !user.idCardPhoto){
             if(user.status==="PENDING")
             {
-                return (<Button  variant="contained" color="secondary">
+                return (<Button  variant="contained" color="secondary" onClick={handleOpen}>
                         PENDING
                     </Button>)
             }else if(user.status==="LOCKED")
@@ -179,6 +225,16 @@ function Navbar(props) {
                 className="navbar navbar-color-on-scroll navbar-transparent fixed-top navbar-expand-lg"
                 color-on-scroll={100}
             >
+
+                <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                    >
+                        {body}
+                    </Modal>
+
                 <div className="container">
                     <div className="navbar-translate">
                         <a

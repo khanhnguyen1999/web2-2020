@@ -155,8 +155,8 @@ class Cverify extends Component {
                  
                   {/* End Notification */}
                   {/* Main section */}
-                  <div className="card-body">
-                    <div className="row">
+                  <div className="card-body" >
+                    <div className="row " style={{transform: "translateX(80px)"}}>
                       <div className="col-4">
                         <div className="row text-right">
                           <div className="col-12">
