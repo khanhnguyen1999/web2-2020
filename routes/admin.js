@@ -25,36 +25,25 @@ router
     .route("/users")
     .get(
         asyncHandler(async (req, res) => {
-
-            const accounts = await Account.findAll({ where:{
-                role:"user",
-            },
-            include: [{
-              model: User,
-              
-             }]});
-
-             return res.status(200).json({accounts});
-
-            // const a = await Account.findAll({
-            //     where:{
-            //         role:"user",
-            //     },
-            //     include: [{
-            //       model: User,
+            const a = await Account.findAll({
+                where:{
+                    role:"user",
+                },
+                include: [{
+                  model: User,
                   
-            //      }]
-            //   }).then(Account => {
-            //      Account.forEach(e => {
-            //          const {user} =e;
-            //      })
-            //     return res.json(Account);
-            //     //  const {user} = Account[0];
+                 }]
+              }).then(Account => {
+                 Account.forEach(e => {
+                     const {user} =e;
+                 })
+                return res.json(Account);
+                //  const {user} = Account[0];
                  
-            //     // console.log(Account)
-            //     // console.log(user)
+                // console.log(Account)
+                // console.log(user)
                 
-            //   });
+              });
             
             // console.log("co vao")
             // const users = await User.findAll();

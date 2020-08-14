@@ -26,8 +26,8 @@ app.use(cors())
 
 
 // --------APP SET------------
-// app.set('views', './views');
-// app.set('view engine', 'ejs');
+app.set('views', './views');
+app.set('view engine', 'ejs');
 
 
 // ----------APP GET------------
