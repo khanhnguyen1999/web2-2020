@@ -47,7 +47,7 @@ function UsersItem(props) {
         if(status==="PENDING")
         {
           result =<Button variant="outlined" color="secondary">
-                  Secondary
+                  PENDING
                 </Button>
         }
         if(status==="LOCKED")

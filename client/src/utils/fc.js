@@ -18,6 +18,9 @@ export const dateTimeToDate= (today1,species)=>
     {
         return datetime;
     }
+    if(species===2){
+        return yyyy+'-'+mm+'-'+dd
+    }
     return datetime;
 }
 

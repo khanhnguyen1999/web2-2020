@@ -191,7 +191,7 @@ router
         console.log("4")
         const {data} = req.body;
         const { id } = req.params;
-        const {email,username,displayName,cardId} =data
+        const {email,username,displayName,provideDate,cardId} =data
         console.log("5")
         console.log (email + "  " +username +"   "+displayName+"    "+cardId)
         await User.update(
@@ -199,6 +199,7 @@ router
                 email,
                 username,
                 displayName,
+                provideDate,
                 cardId,
             },
             {
