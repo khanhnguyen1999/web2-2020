@@ -29,12 +29,12 @@ function Cresult(props) {
 
                         {/*Header*/}
                         <div className="modal-header">
-                            <p className="heading lead">Chuyển khoản thành công</p>
+                            <p style={{color:"black"}} className="heading lead">Chuyển khoản thành công</p>
                         </div>
                         <div className="modal-body">
                             <div className="text-center">
                                 <i className="fas fa-check fa-4x mb-3 animated rotateIn" />
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit iusto nulla aperiam
+                                <p style={{color:"black"}}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit iusto nulla aperiam
                                 blanditiis ad consequatur in dolores culpa, dignissimos, eius non possimus fugiat.
                                 Esse ratione fuga, enim, ab officiis totam.</p>
                             </div>

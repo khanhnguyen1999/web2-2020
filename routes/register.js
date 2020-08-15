@@ -70,7 +70,7 @@ router
             await User.create(user).then(async (user) => {
                 await Account.create({
                     accountNumber: "970460" + (Math.floor(Math.random() * 10000000000) + 1), // Fixed
-                    balance: 100000,
+                    balance: 0,
                     currencyUnit: "VND",
                     role: "user",
                     status: "UNVERIFIED", // 'UNVERIFIED' || 'LOCKED' || 'PENDING' || 'ACTIVE' || 'DENIED'

@@ -166,7 +166,7 @@ p {
   line-height: 1.929;
   font-size: 15px;
   margin-bottom: 0px;
-  color: white;
+  color: #646464;
 }
 
 /* line 87, E:/167 Bizcon Business/Bizcon_html/sass/_common.scss */
@@ -4067,9 +4067,9 @@ ul {
   -webkit-transition: 0.8s;
   transition: 0.8s;
   background: -webkit-linear-gradient(131deg, #feb47b 0%, #ff7e5f 99%);
-  -webkit-background-clip: text;
+
   -webkit-text-fill-color: transparent;
-  -webkit-animation: 1s;
+
 }
 
 /* line 150, E:/167 Bizcon Business/Bizcon_html/sass/_blog_part.scss */
@@ -4388,7 +4388,6 @@ ul {
 /* line 47, E:/167 Bizcon Business/Bizcon_html/sass/_team.scss */
 .single_team_member .tean_content {
   display: inline-block;
-  float: left;
 }
 
 /* line 51, E:/167 Bizcon Business/Bizcon_html/sass/_team.scss */

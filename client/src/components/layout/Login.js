@@ -1,13 +1,18 @@
 import React,{useState,useEffect} from 'react';
 import { Route , withRouter ,Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {actPostLogin} from '../../store/actions/login';
+import {actPostLogin ,actLogout} from '../../store/actions/login';
+// import { actLockUser } from '../../store/actions/admin';
+// import { use } from '../../../../routes/admin';
 
 function Login(props) {
     const [userName,setUserName] = useState('');
     const [password,setPassword] =useState('');
     const [error,setError] =useState('');
 
+    useEffect(()=>{
+      props.logout();
+    },[])
     useEffect(()=>{
         console.log(props.user)
         if(props.user.successLogin===true){
@@ -135,6 +140,9 @@ const mapDistchToProps = dispatch =>{
     return {
         postLogin : (data)=>{
             dispatch(actPostLogin(data))
+        },
+        logout : ()=>{
+          dispatch(actLogout());
         }
     }
 }
