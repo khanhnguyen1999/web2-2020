@@ -1,6 +1,6 @@
 import React,{useEffect,useState,useRef} from 'react';
 import { connect } from 'react-redux';
-import {Redirect} from 'react-router-dom';
+import {Redirect ,withRouter} from 'react-router-dom';
 import {actGetInformation,actPostInformation,actSwitchMoved} from '../../store/actions/transaction'
 import {actGetAccount} from '../../store/actions/account';
 import * as Config from '../../constants/Config'
@@ -99,6 +99,10 @@ function transaction(props) {
             }
         }
        
+    }
+    const onClickCancel =(e)=>{
+      e.preventDefault();
+     props.history.push("/home")
     }
     const showError = (ListError)=>{
         let result = null;
@@ -275,7 +279,7 @@ function transaction(props) {
                   {/* End Main section */}
                   <div className="card-footer" style={{display: 'inherit'}}>
                     <div className="text-center">
-                      <button type className="btn btn-danger btn-link btn-wd btn-lg">Cancel</button>
+                      <button onClick={onClickCancel} type className="btn btn-danger btn-link btn-wd btn-lg">Cancel</button>
                       <button onClick={onSubmit} className="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
                     </div>
                   </div>
@@ -309,4 +313,4 @@ const mapDispatchToProps = dispatch =>{
         },
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(transaction)
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(transaction))

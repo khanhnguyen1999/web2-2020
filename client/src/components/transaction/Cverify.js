@@ -87,205 +87,86 @@ class Cverify extends Component {
         }
         return (
 
-            <div>
-                 <div className="page-header header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-8 col-md-10 ml-auto mr-auto">
-              <div className="card card-login text-center">
-                <form className="form" method="POST">
-                  <div className="card-header card-header-primary text-center">
-                    <h4 className="card-title">Transaction</h4>
-                    <div className="social-line">
-                      <div className="row m-3">
-                        <div className="col-lg-4 col-md-12">
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="card-text">
-                                <b>Account Owner: </b>
-                              </p>
-                            </div>
-                          </div>
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="class-text">
-                                {user?user.displayName:''}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-4 col-md-12">
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="card-text">
-                                <b>Account Number: </b>
-                              </p>
-                            </div>
-                          </div>
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="class-text">
-                                {account?account.accountNumber:''}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-4 col-md-12">
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="card-text">
-                                <b>Balance: </b>
-                              </p>
-                            </div>
-                          </div>
-                          <div className="row justify-content-center">
-                            <div className="col-12">
-                              <p className="class-text">
-                                {account?FC.inMoney(account.balance):''}
-                                <small className="muted-text">VND</small>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+          <div className=" header-filter" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
+          <section className="blog_part section_padding section_transaction row">
+              <div style={{backgroundColor: "rgba(150,255,255,0.8)"}} className="card container container_transaction1 col-6">
+                  <div className="modal-header">
+                      <p className="heading lead">Transaction </p>
                   </div>
-                  {/* Notification */}
-                  
                   {error===true?"":this.showError()}
-                 
-                  {/* End Notification */}
-                  {/* Main section */}
-                  <div className="card-body" >
-                    <div className="row " style={{transform: "translateX(80px)"}}>
-                      <div className="col-4">
-                        <div className="row text-right">
-                          <div className="col-12">
-                            <p className="h4">Sender:</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">Account Number:</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">Amount:</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">Beneficiary Account:</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">Beneficiary Name:</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">Content:</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">Fee:</p>
-                          </div>
-                        </div>
+                  <form method="POST" className="mt-4 ">
+                      <div className="card" >
+                          <table className="col6" style={{transform: "translateX(-3%)"}}>
+                              <tbody>
+                                  <tr>
+                                    <td>Sender : </td>
+                                    <td> &nbsp;   {user?user.displayName:''}</td>
+                                  </tr>
+
+                                  <tr>
+                                      <td>Account Number :</td>
+                                      <td>&nbsp;  {ifTransaction?ifTransaction.account.accountNumber:''}</td>
+                                  </tr>
+
+                                  <tr>
+                                      <td>Amount : </td>
+                                      <td>&nbsp;  {confirmInfo?confirmInfo.amount:''} VND</td>
+                                  </tr>
+                                  <tr>
+                                      <td>Amount in words : </td>
+                                      <td style={{maxWidth: "160px"}}>&nbsp;  {confirmInfo?FC.inWords(confirmInfo.amount):''} </td>
+                                  </tr>
+                                  <tr>
+                                      <td>Beneficiary Account :</td>
+                                      <td>&nbsp;  {confirmInfo?confirmInfo.beneficiaryAccountNumber:''} </td>
+                                  </tr>
+                                  <tr>
+                                      <td>Beneficiary Name :</td>
+                                      <td>&nbsp;  {confirmInfo?confirmInfo.displayName:''}</td>
+                                  </tr>
+                                  <tr>
+                                      <td>Content :</td>
+                                      <td>{confirmInfo?confirmInfo.content:''}</td>
+                                  </tr>
+
+                                  <tr>
+                                      <td>Fee :</td>
+                                      <td>{confirmInfo?confirmInfo.totalFee:''} &nbsp; VND</td>
+                                  </tr>
+                              </tbody></table>
                       </div>
-                      <div className="col-8">
-                        <div className="row text-left">
-                          <div className="col-12">
-                            <p className="h4">&nbsp; {user?user.displayName:''}</p>
+                      <p className="heading lead mt-4">Thông tin giao dịch </p>
+                      <div className="card mt-2">
+                          <table className="col6">
+                              <tbody><tr>
+                                  <td>Mã giao dịch : </td>
+                                  <td> &nbsp;   {confirmInfo?confirmInfo.transactionID:''}</td>
+                              </tr>
+                                  <tr>
+                                      <td>Thời gian : </td>
+                                      <td>&nbsp;  {confirmInfo?confirmInfo.now:''}</td>
+                                  </tr>
+                                  <tr>
+                                      <td>Mã xác thực gửi qua email :</td>
+                                      <td>&nbsp;  {user?FC.inEmail(user.email):''}</td>
+                                  </tr>
+                              </tbody></table>
+                          <div className="form-group mt-3">
+                              <label htmlFor="formGroupExampleInput">Nhập mã số &nbsp; (gửi qua Email)</label>
+                              <input onChange={this.onChange} name="OTP" type="text" className="form-control" id="formGroupExampleInput" placeholder="VD : 0123" />
                           </div>
-                          <div className="col-12">
-                            <p className="h4">&nbsp;  {ifTransaction?ifTransaction.account.accountNumber:''}</p>
+                          <div className="form-group text-right">
+                              <button type="button" onClick={this.onBack} className="btn btn-primary  mr-3">Quay lại</button>
+                              <button onClick={this.onSubmit} type="submit" className="btn btn-primary">Xác Nhận</button>
                           </div>
-                          <div className="col-12">
-                            <p className="h4">
-                                &nbsp;  {confirmInfo?confirmInfo.amount:''}
-                              <small className="text-muted">VND</small>
-                            </p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">&nbsp;  {confirmInfo?confirmInfo.beneficiaryAccountNumber:''}</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">&nbsp;  {confirmInfo?confirmInfo.displayName:''}</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">&nbsp;  {confirmInfo?confirmInfo.content:''}</p>
-                          </div>
-                          <div className="col-12">
-                            <p className="h4">
-                            &nbsp; {confirmInfo?confirmInfo.totalFee:''}
-                              <small className="text-muted">VND</small>
-                            </p>
-                          </div>
-                        </div>
                       </div>
-                    </div>
-                    <div className="input-group">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text">
-                          OTP
-                        </span>
-                      </div>
-                      <input onChange={this.onChange} name="OTP" type="text" className="form-control" />
-                    </div>
-                  </div>
-                  {/* End Main section */}
-                  <div className="card-footer" style={{display: 'inherit'}}>
-                    <div className="text-center">
-                      <button onClick={this.onBack} type className="btn btn-danger btn-link btn-wd btn-lg">Bank</button>
-                      <button onClick={this.onSubmit} className="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
-                    </div>
-                  </div>
-                </form>
+                      <br />
+                  </form>
               </div>
-            </div>
-          </div>
-        </div>
+          </section>
       </div>
-                {/* <section className="blog_part section_padding section_transaction row">
-                    <div className="container container_transaction1 col-4">
-                        <div className="modal-header">
-                            <p className="heading lead">Chuyển khoản </p>
-                        </div>
-                        {error===true?"":this.showError()}
-                        <form onSubmit={this.onSubmit} method="POST" className="mt-4 ">
-                            <table>
-                                <tbody><tr>
-                                    <td>Người gửi : </td>
-                                    <td>&nbsp; {user.displayName}</td>
-                                </tr>
-                                    <tr>
-                                        <td>Số tài khoản :</td>
-                                        <td>&nbsp;  {ifTransaction.account.accountNumber}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số tiền : </td>
-                                        <td>&nbsp;  {confirmInfo.amount}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>stk thụ hưởng : </td>
-                                        <td>&nbsp;  {confirmInfo.beneficiaryAccountNumber}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Người thụ hưởng :</td>
-                                        <td>&nbsp;  {confirmInfo.displayName}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nội dung :</td>
-                                        <td>&nbsp;  {confirmInfo.content}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Phí :</td>
-                                        <td>&nbsp; {confirmInfo.totalFee} VND</td>
-                                    </tr>
-                                </tbody></table>
-                            <div className="form-group mt-3">
-                                <label htmlFor="formGroupExampleInput">Nhập mã số &nbsp; (gửi qua Email)</label>
-                                <input name="OTP" value={token} onChange={this.onChange} type="text" className="form-control" id="formGroupExampleInput" placeholder="VD : 0123" />
-                            </div>
-                            <div className="form-group text-right">
-                                <button type="button" onClick={this.onBack} className="btn btn-primary  mr-3">Quay lại</button>
-                                <button type="submit"  className="btn btn-primary">Xác Nhận</button>
-                            </div><br />
-                        </form>
-                    </div>
-                </section> */}
-            </div>
+                
+            
         );
     }
 }
