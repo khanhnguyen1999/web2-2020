@@ -1,7 +1,7 @@
 import React , {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {actDeleteConfirmInfoAddSaving,actSwitchVerifyAddSaving,actSwitchMovedAddSaving} from '../../../store/actions/savingAccount'
-import Message from '../../../components/message/Message'
+import Message from '../../message/Message'
 function addSavingResult(props) {
 
     const onClickNext = ()=> {

@@ -75,6 +75,7 @@ class Cverify extends Component {
         
         const { ifTransaction } = this.props;
         const { user } = this.props.currentUser;
+        console.log(user)
         const { confirmInfo ,account} = ifTransaction;
         const {error,token} = this.state;
         const {virify} = this.props.ifTransaction;
@@ -108,7 +109,7 @@ class Cverify extends Component {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p className="class-text">
-                                {user?user.dislayName:''}
+                                {user?user.displayName:''}
                               </p>
                             </div>
                           </div>
