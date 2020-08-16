@@ -187,18 +187,18 @@ function Navbar(props) {
         if(user.role==="user"&&user.status==="ACTIVE"){
             return;
         }
-        if(user.role==="user" && !user.idCardPhoto){
-            if(user.status==="PENDING")
+        if(user.role==="user" ){
+            if(user.status==="PENDING" && user.idCardPhoto)
             {
                 return (<Button  variant="contained" color="secondary" onClick={handleOpen}>
                         PENDING
                     </Button>)
-            }else if(user.status==="LOCKED")
+            }else if(user.status==="LOCKED" && user.idCardPhoto)
             {
                 return (<Button  variant="contained" color="secondary">
                         LOCKED
                     </Button>)
-            }else if (user.status==="DENIED")
+            }else if (user.status==="DENIED" && user.idCardPhoto)
             {
                 return (<Button onClick={onClickVerify} variant="contained" color="secondary">
                             DENIED

@@ -80,7 +80,7 @@ export class listSaving extends Component {
                           <div className="row justify-content-center">
                             <div className="col-12">
                               <p style={{color :"white"}} className="class-text">
-                              {account&&account.balance?inMoney(account.balance):''}
+                              {account?inMoney(account.balance):''}
                               <small style={{color :"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>

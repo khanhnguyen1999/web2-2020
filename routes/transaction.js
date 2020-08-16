@@ -207,6 +207,8 @@ router.post('/postInformation',[
                 const account = await Account.findByAccountNumber(beneficiaryAccountNumber);
                  if (!account) {
                     throw Error('Số tài khoản không tồn tại');
+                }else if(account.status!=="ACTIVE"){
+                    throw Error('Số tài khoản chưa kích hoạt hoặc đạng bị khóa');
                 }
                 // const beneficiatAccount = await BeneficiatyAccount.findByAccountNumber(beneficiaryAccountNumber);
                 // if (!account && !beneficiatAccount) {
