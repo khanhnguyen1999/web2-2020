@@ -25,7 +25,6 @@ var totalMoney;
 var extraMoney;
 var binRoot = process.env.BIN || 9704;
 
-
 // router.use(UserStatus);
 const inMoney = (num) => {
     var rs = String(num);
