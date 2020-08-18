@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
     item:{
       width: '100%',
-      maxWidth:300,
+      maxWidth:260,
     }
 
 }));
@@ -47,7 +47,7 @@ function UsersItem(props) {
         if(status==="PENDING")
         {
           result =<Button variant="outlined" color="secondary">
-                  Secondary
+                  PENDING
                 </Button>
         }
         if(status==="LOCKED")
@@ -73,9 +73,10 @@ function UsersItem(props) {
           </Avatar>
         </ListItemAvatar>
             <ListItemText className={classes.item} primary={user.displayName} secondary={user.username} />
-            <ListItemText className={classes.item} primary={account.accountNumber}  />
-            {showStatus(account.status)}
-                
+
+              <ListItemText className={classes.item} primary={user.email}  />
+              <ListItemText className={classes.item} primary={account.accountNumber}  />
+              {showStatus(account.status)} 
             </ListItem>
             <Divider  />
         </div>

@@ -2,8 +2,8 @@ import React,{useState,useEffect} from 'react';
 import {connect} from "react-redux";
 import {Link} from 'react-router-dom'
 import { actGetAccount} from '../../store/actions/account'
-import { use } from 'passport';
 
+import * as FC from '../../utils/fc';
 
 function ProfileLeft(props) {
     const user = JSON.parse(localStorage.getItem("currentUser"));
@@ -56,6 +56,10 @@ function ProfileLeft(props) {
                 <div className="form-group">
                   <label htmlFor="inputAddress2">Account Number</label>
                   <input type="text" className="form-control" id="inputAddress2" defaultValue={account?account.accountNumber:''} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="inputAddress2">Provide Date</label>
+                  <input type="text" className="form-control" id="inputAddress2" defaultValue={user?FC.dateTimeToDate(user.provideDate,0):''} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="inputAddress2">ID Card Number</label>

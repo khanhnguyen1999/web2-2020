@@ -88,7 +88,7 @@ function addSaving(props) {
                         amount,
                         depositTerm,
                         type,
-                        accountNumber,
+                        accountNumber:accountNumber,
                         user,
                     }
                     props.postInformationAddSaving(variables)
@@ -155,7 +155,7 @@ function addSaving(props) {
                             <div className="col-12">
                               <p className="class-text">
                               {account?inMoney(account.balance):0} 
-                              <small className="muted-text">&nbsp;  VND</small>
+                              <small style={{color:"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>
                           </div>
@@ -172,7 +172,7 @@ function addSaving(props) {
                             <div className="col-12">
                               <p className="class-text">
                               {savingAccount?inMoney(sumMountSaving(savingAccount)):''}
-                                <small className="muted-text">&nbsp;  VND</small>
+                                <small style={{color:"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>
                           </div>
@@ -204,8 +204,6 @@ function addSaving(props) {
               <label htmlFor="formGroupExampleInput2">Số tiền gửi</label>
               <input onChange={onChangeAmount} name="amountSaving" type="number" className="form-control" id="formGroupExampleInput2" placeholder="Tối thiểu 3.000.000" />
             </div>
-
-            
 
             <div className="form-group mb-3 ">
               <label htmlFor="formGroupExampleInput">Hình thức trả lãi</label>

@@ -61,7 +61,6 @@ class addSavingVerify extends Component {
                 error:false,
             })
         }
-
     }
     onBack(e){
         // this.props.deleteConfirmInfo();
@@ -72,6 +71,19 @@ class addSavingVerify extends Component {
             <i style={{color: "red"}} className="fas fa-exclamation-triangle pr-2"></i>
                 Token không chính xác
         </div>
+    }
+    showType = (species)=>{
+        if(species===1){
+            return (
+                <td style={{maxWidth: "160px"}}>&nbsp; Nhập lãi gốc </td>
+            )
+        }
+        else{
+            return (
+                <td style={{maxWidth: "160px"}} >&nbsp; Lãi trả vào TK tiền gửi thanh toán khi đến hạn trả lãi </td>
+            )
+        }
+        return;
     }
     render() {
         const { confirmInfo} = this.state;
@@ -93,8 +105,8 @@ class addSavingVerify extends Component {
                         </div>
                         {error===true?"":this.showError()}
                         <form method="POST" className="mt-4 ">
-                            <div className="card">
-                                <table className="col6">
+                            <div className="card" >
+                                <table className="col6" style={{transform: "translateX(0%)"}}>
                                     <tbody><tr>
                                         <td>Chủ tài khoản : </td>
                                         <td> &nbsp;   {user?user.displayName:''}</td>
@@ -109,7 +121,7 @@ class addSavingVerify extends Component {
                                         </tr>
                                         <tr>
                                             <td>Số tiền bằng chữ : </td>
-                                            <td>&nbsp;  {confirmInfo.amount?inWords(confirmInfo.amount):''} </td>
+                                            <td style={{maxWidth: "160px"}}>&nbsp;  {confirmInfo.amount?inWords(confirmInfo.amount):''} </td>
                                         </tr>
                                         <tr>
                                             <td>Kỳ hạn :</td>
@@ -121,7 +133,7 @@ class addSavingVerify extends Component {
                                         </tr>
                                         <tr>
                                             <td>Hình thức trả lãi :</td>
-                                            <td>&nbsp; {confirmInfo.type ?confirmInfo.type:''} </td>
+                                            {confirmInfo.type ?this.showType(confirmInfo.type):''} 
                                         </tr>
                                     </tbody></table>
                             </div>

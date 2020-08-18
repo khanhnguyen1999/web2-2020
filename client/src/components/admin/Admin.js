@@ -27,7 +27,7 @@ function Admin(props) {
         
           <Header/>
           
-          <div class="main main-raised">
+          <div className="main main-raised " data-parallax="true" style={{backgroundImage: 'url("../assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
           
             <div class="container">
               <div class="section text-center">

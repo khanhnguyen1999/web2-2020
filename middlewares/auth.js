@@ -17,13 +17,13 @@ module.exports = asyncHandler(async function auth(req,res,next){
     res.locals.currentUser = user;
    
     
-    if(user){
-        const account = await Account.findByUserId(req.currentUser.id);
-        res.locals.account = account;
-        req.session.account = account;
-        req.session.currentUser = user;
-        return next();
-    }
+    // if(user){
+    //     const account = await Account.findByUserId(req.currentUser.id);
+    //     res.locals.account = account;
+    //     req.session.account = account;
+    //     req.session.currentUser = user;
+    //     return next();
+    // }
    
  
     next();

@@ -2,10 +2,34 @@ const router = require("express").Router();
 const Account = require("../services/account");
 const User = require("../services/user");
 const Transaction = require("../services/transaction");
+const Email = require("../services/email");
 const asyncHandler = require("express-async-handler");
 const { Sequelize } = require("sequelize");
 const { body, validationResult } = require("express-validator");
 const Op = Sequelize.Op;
+
+function dateTimeToDate(today,species)
+{
+    var sc = String(today.getSeconds()).padStart(2, '0');
+    var m  = String(today.getMinutes()).padStart(2, '0');
+    var h  = String(today.getHours()).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    var date = mm + '/' + dd + '/' + yyyy;
+    var datetime = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+    if(species==0)
+    {
+        return date;
+    }
+    if(species==1)
+    {
+        return datetime;
+    }
+
+    return datetime;
+}
 
 router.get(
     "/",
@@ -15,7 +39,7 @@ router.get(
 
         if (account) {
             return res.render("./ducbui/pages/admin/admin");
-        }
+        } 
 
         res.redirect("/logout");
     })
@@ -25,8 +49,10 @@ router
     .route("/users")
     .get(
         asyncHandler(async (req, res) => {
-
             const a = await Account.findAll({
+                where:{
+                    role:"user",
+                },
                 include: [{
                   model: User,
                   
@@ -177,26 +203,22 @@ router
         body("data.cardId").trim().optional(),
 
     ],async (req,res)=>{    //cap nhat thong tin MODIFY
-        console.log("1")
         const errors = validationResult(req);
-        console.log("2")
         // API here
         if (!errors.isEmpty()) {
-            console.log("3")
             return res.json({success:false , errors: errors.array() });
             
         }
-        console.log("4")
         const {data} = req.body;
         const { id } = req.params;
-        const {email,username,displayName,cardId} =data
-        console.log("5")
+        const {email,username,displayName,provideDate,cardId} =data
         console.log (email + "  " +username +"   "+displayName+"    "+cardId)
         await User.update(
             {
                 email,
                 username,
                 displayName,
+                provideDate,
                 cardId,
             },
             {
@@ -205,7 +227,6 @@ router
                 },
             }
         );
-        console.log("6")
         const newAccountUser = await Account.findOne({
             include: [{
                  model: User,
@@ -214,7 +235,6 @@ router
                 }
             }]
         })
-        console.log("7")
         return res.json(newAccountUser)
     })
     .put(async (req,res)=>{  //Them tien 
@@ -357,7 +377,18 @@ router.get(
         })
         console.log("---------------")
         console.log(newAccountUser)
-        return res.json(newAccountUser)
+        const { user} = newAccountUser;
+        console.log(user);
+        const now = dateTimeToDate(new Date(),1)
+        if(status==="ACTIVE")
+        {
+            await Email.send(user.email, "17Tek Bank", `Tài khoản của bạn mở khóa lúc ${now}`);
+            return res.json(newAccountUser)
+        }else{
+            await Email.send(user.email, "17Tek Bank", `Tài khoản của bạn đã bị khóa lúc ${now}`);
+            return res.json(newAccountUser)
+        }
+       
     })
 );
 /// End check user profile

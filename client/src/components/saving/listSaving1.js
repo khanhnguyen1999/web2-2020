@@ -49,7 +49,7 @@ export class listSaving extends Component {
               <div className="card card-login text-center">
                 <form className="form" method="POST">
                   <div className="card-header card-header-primary text-center">
-                    <h4 className="card-title">Transaction</h4>
+                    <h4 className="card-title">Saving Account</h4>
                     <div className="social-line">
                       <div className="row m-3">
                         <div className="col-lg-4 col-md-12">
@@ -63,7 +63,7 @@ export class listSaving extends Component {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color :"white"}} className="class-text">
                               {account&&account.accountNumber?account.accountNumber:''}
                               </p>
                             </div>
@@ -79,8 +79,9 @@ export class listSaving extends Component {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color :"white"}} className="class-text">
                               {account&&account.balance?inMoney(account.balance):''}
+                              <small style={{color :"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>
                           </div>
@@ -95,9 +96,9 @@ export class listSaving extends Component {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color :"white"}} className="class-text">
                               {savingAccount?inMoney(this.sumMountSaving(savingAccount)):0}
-                                <small className="muted-text">&nbsp;  VND</small>
+                                <small style={{color :"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>
                           </div>

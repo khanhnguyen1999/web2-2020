@@ -20,20 +20,20 @@ function Message(props) {
 
                         {/*Header*/}
                         <div className="modal-header">
-                            <p className="heading lead">{title}</p>
+                            <p style={{color:"black"}} className="heading lead">{title}</p>
                         </div>
                         <div className="modal-body">
                             <div className="text-center">
 
                                 <i className={success?"fas fa-check fa-4x mb-3 animated rotateIn":'fas fa-exclamation-circle fa-4x mb-3 animated rotateIn'} />
-                                <p>{message}</p>
+                                <p style={{color:"black"}}>{message}</p>
                             </div>
                             
                         </div>
 
                         { /*Footer*/ }
                         <div className="modal-footer justify-content-center">
-                            <a type="button" onClick={onClickHome}  className="btn btn-outline-success waves-effect" data-dismiss = "modal">OK</a>
+                            <a style={{color:"black"}} type="button" onClick={onClickHome}  className="btn btn-outline-success waves-effect" data-dismiss = "modal">OK</a>
                         </div>
                     </div>
 

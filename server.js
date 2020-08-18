@@ -71,3 +71,7 @@ db.sync().then(function(){
 }).catch(function(err){
 console.error(err)
 })
+
+app.use((err, req, res, next) => {
+  console.log(err);
+})

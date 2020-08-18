@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "author": "\u001b[F\u001b[H\u001b[C\u001b[2~\u001b[2~\u001b[",

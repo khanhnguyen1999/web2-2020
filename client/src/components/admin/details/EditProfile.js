@@ -1,17 +1,35 @@
 import React,{useState,useEffect} from 'react';
+import moment from 'moment';
+
 import {connect} from 'react-redux';
 import Alert from '@material-ui/lab/Alert';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
 import {actEditUserProfile,actResetAdmin} from '../../../store/actions/admin';
-import account from '../../../store/reducers/account';
-import user from '../../../store/reducers/user';
+import {dateTimeToDate} from '../../../utils/fc';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing(0),
+    marginRight: theme.spacing(0),
+    width: 305,
+  },
+}));
 
 function EditProfile(props) {
+
     const{user} = props;
+    const classes = useStyles();
 
     const [email,setEmail] =useState(user.email);
     const [username,setUsername] =useState(user.username);
     const [displayName,setDisplayName] =useState(user.displayName);
+    const [provideDate,setProvideDate] =useState(user.provideDate);
     const [cardId,setCardId] =useState(user.cardId);
 
     const [success,setSuccess] = useState();
@@ -29,6 +47,7 @@ function EditProfile(props) {
     },[props.admin])
 
     useEffect(()=>{
+  
       props.resetAdmin();
       return ()=>{
         props.resetAdmin();
@@ -50,6 +69,11 @@ function EditProfile(props) {
         setDisplayName(e.currentTarget.value)
     }
 
+    const onChangeProvideDate = e => {
+      console.log(e.currentTarget.value)
+      setProvideDate(e.currentTarget.value)
+    }
+
     const onChangeCardId = e => {
         setCardId(e.currentTarget.value)
     }
@@ -65,6 +89,7 @@ function EditProfile(props) {
                 email,
                 username,
                 displayName,
+                provideDate,
                 cardId,
             }
             console.log(data)
@@ -93,12 +118,14 @@ function EditProfile(props) {
   }
     if(listError===true)
     {
+      console.log("aaaaaaaaaaaaa")
         return (
             <Alert variant="filled" severity="success">
                 Cap nhat thanh cong 
             </Alert>
         )
     }
+
     return (
         <div className="row justify-content-center ">
         <div className="col-md-10">
@@ -125,6 +152,22 @@ function EditProfile(props) {
                       <label htmlFor="displayName">Display name</label>
                       <input onChange={onChangeDisplayName} type="text" className="form-control" id="displayName" name="displayName" defaultValue={user?user.displayName:''} />
                     </div>
+
+                    <div className="form-group">
+                    <TextField
+                     onChange={onChangeProvideDate}
+                      label="Birthday"
+                      className="dateProvide"
+                      type="date"
+                      
+                      className={classes.textField}
+                      defaultValue={dateTimeToDate(provideDate,2)}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    </div>
+
                     <div className="form-group">
                       <label htmlFor="cardId">Card ID</label>
                       <input onChange={onChangeCardId} type="number" className="form-control" id="cardId" name="cardId" defaultValue={user?user.cardId?user.cardId:'':''} />

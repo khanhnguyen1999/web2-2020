@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import {connect} from 'react-redux';
-import {inMoney} from '../../utils/fc';
+import {inMoney,dateTimeToDate} from '../../utils/fc';
 import {Link} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import {Redirect} from 'react-router-dom'
@@ -113,8 +113,10 @@ function Detail(props) {
     }
 
     const onClickViewPhoto = e => {
+        setRandom(Math.random())
         setListTransaction(null)
         setChose("verify")
+        
     }
 
 
@@ -125,7 +127,7 @@ function Detail(props) {
             return <EditProfile date={random} user={user}/>
         }else if(chose==="verify"){
            
-            return <ImageVerify idCardPhoto = {user.idCardPhoto} userId={user.id}/>
+            return <ImageVerify date={random} account={account} idCardPhoto = {user.idCardPhoto} userId={user.id}/>
         }
         return '';
     }
@@ -151,6 +153,7 @@ function Detail(props) {
                     <p className="card-text">Balance: {account?inMoney(account.balance):''} VND</p>
                     <p className="card-text">Status: {account?account.accountNumber:''}</p>
                     <p className="card-text">CardId: {user?user.cardId?user.cardId:'Not cardId':''}</p>
+                    <p className="card-text">ProvideDate: {user?user.provideDate?dateTimeToDate(user.provideDate,0):'Not provideDate':''}</p>
                     <p className="card-text">IdCardPhoto: {user?user.idCardPhoto?<Button variant="contained" onClick={onClickViewPhoto}>View</Button>:'Not Photo':''}</p>
     
                     {showButton(account.status)}

@@ -38,6 +38,7 @@ const transaction = (state = initState, action) => {
             else
             {
                 const { confirmInfo } = action.data;
+                
                 state.confirmInfo = confirmInfo;
                 state.movedOn = true;
                 return {...state}

@@ -36,6 +36,28 @@ const inMoney = (num) => {
     rs = formatter.format(rs)
     return rs;
 }
+function dateTimeToDate(today,species)
+{
+    var sc = String(today.getSeconds()).padStart(2, '0');
+    var m  = String(today.getMinutes()).padStart(2, '0');
+    var h  = String(today.getHours()).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    var date = mm + '/' + dd + '/' + yyyy;
+    var datetime = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+    if(species==0)
+    {
+        return date;
+    }
+    if(species==1)
+    {
+        return datetime;
+    }
+
+    return datetime;
+}
 router.route('/')
     .get(asyncHandler(async (req, res) => {
         listBank = await Bank.findAll();
@@ -217,6 +239,15 @@ router.post('/postInformation',[
         });
         // res.locals.confirmInfo = confirmInfo;
         token = crypto.randomBytes(2).toString("hex").toUpperCase();
+
+        const today = new Date();
+        const hour = ('0' + today.getHours()).slice(-2);
+        const min = ('0' + today.getMinutes()).slice(-2);
+        const sec = ('0' + today.getSeconds()).slice(-2);
+        const date = ('0' + today.getDate()).slice(-2);
+        const mon = ('0' + (today.getMonth() + 1)).slice(-2);
+        const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString('hex').toUpperCase();
+        let now = dateTimeToDate(new Date(),1)
         confirmInfo = {
             beneficiaryAccountNumber,
             amount,
@@ -225,6 +256,9 @@ router.post('/postInformation',[
             displayName: account.displayName,
             bin:binBank,
             token,
+
+            transactionID,
+            now,
         }
         await Email.send(user.email, "Transaction Confirmation", token);
         console.log(token)
@@ -234,16 +268,11 @@ router.post('/postInformation',[
 })
 
 router.post('/verify',async(req,res)=>{
-    const {accountNumber, binBank, beneficiaryAccountNumber, amount, content,totalFee } = req.body.data;
+    const {accountNumber, binBank, beneficiaryAccountNumber, amount, content,totalFee,transactionID } = req.body.data;
     console.log(accountNumber)
     console.log("sdasd"+req.body.data)
-    const today = new Date();
-    const hour = ('0' + today.getHours()).slice(-2);
-    const min = ('0' + today.getMinutes()).slice(-2);
-    const sec = ('0' + today.getSeconds()).slice(-2);
-    const date = ('0' + today.getDate()).slice(-2);
-    const mon = ('0' + (today.getMonth() + 1)).slice(-2);
-    const transactionID = "" + date + mon + hour + min + sec + crypto.randomBytes(3).toString('hex').toUpperCase();
+
+    
     var newBalance=0;
 
         const beneficiaryInfo = await Transaction.create({

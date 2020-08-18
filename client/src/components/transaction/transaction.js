@@ -1,6 +1,6 @@
 import React,{useEffect,useState,useRef} from 'react';
 import { connect } from 'react-redux';
-import {Redirect} from 'react-router-dom';
+import {Redirect ,withRouter} from 'react-router-dom';
 import {actGetInformation,actPostInformation,actSwitchMoved} from '../../store/actions/transaction'
 import {actGetAccount} from '../../store/actions/account';
 import * as Config from '../../constants/Config'
@@ -100,6 +100,10 @@ function transaction(props) {
         }
        
     }
+    const onClickCancel =(e)=>{
+      e.preventDefault();
+     props.history.push("/home")
+    }
     const showError = (ListError)=>{
         let result = null;
         if(ListError.length > 0 )
@@ -187,7 +191,7 @@ function transaction(props) {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color:"white"}} className="class-text">
                                 {user.displayName}
                               </p>
                             </div>
@@ -203,7 +207,7 @@ function transaction(props) {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color:"white"}} className="class-text">
                                 {account?account.accountNumber:''}
                               </p>
                             </div>
@@ -212,16 +216,16 @@ function transaction(props) {
                         <div className="col-lg-4 col-md-12">
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="card-text">
+                              <p  className="card-text">
                                 <b>Balance: </b>
                               </p>
                             </div>
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color:"white"}} className="class-text">
                               {account?FC.inMoney(account.balance):''}
-                                <small className="muted-text">&nbsp;  VND</small>
+                                <small style={{color:"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
                             </div>
                           </div>
@@ -275,7 +279,7 @@ function transaction(props) {
                   {/* End Main section */}
                   <div className="card-footer" style={{display: 'inherit'}}>
                     <div className="text-center">
-                      <button type className="btn btn-danger btn-link btn-wd btn-lg">Cancel</button>
+                      <button onClick={onClickCancel} type className="btn btn-danger btn-link btn-wd btn-lg">Cancel</button>
                       <button onClick={onSubmit} className="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
                     </div>
                   </div>
@@ -309,4 +313,4 @@ const mapDispatchToProps = dispatch =>{
         },
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(transaction)
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(transaction))
