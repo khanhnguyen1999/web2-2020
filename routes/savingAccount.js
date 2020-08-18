@@ -218,7 +218,7 @@ router.post("/addSaving",[
     }
    
 
-    await Email.send(user.email, "Transaction Confirmation", token);
+    await Email.send(user.email, "Transaction Confirmation", `Mã xác thực TKTK : ${token}`);
     console.log(token)
     console.log(confirmInfo)
     return res.status(200).json({success:true,confirmInfo})

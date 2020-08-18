@@ -2,6 +2,7 @@ import React,{useState,useEffect} from 'react';
 import { connect } from 'react-redux';
 import {actGetUserByEmail,actPostCheckToken,actPostChangePassword,actResetStateUser} from '../../store/actions/login';
 import Message from '../../components/message/Message';
+import {  withRouter } from 'react-router-dom';
 
 
 function ChangePassword(props) {
@@ -113,6 +114,10 @@ function ChangePassword(props) {
       props.postChangePassword({user,currentPassword,newPassword,confirmPassword})
     }
   }
+
+  const onCancel = e => {
+    props.history.push("/home")
+  }
   if(successPostChange === true)
   {
     console.log("chuyen")
@@ -163,7 +168,7 @@ function ChangePassword(props) {
                       {/* End Main section */}
                     </div>
                     <div className="footer text-center">
-                      <a href="/" className="btn btn-primary btn-link btn-wd btn-lg">Cancel</a>
+                      <a onClick={onCancel} className="btn btn-primary btn-link btn-wd btn-lg">Cancel</a>
                       <button onClick={onSubmit} className="btn btn-primary btn-link btn-wd btn-lg">Confirm</button>
                     </div>
                   </form>
@@ -197,4 +202,4 @@ const mapDispatchToProps = dispatch => {
     }
   }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(ChangePassword);
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(ChangePassword));

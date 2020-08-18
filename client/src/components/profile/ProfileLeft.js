@@ -59,7 +59,7 @@ function ProfileLeft(props) {
                 </div>
                 <div className="form-group">
                   <label htmlFor="inputAddress2">Provide Date</label>
-                  <input type="text" className="form-control" id="inputAddress2" defaultValue={user?FC.dateTimeToDate(user.provideDate,0):''} />
+                  <input type="text" className="form-control" id="inputAddress2" defaultValue={user?user.provideDate?FC.dateTimeToDate(user.provideDate,0):'':''} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="inputAddress2">ID Card Number</label>
