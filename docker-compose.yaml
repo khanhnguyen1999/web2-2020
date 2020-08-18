@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+    postgresql:
+        restart: on-failure
+        container_name: postgres-web2
+        image: postgres
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=0209
+            - POSTGRES_DB=banking
+
+    api:
+        restart: on-failure
+        build: .
+        container_name: api-web2
+        volumes:
+            - c:\_wp\web2-2020
+        ports:
+            - 4000:3000
+        environment:
+            - DATABASE_URL=postgres://postgres:0209@postgres-web2:5432/banking
+            - NODE_ENV=production
+            - EMAIL_USER=1760079web2@gmail.com
+            - EMAIL_PASSWORD=khai123456
+            - BASE_URL=http://localhost:4000
+        command: npm start
