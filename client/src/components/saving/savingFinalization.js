@@ -46,6 +46,11 @@ class savingFinalization extends Component {
     }
     render() {
         const { saving , user } = this.state;
+
+        if(this.props.savingAccount.verifyFina){
+            const {id} =this.props.match.params;
+            this.props.history.push('/savingAccount/'+id+'/result')
+        }
         return (
   
             <div className=" header-filter" style={{backgroundImage: 'url("/assets/img/bg7.jpg")', backgroundSize: 'cover', backgroundPosition: 'top center'}}>
@@ -113,12 +118,11 @@ class savingFinalization extends Component {
         console.log(this.state.saving)
         console.log(this.state.token)
         const { saving , token } = this.state;
-        const {id} =this.props.match.params;
+        
         if(String(saving.token)===String(token.toUpperCase()))
         {
             console.log(this.state.account)
             this.props.postVerify({...this.state.saving})
-            this.props.history.push('/savingAccount/'+id+'/result')
         }
         else
         {

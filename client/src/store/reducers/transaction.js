@@ -3,7 +3,7 @@ const initState = {
     account:{},
     listBank:{},
     errors:{},
-    confirmInfo:{},
+    confirmInfo: null,
     movedOn:false,
     virify : false,
     listTransaction : {},
@@ -56,8 +56,8 @@ const transaction = (state = initState, action) => {
             return {...state}
 
         case Types.DELETE_CONFIRMINFO:
-
-            state.confirmInfo = {};
+            
+            state.confirmInfo = null;
             return {...state}
 
         case Types.POST_VERIFY_TRANSACTION :

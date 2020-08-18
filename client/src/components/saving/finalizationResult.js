@@ -1,6 +1,7 @@
 import React , {useEffect} from 'react';
 import {connect} from 'react-redux';
-import {actDeleteConfirmInfo,actSwitchVerify} from '../../store/actions/transaction'
+import {actDeleteConfirmInfo,actSwitchVerify} from '../../store/actions/transaction';
+import {actSwitchVerifyFina} from '../../store/actions/savingAccount';
 import Message from '../../components/message/Message'
 function finalizationResult(props) {
 
@@ -14,25 +15,35 @@ function finalizationResult(props) {
     }
     useEffect(()=>{
         return ()=>{
-            props.switchVerify();
+            props.switchVerifyFina();
             props.deleteConfirmInfo();
         }
     },[])
     // useEffect(()=>{
     //     props.deleteConfirmInfo()
     // },[])
+    
+    if(!props.savingAccount.verifyFina)
+    {
+         props.history.push('/savingAccount')
+    }
     return (
         <Message title={"Finalization"}  message={"Successful finalization"}  to={"/savingAccount"}  success={true} />
     )
+}
+const mapStateToProps = state => {
+    return {
+        savingAccount: state.savingAccount,
+    }
 }
 const mapDispatchToProps = dispatch =>{
     return {
         deleteConfirmInfo : ()=>{
             dispatch(actDeleteConfirmInfo())
         },
-        switchVerify : ()=>{
-            dispatch(actSwitchVerify())
+        switchVerifyFina : ()=>{
+            dispatch(actSwitchVerifyFina())
         }
     }
 }
-export default connect(null,mapDispatchToProps)(finalizationResult)
+export default connect(mapStateToProps,mapDispatchToProps)(finalizationResult)

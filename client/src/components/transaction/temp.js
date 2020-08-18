@@ -1,8 +1,6 @@
 import React , {useEffect} from 'react';
 import {connect} from 'react-redux';
 import {actDeleteConfirmInfo,actSwitchVerify} from '../../store/actions/transaction'
-import {withRouter} from 'react-router-dom';
-
 function Cresult(props) {
 
     const onClickNext = ()=> {
@@ -10,7 +8,6 @@ function Cresult(props) {
         props.history.push('/transaction')
     }
     const onClickHome = ()=> {
-
         props.history.push('/home')
     }
     useEffect(()=>{
@@ -21,10 +18,6 @@ function Cresult(props) {
         //     props.history.push('/transaction')
         // }
     },[])
-    const {virify} = props.ifTransaction;
-    if(!virify){
-         props.history.push('/transaction')
-    }
     return (
         <div>
             
@@ -62,11 +55,6 @@ function Cresult(props) {
         </div>
     )
 }
-const mapStateToProps = state => {
-    return {
-        ifTransaction : state.transaction,
-    }
-}
 const mapDispatchToProps = dispatch =>{
     return {
         deleteConfirmInfo : ()=>{
@@ -77,4 +65,4 @@ const mapDispatchToProps = dispatch =>{
         }
     }
 }
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Cresult));
+export default connect(null,mapDispatchToProps)(Cresult)

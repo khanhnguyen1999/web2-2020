@@ -40,14 +40,19 @@ function transaction(props) {
             }
         }
         setError(arrError)
-        if(props.ifTransaction.confirmInfo.displayName)
+        console.log(props.ifTransaction)
+        if(props.ifTransaction.confirmInfo)
         {
-            const { confirmInfo} = props.ifTransaction;
-            setBeneficiary(confirmInfo.beneficiaryAccountNumber)
-            setAmount(parseInt(confirmInfo.amount,10));
-            setContent(confirmInfo.content);
-            setBinBank(confirmInfo.bin);
-        }
+          if(props.ifTransaction.confirmInfo.displayName)
+          {
+              const { confirmInfo} = props.ifTransaction;
+              setBeneficiary(confirmInfo.beneficiaryAccountNumber)
+              setAmount(parseInt(confirmInfo.amount,10));
+              setContent(confirmInfo.content);
+              setBinBank(confirmInfo.bin);
+          }
+        } 
+        
     }, [props.ifTransaction])
 
     const onBeneficiaryChange = (event) => {

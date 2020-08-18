@@ -80,6 +80,10 @@ class Cverify extends Component {
         const {error,token} = this.state;
         const {virify} = this.props.ifTransaction;
         console.log("vr"+ virify)
+        console.log(confirmInfo)
+        if(!confirmInfo){
+            this.props.history.push("/transaction")
+        }
         if(virify===true)
         {
             console.log("aaaaaaaaaaa")
@@ -114,7 +118,7 @@ class Cverify extends Component {
                                   </tr>
                                   <tr>
                                       <td>Amount in words : </td>
-                                      <td style={{maxWidth: "160px"}}>&nbsp;  {confirmInfo?FC.inWords(confirmInfo.amount):''} </td>
+                                      <td style={{maxWidth: "160px"}}>&nbsp;  {confirmInfo?confirmInfo.amount?FC.inWords(confirmInfo.amount):'':''} </td>
                                   </tr>
                                   <tr>
                                       <td>Beneficiary Account :</td>

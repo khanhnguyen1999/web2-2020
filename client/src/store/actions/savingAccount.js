@@ -90,6 +90,11 @@ export const actPostVerifyAddSaving = (data) => {
         });
     };
 }
+export const actSwitchVerifyFina = () => {
+    return {
+        type:Types.SWITCH_VERIFY_FINA,
+    }
+}
 export const actSwitchVerifyAddSaving = () => {
     return {
         type:Types.SWITCH_VERIFY_ADD_SAVING,

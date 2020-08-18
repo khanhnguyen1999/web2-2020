@@ -6,6 +6,7 @@ const initState = {
     errors:{},
     movedOn:false,
     confirmInfo:{},
+    verifyFina :null, 
     virify : false,
 }
 
@@ -55,29 +56,36 @@ const savingAccount = (state = initState, action) => {
         
         case Types.POST_VERIFY_FINALIZATION:
             console.log(action.data)
+            state.verifyFina = true;
             return {
                 ...state
             }
+
+        case Types.SWITCH_VERIFY_FINA:
+            state.verifyFina = null;
         
         case Types.POST_INFORMATION_ADD_SAING:
             // const {success} = action.data;
             console.log(action)
+            if(action.data)
+            {
+                if(action.data.success===false)
+                {
+                    const {errors}= action.data;
+                    state.errors =errors;
+                    console.log(state)
+                    return {...state}
+                }
+                else
+                {
+                    state.errors ={};
+                    const { confirmInfo } = action.data;
+                    state.confirmInfo = confirmInfo;
+                    state.movedOn = true;
+                    return {...state}
+                }
+            }
             
-            if(action.data.success===false)
-            {
-                const {errors}= action.data;
-                state.errors =errors;
-                console.log(state)
-                return {...state}
-            }
-            else
-            {
-                state.errors ={};
-                const { confirmInfo } = action.data;
-                state.confirmInfo = confirmInfo;
-                state.movedOn = true;
-                return {...state}
-            }
             
             return {
                 ...state
@@ -90,7 +98,7 @@ const savingAccount = (state = initState, action) => {
 
         case Types.SWITCH_VERIFY_ADD_SAVING:
             console.log("da chuyen SWITCH_VERIFY_ADD_SAVING")
-            state.virify = false;
+            state.virify = null;
             state.confirmInfo ={};
             return {...state}
 

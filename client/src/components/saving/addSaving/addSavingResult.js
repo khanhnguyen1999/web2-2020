@@ -4,7 +4,7 @@ import {actDeleteConfirmInfoAddSaving,actSwitchVerifyAddSaving,actSwitchMovedAdd
 import Message from '../../message/Message'
 function addSavingResult(props) {
 
-    const onClickNext = ()=> {
+    const onClickNext = () => {
         props.switchVerifyAddSaving();
         props.history.push('/addsaving')
     }
@@ -18,9 +18,18 @@ function addSavingResult(props) {
             props.switchVerifyAddSaving();
         }
     },[])
+    if(!props.savingAccount.virify){
+        props.history.push('/addsaving')
+    }
     return (
         <Message title={"Add Saving"}  message={"Successful Add Saving Account"}  to={"/savingAccount"}  success={true} />
     )
+}
+
+const mapStateToProps = state => {
+    return {
+        savingAccount : state.savingAccount,
+    }
 }
 const mapDispatchToProps = dispatch =>{
     return {
@@ -32,4 +41,4 @@ const mapDispatchToProps = dispatch =>{
         }
     }
 }
-export default connect(null,mapDispatchToProps)(addSavingResult)
+export default connect(mapStateToProps,mapDispatchToProps)(addSavingResult)

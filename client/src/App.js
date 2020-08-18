@@ -20,6 +20,7 @@ import Result from './components/transaction/Cresult' ;
 import AddSaving from './components/saving/addSaving/addSaving' ;
 import AddSavingVerify from './components/saving/addSaving/addSavingVerify' ;
 import AddSavingResult from './components/saving/addSaving/addSavingResult' ;
+import NotFound from './components/partials/NotFound';
 
 import Admin from './components/admin/Admin' ;
 
@@ -36,13 +37,13 @@ import SavingDetail from './components/saving/savingDetail';
 
 
 function PrivateRoute ({component: Component, authed, ...rest}) {
-  const currentUser = localStorage.getItem("currentUser");
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   console.log(currentUser)
   return (
     <Route
       {...rest}
-      render={(props) => currentUser !== null
-        ? <Component {...props} />
+      render={(props) => currentUser !== null  
+        ? currentUser.status ==="ACTIVE"? <Component {...props} />:<Redirect to={{pathname: '/home', state: {from: props.location}}} />
         : <Redirect to={{pathname: '/', state: {from: props.location}}} />}
     />
   )
@@ -80,8 +81,8 @@ class App extends Component {
       {/* router saving account */}
 {/* 
       <Route exact path='/savingAccount' component={({match, history}) => <ListSaving1 match={match} history={history}/>} /> */}
-
-      <Route exact path='/savingAccount1' component={({match, history}) => <ListSaving1 match={match} history={history}/>} />
+{/* 
+      <Route exact path='/savingAccount1' component={({match, history}) => <ListSaving1 match={match} history={history}/>} /> */}
 
       <Route exact path='/savingAccount1/:id' component={({match, history}) => <SavingDetail match={match} history={history}/>} />
 
@@ -100,7 +101,7 @@ class App extends Component {
       <Route   path='/admin' component={({match, history}) => <Admin timestamp={new Date().toString()} match={match} history={history}/>} />
       <PrivateRoute authed={currentUser} path='/savingAccount' component={ListSaving1}/>
       <PrivateRoute authed={currentUser} path='/transaction' component={Transaction}/>
-
+      <Route component={NotFound} />
       </Switch>
       <Footer/>
       </div>
