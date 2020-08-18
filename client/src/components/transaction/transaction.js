@@ -5,7 +5,6 @@ import {actGetInformation,actPostInformation,actSwitchMoved} from '../../store/a
 import {actGetAccount} from '../../store/actions/account';
 import * as Config from '../../constants/Config'
 import * as FC from '../../utils/fc';
-import Message from '../message/Message';
 
 
 function transaction(props) {
@@ -148,22 +147,7 @@ function transaction(props) {
     }
     const {movedOn} = props.ifTransaction
     console.log(movedOn)
-    if(account)
-    {
-      if(account.status !== "ACTIVE")
-      {
-        console.log(account)
-        const mess = FC.checkStatus(account.status);
-        console.log(mess)
-        return (
-
-            <Message history = {props.history} title={"TK CHUA KICH HOAT"} message={mess} to={"/verify"}/>
-
-         
-        )
-      }
-     
-    }
+  
    
     if(movedOn===true)
     {
