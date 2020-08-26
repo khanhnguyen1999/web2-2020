@@ -71,6 +71,14 @@ function Detail(props) {
         }else if(status==="PENDING" && user.idCardPhoto)
         {
            return <button onClick={onClickVerify} className="card-link btn btn-warning">Verify</button>
+        }else if (status==="DENIED"){
+            return(
+                <div>
+                <button onClick={onClickLock} className="card-link btn btn-danger">Unlock</button>
+                <button onClick={onClickTransaction} className="card-link btn btn-info">Transaction</button>
+                    <button onClick={onClickEditProfile} className="card-link btn btn-warning">Modify</button>
+                    </div>
+            )
         }
         return '';
     

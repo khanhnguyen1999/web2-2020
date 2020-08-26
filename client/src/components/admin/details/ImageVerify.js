@@ -6,9 +6,11 @@ import Alert from '@material-ui/lab/Alert';
 function ImageVerify(props) {
     const {idCardPhoto,userId,account} = props;
     const [success,setSuccess] =useState();
+    const [successDeny,setSuccessDeny] =useState();
 
     useEffect(()=>{
       setSuccess(null)
+      setSuccessDeny(null)
     },[props.date])
     const onAccept = e => {
       props.accept(userId);
@@ -17,7 +19,7 @@ function ImageVerify(props) {
 
     const onDeny = e => {
       props.deny(userId);
-      
+      setSuccessDeny(true)
     }
 
     const showAccept = (status) => {
@@ -25,10 +27,20 @@ function ImageVerify(props) {
       if(status==="PENDING"){
         return <a onClick={onAccept} className="btn btn-primary">Accept</a>
       }
+      if(status==="DENIED"){
+        return <a onClick={onAccept} className="btn btn-primary">Accept</a>
+      }
 
       return ;
     }
     if(success===true){
+      return (
+        <Alert variant="filled" severity="success">
+            Cap nhat thanh cong 
+        </Alert>
+      )
+    }
+    if(successDeny===true){
       return (
         <Alert variant="filled" severity="success">
             Cap nhat thanh cong 

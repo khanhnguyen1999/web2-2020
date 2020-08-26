@@ -137,7 +137,7 @@ function addSaving(props) {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color :"white"}} className="class-text">
                               {account?account.accountNumber:''}
                               </p>
                             </div>
@@ -153,7 +153,7 @@ function addSaving(props) {
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color :"white"}} className="class-text">
                               {account?inMoney(account.balance):0} 
                               <small style={{color:"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>
@@ -163,14 +163,14 @@ function addSaving(props) {
                         <div className="col-lg-4 col-md-12">
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="card-text">
+                              <p  className="card-text">
                                 <b>Total </b>
                               </p>
                             </div>
                           </div>
                           <div className="row justify-content-center">
                             <div className="col-12">
-                              <p className="class-text">
+                              <p style={{color :"white"}} className="class-text">
                               {savingAccount?inMoney(sumMountSaving(savingAccount)):''}
                                 <small style={{color:"yellow"}} className="muted-text">&nbsp;  VND</small>
                               </p>

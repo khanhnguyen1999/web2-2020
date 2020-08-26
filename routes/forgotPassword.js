@@ -67,7 +67,9 @@ router
                 const recoverLink = `${process.env.BASE_URL || "http://localhost:3000"}/forgot-password/check-token/${result.email}/${token}`;
 
                 console.log(recoverLink);
-                // await Email.send(email, "Forget Password", recoverLink);
+
+                const usr = await User.findById(result.id)
+                await Email.send(usr.email, "Forget Password", recoverLink);
                 // return res.render("../views/pages/error", {
                 //     errors: [{ msg: "Access your temporary link in your email within 3 minutes to recover your account." }],
                 // });

@@ -315,13 +315,14 @@ router.post('/verify',async(req,res)=>{
                 console.log("accccc")
                 const accountBenefi = await Account.findByAccountNumber(beneficiaryAccountNumber);
                 const userBenefi = await User.findById(accountBenefi.userId)
+                const ac = await Account.findByUserId(account.userId)
                 const user = await User.findById(account.userId)
                 const teamlate  =`
                     <div class="card" style="width: 18rem;">
                     <div class="card-body">
                     <h5 style="color: green; font-size: 17px; " class="card-title">Chuyển khoản thành công</h5>
                     <h6 style=" font-size: 11px; font-weight: 100;" class="card-subtitle mb-2 text-muted">${user.displayName} gửi đến ${beneficiaryAccountNumber} : ${userBenefi.displayName} số tiền : ${inMoney(amount)}VND</h6>
-                    <p class="card-text">Số dư :  ${inMoney(amount)}VND</p>
+                    <p class="card-text">Số dư :  ${inMoney(ac.balance)}VND</p>
 
                     </div>
                 </div>`;

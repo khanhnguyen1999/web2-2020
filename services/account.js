@@ -47,10 +47,10 @@ class Account extends Model {
     static async updateLimitAmount( amount , accountNumber) {
         const account = await Account.findByAccountNumber(accountNumber)
         var newLm = 0;
-        if(!account.limitAccount){
+        if(!account.limitAmount || account.limitAmount==0){
             newLm = parseInt(amount);
         }else{
-            newLm = parseInt(account.limitAccount) + parseInt(amount)
+            newLm = parseInt(account.limitAmount) + parseInt(amount)
         }
         
         return await Account.update(

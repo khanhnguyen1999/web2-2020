@@ -71,6 +71,36 @@ function Verify(props) {
             // console.log(data)
             console.log(account)
 
+            if(user.idCardPhoto && account.status === "DENIED"){
+                return (
+                    <div>
+                        <div className="card-body">
+                            <div className="input-group">
+                                <input 
+                                    type="file"
+                                    onChange={onChangeImage}
+                                    accept=".jpg,.png"
+                                    multiple
+                                    name="image"
+                                    className="form-control"
+                                    placeholder="Select your ID card image"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            className="card-footer text-center"
+                            style={{ display: "inherit" }}
+                        >
+                            <button
+                                onClick={onSubmit}
+                                className="btn btn-primary btn-link btn-wd btn-lg"
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
             if(user.idCardPhoto || account.status === "PENDING")
             {
                 return (
@@ -79,6 +109,7 @@ function Verify(props) {
                     </div>
                 )
             }
+            
             if( account.status === "UNVERIFIED"){
                 return (
                     <div>

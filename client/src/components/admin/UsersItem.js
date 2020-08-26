@@ -50,6 +50,9 @@ function UsersItem(props) {
                   PENDING
                 </Button>
         }
+        if(status==="DENIED"){
+          result =<Button variant="outlined">DENIED</Button>
+        }
         if(status==="LOCKED")
         {
           result =<Button variant="outlined">LOCKED</Button>
