@@ -62,7 +62,7 @@ function UsersItem(props) {
     }
 
     const onClickItem =(e)=>{
-        console.log(user.id)
+        console.log(user)
         props.history.push(`/admin/users/${user.id}`)
     }
     return (

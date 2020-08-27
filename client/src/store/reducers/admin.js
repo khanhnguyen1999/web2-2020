@@ -17,6 +17,7 @@ export const Admin = (state = initState, action)=>{
         case Types.RESET_ADMIN :
             console.log("reducer admin reset admin")
             state.errorEditProfile = null;
+            state.accountUser =null;
             return {...state};
 
 

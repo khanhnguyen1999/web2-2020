@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import {Redirect} from 'react-router-dom'
 import { withRouter } from "react-router-dom";
 
-import {actGetUserTransaction ,actLockUser} from '../../store/actions/admin';
+import {actGetUserTransaction ,actLockUser,actResetAdmin} from '../../store/actions/admin';
 import callApi from '../../utils/apiCaller';
 
 
@@ -29,13 +29,16 @@ function Detail(props) {
         if(listUser.length>0) 
         {
             listUser.map(item => {
-                if(parseInt(userId)===item.userId)
+                if(parseInt(userId)===parseInt(item.userId))
                 {
                     setAccount(item);
                     const {user} = item;
                     setUser(user)
                 }
             })
+        }
+        return ()=>{
+            props.resetAdmin();
         }
     },[])
 
@@ -209,6 +212,9 @@ const mapDitchToProps = dispatch => {
         },
         lockUser : (userId) => {
             dispatch(actLockUser(userId))
+        },
+        resetAdmin : ()=>{
+            dispatch(actResetAdmin());
         }
     }
 }

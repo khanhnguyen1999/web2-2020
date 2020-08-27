@@ -202,7 +202,7 @@ function addSaving(props) {
             </div>
             <div className="form-group">
               <label htmlFor="formGroupExampleInput2">Số tiền gửi</label>
-              <input onChange={onChangeAmount} name="amountSaving" type="number" className="form-control" id="formGroupExampleInput2" placeholder="Tối thiểu 3.000.000" />
+              <input onChange={onChangeAmount} name="amountSaving" type="number" className="form-control" id="formGroupExampleInput2" placeholder="Tối thiểu 1.000.000" />
             </div>
 
             <div className="form-group mb-3 ">
