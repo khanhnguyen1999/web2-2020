@@ -1,29 +1,27 @@
-const User = require("../services/user");
-const router = require("express").Router();
-const asyncHandler = require("express-async-handler");
+const User = require('../services/user')
+const Account = require('../services/account')
+const {Router} = require('express')
+const asyncHandler = require('express-async-handler')
+const router = new Router();
+router.get('/',function getLogin(req,res){
+    res.render('pages/login')
+});
+router.post('/',asyncHandler(async function postLogin(req,res){
+    const{data} =req.body;
+    console.log(data)
+    var user = await User.findByUsername(data.userName)
+    if(!user || !User.verifyPassword(data.password,user.password)){
+        return res.json({success:false})
+    }
+    const account =await Account.findByUserId(user.id)
 
-router
-    .route("/")
-    .get((req, res) => {
-        if(!req.session.userId){
-            res.render("ducbui/pages/auth/login", { errors: null });
-        }
-        else{
-            res.redirect("/home")
-        }
-    })
-    .post(
-        asyncHandler(async (req, res) => {
-            const { username, password } = req.body;
-            const user = await User.findByUsername(username);
+    user.dataValues.role = account.role;
+    user.dataValues.status = account.status;
+    console.log(user.role)
 
-            if (!user || !User.verifyPassword(password, user.password)) {
-                return res.redirect("/");
-            }
+    console.log(user)
+    console.log("sdasdasda")
 
-            req.session.userId = user.id;
-            res.redirect("/home");
-        })
-    );
-
+    return res.json({success : true , user })   
+}));
 module.exports = router;

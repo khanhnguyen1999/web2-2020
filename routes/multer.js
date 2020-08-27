@@ -44,15 +44,11 @@ router
     .get((req, res) => {
         res.render("ducbui/pages/auth/verify", { errors: null });
     })
-    .post((req, res) => {
-        // collected image from a user
-        const file = req.files.image;
-        // console.log(req.files);
-        // console.log(file.tempFilePath);
-
-        // console.log(file.mimetype.slice(0, 5) === "image");
-        // console.log(file.mimetype);
-
+    .post((req,res)=>{
+        const {photo}= req.files
+        const {userId} = req.body;
+        const file =photo;
+        
         if (file.mimetype.slice(0, 5) === "image") {
             // upload image here
             cloudinary.uploader
@@ -64,32 +60,30 @@ router
                         },
                         {
                             where: {
-                                id: req.session.userId,
+                                id: userId,
                             },
                         }
                     ).then(async (data) => {
+                        res.json({success:true, user :data})
                         await Account.update(
                             {
                                 status: "PENDING",
                             },
                             {
                                 where: {
-                                    userId: req.session.userId,
+                                    userId: userId,
                                 },
                             }
                         );
                         return;
                     });
-                    return res.redirect("/verify");
+                    return res.json({success:true, result :data.secure_url});
                 })
                 .catch((error) => {
-                    res.status(500).send({
-                        message: "failure",
-                        error,
-                    });
+                    res.json({success:false});
                 });
         } else {
-            return res.render("ducbui/pages/auth/verify", { errors: [{ msg: "Wrong file type!" }] });
+            return res.json({success:false});
         }
     });
 

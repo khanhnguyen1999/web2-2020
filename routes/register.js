@@ -20,9 +20,16 @@ router
 
     .post(
         [
-            body("displayName").trim().notEmpty(),
-            body("username").trim().notEmpty(), // Need Handle
-            body("email")
+            body("data.displayName").trim().notEmpty(),
+            body("data.username").trim().notEmpty()
+            .custom(async (username)=>{
+                const found = await User.findByUsername(username);
+                if (found) {
+                    throw Error("Username exists");
+                }
+                return true;
+            }), // Need Handle
+            body("data.email")
                 .isEmail()
                 .normalizeEmail()
                 .custom(async function (email) {
@@ -32,35 +39,43 @@ router
                     }
                     return true;
                 }),
-            body("password").isLength({ min: 6 }).notEmpty(),
-            body("confirmPassword").isLength({ min: 6 }).notEmpty(),
+            body("data.password").isLength({ min: 6 }).notEmpty(),
+            body("data.confirmPassword").isLength({ min: 6 }).notEmpty()
+            .custom(async(confirmPassword,{req})=>{
+                const {password } = req.body.data;
+                console.log(password + "   "+confirmPassword)
+                console.log(typeof password + "   "+ typeof confirmPassword)
+                if(password!==confirmPassword)
+                {
+                    console.log("khac cc")
+                    throw Error("Confirm password not match")
+                }
+                return true;
+            }),
         ],
         async (req, res, next) => {
             const errors = validationResult(req);
 
             if (!errors.isEmpty()) {
-                return res.status(422).render("ducbui/pages/auth/register", { errors: errors.array() });
+                console.log(errors)
+                return res.json({success : false , errors : errors.array() })
             }
 
-            const { displayName, username, email, password, confirmPassword } = req.body;
-
-            if (password === confirmPassword) {
-                user = {
-                    displayName,
-                    username,
-                    email,
-                    password: User.hashPassword(req.body.password),
-                };
-
-                return next();
-            }
-            return res.render("ducbui/pages/auth/register", { errors: [{ msg: "Confirm password not match." }] });
+            const { displayName, username, email, password, confirmPassword } = req.body.data;
+            user = {
+                displayName,
+                username,
+                email,
+                password: User.hashPassword(password),
+            };
+            res.json({success:true})
+            return next();
         },
         asyncHandler(async (req, res) => {
             await User.create(user).then(async (user) => {
                 await Account.create({
                     accountNumber: "970460" + (Math.floor(Math.random() * 10000000000) + 1), // Fixed
-                    balance: 100000,
+                    balance: 0,
                     currencyUnit: "VND",
                     role: "user",
                     status: "UNVERIFIED", // 'UNVERIFIED' || 'LOCKED' || 'PENDING' || 'ACTIVE' || 'DENIED'
@@ -73,7 +88,6 @@ router
             });
 
             // await Email.send(user.email,'Mã kích hoạt tài khoản',`link activate của bạn là : ${process.env.BASE_URL}/login/${user.id}/${user.token}`)
-            res.redirect("/");
         })
     );
 

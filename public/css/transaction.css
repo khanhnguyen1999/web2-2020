@@ -124,4 +124,25 @@
 .list-saving .card-header i{
     font-size: 26px;
 }
+<<<<<<< HEAD
+=======
+.listsaving .itemInformation .task-profile-saving{
+    white-space: nowrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+}
+.listsaving .itemInformation{
+    margin-right: 40px;
+}
+.listsaving .itemInformation .fa-money{
+    font-size: 29px;
+}
+.listsaving .itemInformation span{
+    font-size: 15px;
+    color: sandybrown;
+
+}
+>>>>>>> merge-react
 

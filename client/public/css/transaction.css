@@ -1,0 +1,145 @@
+
+
+@import url('https://fonts.google.com/specimen/Open+Sans?query=Open+Sans');
+
+.section_transaction{
+    /* background: skyblue; */
+    margin: 0;
+}
+.container_transaction{
+    width: 60%;
+    left: 50%;
+    transform: translateX(0%);
+    padding: 10px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px 1px rgba(0, 50, 0, 0.1);
+    /* background: re; */
+    /* background: red; */
+}
+.container_transaction ::placeholder{
+    color: rgb(118, 127, 139);
+    opacity: 0.3;
+}
+.transaction_profile .task-profile{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* position: relative; */
+    margin-right: 50px;
+}
+.transaction_profile{
+
+    /* position: absolute; */
+    text-align: center;
+    display: flex;
+    /* position: absolute; */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 3px 1px rgba(0, 0, 0, 0.1);
+}
+.transaction_profile i {
+    color: rgb(135, 228, 228);
+    font-size: 25px;
+    margin-right: 10px;
+
+}
+.transaction_profile .fa-address-card{
+    font-size: 30px;
+    padding: 0;
+    top: -10px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    /* margin: 0; */
+}
+.transaction_profile p{
+    text-align: center;
+    display: flex;
+    color: rgb(121, 107, 247);
+    /* background-color: royalblue; */
+}
+.transaction_profile p span{
+    color: sandybrown;
+}
+
+/* transaction 1*/
+
+.container_transaction1{
+    position: relative  ;
+    transform: translateX(0%);
+    padding: 10px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px 1px rgba(0, 50, 0, 0.1);
+    /* background: re; */
+    /* background: red; */
+}
+.container_transaction1 .card{
+    padding: 15px;
+}
+.container_transaction1 table{
+    transform: translateX(50%);
+}
+.container_transaction1 .col6{
+    transform: translateX(-10%);
+}
+.container_transaction1 table tr td{
+    padding: 7px;
+}
+.container_transaction1 td:nth-child(odd) {
+   color: rgb(95, 109, 91);
+    text-align:right;
+    text-transform: uppercase;
+    font-weight: 100;
+  }
+.container_transaction1 td:nth-child(even) {
+    color: rgb(156, 86, 36);
+    text-align:left;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+
+.section_transaction2{
+    transform: translateX(100%);
+    margin-bottom: -50px;
+}
+
+/*--------------------------- saving account -------------------------*/
+.ghichu{
+    margin-left: 15px;
+    opacity: 0.7;
+    font-size: 14px;
+    font-weight: 100;
+}
+
+/* -------------list saving---------------- */
+.list-saving .card-header {
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px 1px rgba(0, 50, 0, 0.1);
+    margin-top: 10px;
+    border-radius: 3px;
+}
+.list-saving .card-header i{
+    font-size: 26px;
+}
+.listsaving .itemInformation .task-profile-saving{
+    white-space: nowrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+}
+.listsaving .itemInformation{
+    margin-right: 40px;
+}
+.listsaving .itemInformation .fa-money{
+    font-size: 29px;
+}
+.listsaving .itemInformation span{
+    font-size: 15px;
+    color: sandybrown;
+
+}
+

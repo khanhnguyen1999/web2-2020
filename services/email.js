@@ -14,7 +14,7 @@ async function send(to, subject, content) {
             rejectUnauthorized: false,
         },
     });
-
+    
     transporter.sendMail({
         from: process.env.EMAIL_USER || "17k1.web2.demo@gmail.com",
         to,

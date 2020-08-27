@@ -51,11 +51,17 @@ dateTimeToDate = function (today,species)
     }
 %>
 <section class="blog_part section_padding section_transaction list-saving row">
+<<<<<<< HEAD
     <div class="container container_transaction1 col-4">
+=======
+   
+    <div class="container container_transaction1 col-6">
+>>>>>>> merge-react
         <div class="modal-header">
             <p class="heading lead">Tài khoản tiết kiệm </p>
         </div>
 
+<<<<<<< HEAD
         <% if(saving) {%>
             <% saving.forEach(function(x) {  %>
                 <div id=<%=x.id  %> onclick="send2(this.id)" class="card-header bg-transparent savingItem">
@@ -75,6 +81,49 @@ dateTimeToDate = function (today,species)
             </div>
             
         </div> -->
+=======
+        <div class=" p-4 transaction_profile listsaving mt-2">
+            <div class="itemInformation">
+                <div class="task-profile-saving">
+                    <p><i class="fas fa-address-card"></i>Số tài khoản  </p> 
+                </div>
+                  <span><%= account.accountNumber %></span>
+            </div>
+            <div class="itemInformation">
+                <div class="task-profile-saving">
+                    <p><i class="fas fa-dollar-sign"></i>Số tiền khả dụng  </p> 
+                </div>
+                <span><% var rs=accountNew.balance.toString();          
+                    const formatter= new Intl.NumberFormat('de-DE', {
+                      currency: 'VND',
+                      minimumFractionDigits: 2
+                    })
+                    rs = formatter.format(rs) %> <%= rs%> VND</span>
+            </div>
+            <div class="itemInformation">
+                <div class="task-profile-saving">
+                    <p><i class="fa fa-money" aria-hidden="true"></i></i>Số tiền TKTK  </p> 
+                </div>
+                <span><% var rs=fund.toString();          
+                    const formatter1= new Intl.NumberFormat('de-DE', {
+                        currency: 'VND',
+                        minimumFractionDigits: 2
+                    })
+                    rs = formatter1.format(rs) %> <%= rs%> VND</span>
+            </div>
+        </div>
+        <div class="mt-5">
+            <% if(saving) {%>
+                <% saving.forEach(function(x) {  %>
+                    <div id=<%=x.id  %> onclick="send2(this.id)" class="card-header bg-transparent savingItem">
+                        <span><i class="fas fa-id-badge mr-3 text-success "></i><span class="mr-2">So tien :</span> <a href="#" class="alert-link"><%= x.fund%></a> </span>
+                        <span class="float-right" ><%= dateTimeToDate(x.closeDate,0) %></span>
+                    </div>
+                <% });%>
+            <%}%> 
+        </div>
+        
+>>>>>>> merge-react
         <form method="GET" class="mt-4 ">
             <div class="form-group text-right"> 
                 <a href="saving/addSaving" type="submit" class="btn btn-primary">Them TKTK</a>

@@ -2,10 +2,34 @@ const router = require("express").Router();
 const Account = require("../services/account");
 const User = require("../services/user");
 const Transaction = require("../services/transaction");
+const Email = require("../services/email");
 const asyncHandler = require("express-async-handler");
 const { Sequelize } = require("sequelize");
 const { body, validationResult } = require("express-validator");
 const Op = Sequelize.Op;
+
+function dateTimeToDate(today,species)
+{
+    var sc = String(today.getSeconds()).padStart(2, '0');
+    var m  = String(today.getMinutes()).padStart(2, '0');
+    var h  = String(today.getHours()).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    var date = mm + '/' + dd + '/' + yyyy;
+    var datetime = mm + '/' + dd + '/' + yyyy +"   "+h+":"+m+":"+sc;
+    if(species==0)
+    {
+        return date;
+    }
+    if(species==1)
+    {
+        return datetime;
+    }
+
+    return datetime;
+}
 
 router.get(
     "/",
@@ -15,7 +39,7 @@ router.get(
 
         if (account) {
             return res.render("./ducbui/pages/admin/admin");
-        }
+        } 
 
         res.redirect("/logout");
     })
@@ -25,8 +49,29 @@ router
     .route("/users")
     .get(
         asyncHandler(async (req, res) => {
-            const users = [];
-            res.render("./ducbui/pages/admin/users", { users });
+            const a = await Account.findAll({
+                where:{
+                    role:"user",
+                },
+                include: [{
+                  model: User,
+                  
+                 }]
+              }).then(Account => {
+                 Account.forEach(e => {
+                     const {user} =e;
+                 })
+                return res.json(Account);
+                //  const {user} = Account[0];
+                 
+                // console.log(Account)
+                // console.log(user)
+                
+              });
+            
+            // console.log("co vao")
+            // const users = await User.findAll();
+            // return res.json(users);
         })
     )
 
@@ -36,7 +81,7 @@ router
         asyncHandler(async (req, res) => {
             const { search } = req.body;
             let result = [];
-
+            
             result = await Account.findAll({
                 where: {
                     role: "user",
@@ -75,19 +120,143 @@ router
 router.get(
     "/users/management",
     asyncHandler(async (req, res) => {
-        const users = await Account.findAll({
-            where: {
-                role: "user",
-                status: "PENDING", // Should be 'UNVERIFIED' || 'LOCKED' || 'ACTIVE' || 'PENDING' || 'DENIED'
+        const a = await Account.findAll({
+            where:{
+                status:"PENDING"
             },
-        });
+            include: [{
+              model: User,
+             
+             }]
+          }).then(Account => {
+             Account.forEach(e => {
+                 const {user} =e;
+             })
+            return res.json(Account);
+            //  const {user} = Account[0];
+             
+            // console.log(Account)
+            // console.log(user)
+            
+          });
 
-        res.render("./ducbui/pages/admin/users", { users });
     })
 );
 
 // Verify CardID
 // - Accept
+router
+    .route('/users/:id')
+    .get(async (req,res)=>{ //get transaction
+        const { id } = req.params;
+
+        const account = await Account.findByUserId(id);
+        if (account) {
+            const transactions = await Transaction.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            accountNumber: account.accountNumber,
+                        },
+                        {
+                            beneficiaryAccount: account.accountNumber,
+                        },
+                    ],
+                },
+            });
+
+            res.json(transactions); // Marked
+        }
+
+        // res.redirect(`/admin/users/${id}`);
+        // res.render(`./ducbui/pages/admin/transactions`, { transactions: res.locals.transactions, account });
+    })
+    .post( [
+        body("data.email")
+            .isEmail()
+            .optional()
+            .normalizeEmail()
+            .custom(async (email, { req }) => {
+                const { id } = req.params;
+                const user = await User.findById(id);
+                const found = await User.findByEmail(email);
+                if (found && email !== user.email) {
+                    throw Error("User exists");
+                }
+                
+
+                return true;
+            }),
+        body("data.username")
+            .optional()
+            .custom(async (username, { req }) => {
+                const found = await User.findByUsername(username);
+                const { id } = req.params;
+                const user = await User.findById(id);
+                if (found && username !== user.username) {
+                    throw Error("User exists");
+                }
+
+                return true;
+            }),
+        body("data.displayName").trim().optional(),
+        body("data.cardId").trim().optional(),
+
+    ],async (req,res)=>{    //cap nhat thong tin MODIFY
+        const errors = validationResult(req);
+        // API here
+        if (!errors.isEmpty()) {
+            return res.json({success:false , errors: errors.array() });
+            
+        }
+        const {data} = req.body;
+        const { id } = req.params;
+        const {email,username,displayName,provideDate,cardId} =data
+        console.log (email + "  " +username +"   "+displayName+"    "+cardId)
+        await User.update(
+            {
+                email,
+                username,
+                displayName,
+                provideDate,
+                cardId,
+            },
+            {
+                where: {
+                    id,
+                },
+            }
+        );
+        const newAccountUser = await Account.findOne({
+            include: [{
+                 model: User,
+                where:{
+                    id:id
+                }
+            }]
+        })
+        return res.json(newAccountUser)
+    })
+    .put(async (req,res)=>{  //Them tien 
+        const {amount} = req.body;
+        console.log(amount);
+        const { id } = req.params;
+        const account = await Account.findByUserId(id);
+        const newBalance = parseInt(account.balance)+parseInt(amount);
+        await Account.updateBalance(newBalance,account.accountNumber);
+        const a = await Account.findOne({
+            include: [{
+                model: User,
+                where : {
+                    id:id
+                }
+            }]
+        })
+
+        res.json(a) 
+    })
+
+
 router.get(
     "/users/:id/verify-accept",
     asyncHandler(async (req, res) => {
@@ -107,9 +276,16 @@ router.get(
                 }
             );
         }
+        const newAccountUser = await Account.findOne({
+            include: [{
+                 model: User,
+                where:{
+                    id:id
+                }
+            }]
+        })
 
-        // const user = await User.findById(id);
-        res.redirect(`/admin/users/${id}`);
+        res.json(newAccountUser);
     })
 );
 
@@ -132,7 +308,17 @@ router.get(
                 }
             );
         }
-        res.redirect(`/admin/users/${id}`);
+
+        const newAccountUser = await Account.findOne({
+            include: [{
+                model: User,
+                where:{
+                    id:id
+                }
+            }]
+        })
+
+        res.json(newAccountUser);
     })
 );
 // End Verify CardID
@@ -181,10 +367,28 @@ router.get(
             );
         }
 
-        // const user = await User.findById(id);
-
-        // res.render(`./ducbui/pages/admin/details`, { user, account });
-        res.redirect("back");
+        const newAccountUser = await Account.findOne({
+            include: [{
+                model: User,
+                where : {
+                    id : id
+                }
+            }]
+        })
+        console.log("---------------")
+        console.log(newAccountUser)
+        const { user} = newAccountUser;
+        console.log(user);
+        const now = dateTimeToDate(new Date(),1)
+        if(status==="ACTIVE")
+        {
+            await Email.send(user.email, "17Tek Bank", `Tài khoản của bạn mở khóa lúc ${now}`);
+            return res.json(newAccountUser)
+        }else{
+            await Email.send(user.email, "17Tek Bank", `Tài khoản của bạn đã bị khóa lúc ${now}`);
+            return res.json(newAccountUser)
+        }
+       
     })
 );
 /// End check user profile

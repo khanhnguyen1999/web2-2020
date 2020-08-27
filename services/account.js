@@ -31,6 +31,39 @@ class Account extends Model {
             }
         );
     }
+    static async updateLimit( accountNumber) {
+        return await Account.update(
+            {
+                limit:0,
+            },
+            {
+                where: {
+                    accountNumber,
+                },
+            }
+        );
+    }
+
+    static async updateLimitAmount( amount , accountNumber) {
+        const account = await Account.findByAccountNumber(accountNumber)
+        var newLm = 0;
+        if(!account.limitAmount || account.limitAmount==0){
+            newLm = parseInt(amount);
+        }else{
+            newLm = parseInt(account.limitAmount) + parseInt(amount)
+        }
+        
+        return await Account.update(
+            {
+                limitAmount:newLm,
+            },
+            {
+                where: {
+                    accountNumber,
+                },
+            }
+        );
+    }
 }
 Account.init(
     {
@@ -60,6 +93,9 @@ Account.init(
         limit: {
             type: Sequelize.INTEGER,
         },
+        limitAmount: {
+            type: Sequelize.INTEGER,
+        },
         role: {
             type: Sequelize.STRING,
             allowNull: false,
@@ -68,6 +104,7 @@ Account.init(
     {
         sequelize: db,
         modelName: "account",
+        unique: false,
     }
 );
 
